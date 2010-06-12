@@ -1,0 +1,51 @@
+<enableCamera>
+    <val_0>1.000000</val_0>
+</enableCamera>
+<cameraSettings>
+    <val_0>0.000000</val_0>
+</cameraSettings>
+<fullscreen>
+    <val_0>1.000000</val_0>
+</fullscreen>
+<frameByFrame>
+    <val_0>0.000000</val_0>
+</frameByFrame>
+<patternType>
+    <val_0>0.000000</val_0>
+</patternType>
+<orientation>
+    <val_0>1.000000</val_0>
+</orientation>
+<reverse>
+    <val_0>0.000000</val_0>
+</reverse>
+<patternRate>
+    <val_0>1.000000</val_0>
+</patternRate>
+<cameraRate>
+    <val_0>1.000000</val_0>
+</cameraRate>
+<cameraOffset>
+    <val_0>0.000000</val_0>
+</cameraOffset>
+<minBrightness>
+    <val_0>0.000000</val_0>
+</minBrightness>
+<projectorLut>
+    <val_0>0.000000</val_0>
+</projectorLut>
+<wavelength>
+    <val_0>64.000000</val_0>
+</wavelength>
+<subdivisions>
+    <val_0>10.000000</val_0>
+</subdivisions>
+<enableCameraQt>
+    <val_0>0.000000</val_0>
+</enableCameraQt>
+<enableCameraDc>
+    <val_0>0.000000</val_0>
+</enableCameraDc>
+<camMode>
+    <val_0>2.000000</val_0>
+</camMode>
