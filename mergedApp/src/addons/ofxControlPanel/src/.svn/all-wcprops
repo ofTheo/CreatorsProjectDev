@@ -1,0 +1,137 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src
+END
+simpleLogger.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/simpleLogger.h
+END
+guiTypeSlider.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeSlider.h
+END
+guiTypeText.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeText.h
+END
+guiCustomImpl.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiCustomImpl.h
+END
+guiXmlValue.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiXmlValue.h
+END
+guiTypeMultiToggle.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeMultiToggle.h
+END
+guiBaseObject.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiBaseObject.h
+END
+guiTypePanel.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypePanel.h
+END
+ofxControlPanel.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/ofxControlPanel.cpp
+END
+guiTypeFileLister.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeFileLister.h
+END
+guiIncludes.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiIncludes.h
+END
+simpleFileLister.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/simpleFileLister.h
+END
+ofxControlPanel.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/ofxControlPanel.h
+END
+guiType2DSlider.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiType2DSlider.h
+END
+guiValue.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiValue.h
+END
+guiTypeCustom.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeCustom.h
+END
+guiColor.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiColor.h
+END
+guiTextBase.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTextBase.h
+END
+guiTypeLogger.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeLogger.h
+END
+guiTypeDrawable.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeDrawable.h
+END
+guiTypeToggle.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/guiTypeToggle.h
+END
+simpleColor.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/73/trunk/OpenFrameworks/addons/ofxControlPanel/src/simpleColor.h
+END
