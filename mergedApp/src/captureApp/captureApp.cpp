@@ -1,6 +1,6 @@
 #include "captureApp.h"
 
-static bool do1394 = false;
+static bool do1394 = true;
 string capturePrefix = "input/";
 
 static float lastTime = 0.0;

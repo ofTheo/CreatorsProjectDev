@@ -17,8 +17,10 @@ class ofxIIDCSettings :  public ofxVideoGrabberSettings
         virtual void draw();
 
     protected:
-        void parameterCallback(float param1, float param2, int param_mode, int callback_id);
-        ParameterCallback<ofxIIDCSettings> callback;
+        void eventsIn(guiCallbackData & data);
+		 
+		//void parameterCallback(float param1, float param2, int param_mode, int callback_id);
+        //ParameterCallback<ofxIIDCSettings> callback;
 
 
 };

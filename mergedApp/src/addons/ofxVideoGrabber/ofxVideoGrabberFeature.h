@@ -142,8 +142,8 @@ enum VID_BPP
 
 int stringToVideoFormat( string _formatString );
 string videoFormatToString( int _format );
+int titleToCameraFeature(string _feature ); 
 string cameraFeatureToTitle( int _feature );
-
 
 #endif
 

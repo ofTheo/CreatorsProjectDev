@@ -5,6 +5,21 @@
 #include <string>
 using namespace std;
 
+inline void spaceToUnderscore(std::string & myStr)
+{
+        /* replace all spaces in the name to satisfy XML*/
+        size_t found;
+        found=myStr.find_first_of(" ");
+        while (found!=string::npos)
+        {
+            //myStr.erase(found,1);
+            myStr[found]='_';
+
+            found=myStr.find_first_of(" ",found+1);
+        }
+}
+
+
 int stringToVideoFormat( string _formatString )
 {
 	if( _formatString == "VID_FORMAT_GREYSCALE" )
@@ -122,6 +137,104 @@ string videoFormatToString( int _format )
 	}
 
 	return "videoFormatToString:: unknown video format";
+}
+
+int titleToCameraFeature(string _feature )
+{
+	
+	transform(_feature.begin(), _feature.end(), _feature.begin(), ::toupper);
+	spaceToUnderscore(_feature);
+
+	if( _feature == "BRIGHTNESS" )
+	{
+		return FEATURE_BRIGHTNESS;
+	}
+	else if ( _feature == "EXPOSURE" )
+	{
+		return FEATURE_EXPOSURE;
+	}
+	else if ( _feature == "SHARPNESS" )
+	{
+		return FEATURE_SHARPNESS;
+	}
+	else if ( _feature == "WHITE_BALANCE")
+	{
+		return FEATURE_WHITE_BALANCE;
+	}
+	else if ( _feature == "HUE" )
+	{
+		return FEATURE_HUE;
+	}
+	else if ( _feature ==  "SATURATION" )
+	{
+		return FEATURE_SATURATION;
+	}
+	else if ( _feature == "GAMMA" )
+	{
+		return FEATURE_GAMMA;
+	}
+	else if ( _feature == "SHUTTER" )
+	{
+		return FEATURE_SHUTTER;
+	}
+	else if ( _feature == "GAIN" )
+	{
+		return FEATURE_GAIN;
+	}
+	else if ( _feature == "IRIS" )
+	{
+		return FEATURE_IRIS;
+	}
+	else if ( _feature == "FOCUS" )
+	{
+		return FEATURE_FOCUS;
+	}
+	else if ( _feature == "TEMPERATURE" )
+	{
+		return FEATURE_TEMPERATURE;
+	}
+	else if ( _feature == "TRIGGER" )
+	{
+		return FEATURE_TRIGGER;
+	}
+	else if ( _feature == "TRIGGER_DELAY" )
+	{
+		return FEATURE_TRIGGER_DELAY;
+	}
+	else if ( _feature == "WHITE_SHADING" )
+	{
+		return FEATURE_WHITE_SHADING;
+	}
+	else if ( _feature == "FRAME_RATE" )
+	{
+		return FEATURE_FRAME_RATE;
+	}
+	else if ( _feature == "ZOOM" )
+	{
+		return FEATURE_ZOOM;
+	}
+	else if ( _feature == "PAN" )
+	{
+		return FEATURE_PAN;
+	}
+	else if ( _feature == "TILT" )
+	{
+		return FEATURE_TILT;
+	}
+	else if ( _feature == "OPTICAL_FILTER" )
+	{
+		return FEATURE_OPTICAL_FILTER;
+	}
+	else if ( _feature ==  "CAPTURE_SIZE" )
+	{
+		return FEATURE_CAPTURE_SIZE;
+	}
+	else if ( _feature == "CAPTURE_QUALITY" )
+	{
+		return FEATURE_CAPTURE_QUALITY;
+	}
+
+	return NULL_FEATURE;
 }
 
 string cameraFeatureToTitle( int _feature )

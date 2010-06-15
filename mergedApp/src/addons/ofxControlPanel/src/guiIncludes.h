@@ -5,12 +5,10 @@
 #include "guiColor.h"
 #include "simpleColor.h"
 #include "guiValue.h"
+#include "guiVariablePointer.h"
 
 //interface
 #include "guiTypePanel.h"
-
-//callbacks
-#include "guiCallbacks.h"
 
 //elements
 #include "guiTypeText.h"
@@ -19,9 +17,15 @@
 #include "guiTypeSlider.h"
 #include "guiType2DSlider.h"
 #include "guiTypeDrawable.h"
-#include "guiTypeLogger.h"
-#include "guiTypeFileLister.h"
-#include "guiTypeCustom.h"
-#include "guiCustomImpl.h"
 #include "guiTypeButtonSlider.h"
 #include "guiTypeTextDropDown.h"
+#include "guiTypeCustom.h"
+#include "guiCustomImpl.h"
+#include "guiTypeVideo.h"
+#include "guiTypeVairableLister.h"
+#include "guiTypeChartPlotter.h"
+#include "guiTypeLogger.h"
+#include "guiTypeFileLister.h"
+
+
+

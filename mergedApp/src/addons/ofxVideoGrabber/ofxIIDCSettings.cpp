@@ -39,7 +39,7 @@ void ofxIIDCSettings::setupGUI()
     panel.setWhichColumn(0);
 
     /* set the gui callback */
-    callback.SetCallback( this, &ofxIIDCSettings::parameterCallback);
+    //callback.SetCallback( this, &ofxIIDCSettings::parameterCallback);
 
 	int tmp_index = -1;
 	int tmp_featureID = -1;
@@ -69,7 +69,8 @@ void ofxIIDCSettings::setupGUI()
                 float minVal = videoGrabber->featureVals[i].minVal;
                 float maxVal = videoGrabber->featureVals[i].maxVal;
                 float currVal = videoGrabber->featureVals[i].currVal;
-                panel.addButtonSlider(name,xmlName, currVal, minVal, maxVal, true,&callback,featureID);
+                //panel.addButtonSlider(name, xmlName, currVal, minVal, maxVal, true, &callback, featureID);
+				panel.addButtonSlider(name, xmlName, currVal, minVal, maxVal, true);
             }
         }
     }
@@ -87,8 +88,8 @@ void ofxIIDCSettings::setupGUI()
         float maxVal = videoGrabber->featureVals[tmp_index].maxVal;
         float currVal = videoGrabber->featureVals[tmp_index].currVal;
         float currVal2 = videoGrabber->featureVals[tmp_index].currVal2;
-        panel.addSlider2D(name,xmlName, currVal, currVal2, minVal, maxVal, minVal, maxVal, false, &callback,tmp_featureID);
-
+        //panel.addSlider2D(name,xmlName, currVal, currVal2, minVal, maxVal, minVal, maxVal, false, &callback,tmp_featureID);
+        panel.addSlider2D(name,xmlName, currVal, currVal2, minVal, maxVal, minVal, maxVal, false);
     }
 
     panel.setWhichColumn(1);
@@ -133,7 +134,9 @@ void ofxIIDCSettings::setupGUI()
                     }
                 }
 
-                panel.addTextDropDown(name,xmlName, defaultval, modelist,&callback,featureID);
+                //panel.addTextDropDown(name,xmlName, defaultval, modelist,&callback,featureID);
+                panel.addTextDropDown(name,xmlName, defaultval, modelist);
+
             }
         }
     }
@@ -165,14 +168,19 @@ void ofxIIDCSettings::setupGUI()
                         modelist.push_back("ONE PUSH AUTO");
                     }
                 }
-
-                panel.addTextDropDown(name,xmlName, defaultval, modelist,&callback,tmp_featureID);
+                //panel.addTextDropDown(name,xmlName, defaultval, modelist,&callback,tmp_featureID);
+                panel.addTextDropDown(name,xmlName, defaultval, modelist);
 
     }
 	
 	if(panel.currentXmlFile != ""){
 		panel.loadSettings(panel.currentXmlFile);
 	}
+	
+	panel.setupEvents();
+	panel.enableEvents();
+	ofAddListener(panel.guiEvent, this, &ofxIIDCSettings::eventsIn);
+
     //Example of how to set up toggles
     /*
     string name = "myToggle";
@@ -203,23 +211,50 @@ void ofxIIDCSettings::update()
     panel.update();
 }
 
-void ofxIIDCSettings::parameterCallback(float param1, float param2, int param_mode, int param_id)
+//--------------------------------------------------------------------
+void ofxIIDCSettings::eventsIn(guiCallbackData & data)
 {
+	//printf("data.groupname is %s\n", data.groupName.c_str());	
 
-    if(param_mode != NULL_MODE)
-    {
-        //cout << "set mode called: "  << param_mode << " param_id = " << param_id << endl;
-        videoGrabber->setFeatureMode(param_mode, param_id);
-    }
-    else {
-        if(param_id == FEATURE_WHITE_BALANCE) {
-            videoGrabber->setFeatureValue(param1, param2, param_id);
-        }
-        else {
-            //cout << "set feature called: " << param1 << " " << param_id << endl;
-            videoGrabber->setFeatureValue(param1, param_id);
-        }
-    }
+	//if this is a feature mode setting
+	if( data.groupName.find("_MODE") != string::npos ){
+		
+		int param_id = titleToCameraFeature( data.groupName.substr(0, data.groupName.size()-5) );
+		if( param_id != NULL_FEATURE ){
+
+			//printf("mode is %s\n", cameraFeatureToTitle( mode ).c_str() );
+			//printf("value[%i] is %s \n",  data.getInt(0), data.getString(0).c_str() );		
+			videoGrabber->setFeatureMode(data.getInt(0), param_id);
+		}
+		
+	}else{
+		//its a value setting
+		int param_id = titleToCameraFeature(data.groupName);
+		if( param_id != NULL_FEATURE ){
+			if( param_id == FEATURE_WHITE_BALANCE ){
+				videoGrabber->setFeatureValue(data.getFloat(0), data.getFloat(1), param_id);
+			}else{
+				videoGrabber->setFeatureValue(data.getInt(0), param_id);
+			}
+		}
+	}
+	
+	//old code 
+
+//    if(param_mode != NULL_MODE)
+//    {
+//        //cout << "set mode called: "  << param_mode << " param_id = " << param_id << endl;
+//        videoGrabber->setFeatureMode(param_mode, param_id);
+//    }
+//    else {
+//        if(param_id == FEATURE_WHITE_BALANCE) {
+//            videoGrabber->setFeatureValue(param1, param2, param_id);
+//        }
+//        else {
+//            //cout << "set feature called: " << param1 << " " << param_id << endl;
+//            videoGrabber->setFeatureValue(param1, param_id);
+//        }
+//    }
 
 }
 

@@ -5,6 +5,8 @@ float ofxControlPanel::topSpacing  = 20;
 float ofxControlPanel::tabWidth = 25;
 float ofxControlPanel::tabHeight = 10;
 
+vector <ofxControlPanel *> ofxControlPanel::globalPanelList;
+
 //----------------------------
 ofxControlPanel::ofxControlPanel(){
     dragging        = false;
@@ -18,39 +20,86 @@ ofxControlPanel::ofxControlPanel(){
     incrementSave   = false;
     hidden          = false;
     bDraggable      = true;
-
+	eventsEnabled	= false;
+	bEventsSetup	= false;
+	bIgnoreLayout	= false;
+	
     currentXmlFile = "";
     incrementSaveName = "";
     xmlObjects.clear();
-
-}
-
-ofxControlPanel::~ofxControlPanel(){
-    for(int i = 0; i < guiObjects.size(); i++){
-        delete guiObjects[i];
-    }
+	
+	ofxControlPanel::globalPanelList.push_back(this);
 }
 
 //-----------------------------
-void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY, float width, float height){
-      name = controlPanelName;
+ofxControlPanel::~ofxControlPanel(){
 
-      setPosition(panelX, panelY);
-      setDimensions(width, height);
-      setShowText(true);
+    for(unsigned int i = 0; i < guiObjects.size(); i++){
+        if( guiObjects[i] != NULL ){
+			delete guiObjects[i];
+			guiObjects[i] = NULL;
+		}
+    }
+	guiObjects.clear();
+	
+	for(int i = 0; i < ofxControlPanel::globalPanelList.size(); i++){
+		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i]->name == name ){			
+			ofxControlPanel::globalPanelList.erase( ofxControlPanel::globalPanelList.begin()+i, ofxControlPanel::globalPanelList.begin()+i+1);
+			break;
+		}
+	}
+	
+	for(int i = 0; i < customEvents.size(); i++){
+		if( customEvents[i] != NULL ){
+			delete customEvents[i];
+			customEvents[i] = NULL;
+		}
+	}
+	
+	customEvents.clear();
+}
+
+//-----------------------------
+ofxControlPanel * ofxControlPanel::getPanelInstance(string panelName){
+	for(int i = 0; i < ofxControlPanel::globalPanelList.size(); i++){
+		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i]->name == panelName ){
+			return ofxControlPanel::globalPanelList[i];
+		}
+	}
+	return NULL;
+}	
+		
+//-----------------------------
+void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY, float width, float height){
+	
+	name = controlPanelName;
+
+	setPosition(panelX, panelY);
+	setDimensions(width, height);
+	setShowText(true);
+
+	fgColor			= gFgColor;
+	outlineColor	= gOutlineColor;				
+	bgColor			= gBgColor;
+	textColor		= gTextColor;	  
+
 }
 
 //-----------------------------
 void ofxControlPanel::loadFont( string fontName, int fontsize ){
     guiTTFFont.loadFont(fontName, fontsize);
     bool okay = guiTTFFont.bLoadedOk;
+	guiBaseObject::setFont(&guiTTFFont);
 
     if(okay){
+		printf("font loaded okay!\n");
         bUseTTFFont = true;
-        for(int i = 0; i < guiObjects.size(); i++){
+        for(unsigned int i = 0; i < guiObjects.size(); i++){
             guiObjects[i]->setFont(&guiTTFFont);
         }
-    }
+    }else{
+		printf("ahhhhhh why does my font no work!\n");
+	}
 }
 
 //---------------------------------------------
@@ -88,14 +137,14 @@ guiTypePanel * ofxControlPanel::addPanel(string panelName, int numColumns, bool 
 
 //---------------------------------------------
 void ofxControlPanel::setWhichPanel(int whichPanel){
-    if( whichPanel < 0 || whichPanel >= panels.size() )return;
+    if( whichPanel < 0 || whichPanel >= (int) panels.size() )return;
     currentPanel = whichPanel;
     setWhichColumn(0);
 }
 
 //---------------------------------------------
 void ofxControlPanel::setWhichPanel(string panelName){
-    for(int i = 0; i < panels.size(); i++){
+    for(int i = 0; i < (int) panels.size(); i++){
         if( panels[i]->name == panelName){
             setWhichPanel(i);
             setWhichColumn(0);
@@ -106,10 +155,21 @@ void ofxControlPanel::setWhichPanel(string panelName){
 
 //---------------------------------------------
 void ofxControlPanel::setWhichColumn(int column){
-    if( currentPanel < 0 || currentPanel >= panels.size() )return;
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return;
     panels[currentPanel]->selectColumn(column);
 }
 
+//---------------------------------------------
+int ofxControlPanel::getSelectedPanel(){
+	return selectedPanel;
+}
+
+//---------------------------------------------
+void ofxControlPanel::setSelectedPanel(int whichPanel){
+	if( whichPanel >= 0 && whichPanel < panels.size()){
+		selectedPanel = whichPanel;
+	}
+}
 
 // ############################################################## //
 // ##
@@ -123,47 +183,48 @@ void ofxControlPanel::setSliderWidth(int width){
 }
 
 //---------------------------------------------
-guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool defaultValue, BaseCallback* pCallback, int _callback_id)
+guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool defaultValue)
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new toggle to our list
     guiTypeToggle * tmp = new guiTypeToggle();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(name, (bool)defaultValue);
     tmp->setDimensions(14, 14);
     tmp->setTypeBool();
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
-    tmp->xmlName = xmlName;
+	tmp->xmlName = xmlName;
 
     xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
-    panels[currentPanel]->addElement( tmp );
-
     guiObjects.push_back(tmp);
+
     if( bUseTTFFont ){
         tmp->setFont(&guiTTFFont);
     }
+
+    panels[currentPanel]->addElement( tmp );
 
     return tmp;
 }
 
 
 //---------------------------------------------
-guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames, BaseCallback* pCallback, int _callback_id)
+guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames)
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new multi toggle to our list
     guiTypeMultiToggle * tmp = new guiTypeMultiToggle();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(name, defaultBox, boxNames);
-    tmp->setDimensions(180, 60);
+    tmp->setDimensions(180, boxNames.size()*(guiTypeMultiToggle::boxSize + guiTypeMultiToggle::boxSpacing) + 2);
     tmp->xmlName = xmlName;
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
 
     //we can say we want to an int or a float!
     tmp->setTypeInt();
@@ -181,19 +242,19 @@ guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName
 }
 
 //-------------------------------
-guiTypeSlider * ofxControlPanel::addSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt, BaseCallback* pCallback, int _callback_id)
+guiTypeSlider * ofxControlPanel::addSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt)
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new slider to our list
     guiTypeSlider * tmp = new guiTypeSlider();
+	
+	setLayoutFlag(tmp);
 
     //setup and dimensions
     tmp->setup(sliderName, value, min, max);
     tmp->setDimensions(180, 10);
     tmp->xmlName = xmlName;
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
 
     //we can say we want to an int or a float!
     if(isInt){
@@ -215,19 +276,19 @@ guiTypeSlider * ofxControlPanel::addSlider(string sliderName, string xmlName, fl
 }
 
 //-------------------------------
-guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName, float valueX, float valueY, float minX, float maxX, float minY, float maxY, bool isInt,BaseCallback* pCallback, int _callback_id )
+guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName, float valueX, float valueY, float minX, float maxX, float minY, float maxY, bool isInt)
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new slider to our list
     guiType2DSlider * tmp = new guiType2DSlider();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(sliderName, valueX, minX, maxX, valueY, minY, maxY);
     tmp->setDimensions(200, 200);
     tmp->xmlName = xmlName;
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
 
     //we can say we want to an int or a float!
     if(isInt){
@@ -252,8 +313,10 @@ guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName
 
 //---------------------------------------------
 guiTypeDrawable * ofxControlPanel::addDrawableRect(string name, ofBaseDraws * drawablePtr, int drawW, int drawH){
-    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
     guiTypeDrawable * vid = new guiTypeDrawable();
+
+	setLayoutFlag(vid);
 
     vid->setup(name, drawablePtr, drawW, drawH);
     panels[currentPanel]->addElement(vid);
@@ -272,6 +335,8 @@ guiTypeVideo * ofxControlPanel::addVideoRect(string name, ofVideoPlayer * drawab
     if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
     guiTypeVideo * vid = new guiTypeVideo();
 
+	setLayoutFlag(vid);
+
     vid->setup(name, drawablePtr, drawW, drawH);
     panels[currentPanel]->addElement(vid);
 
@@ -287,8 +352,10 @@ guiTypeVideo * ofxControlPanel::addVideoRect(string name, ofVideoPlayer * drawab
 
 //---------------------------------------------
 guiTypeCustom * ofxControlPanel::addCustomRect(string name, guiCustomImpl * customPtr, int drawW, int drawH){
-    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
     guiTypeCustom * custom = new guiTypeCustom();
+
+	setLayoutFlag(custom);
 
     custom->setup(name, customPtr, drawW, drawH);
     panels[currentPanel]->addElement(custom);
@@ -301,80 +368,19 @@ guiTypeCustom * ofxControlPanel::addCustomRect(string name, guiCustomImpl * cust
     return custom;
 }
 
-//---------------------------------------------
-guiTypeFileLister * ofxControlPanel::addFileLister(string name, simpleFileLister * lister, int drawW, int drawH){
-    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
-    guiTypeFileLister * listerType = new guiTypeFileLister();
-
-
-    listerType->setup(name, lister, drawW, drawH);
-
-    panels[currentPanel]->addElement(listerType);
-
-
-    guiObjects.push_back(listerType);
-
-    if( bUseTTFFont ){
-
-
-        listerType->setFont(&guiTTFFont);
-    }
-
-
-
-
-
-
-
-
-
-
-    return listerType;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
 //-------------------------------
-guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt,  BaseCallback* pCallback, int _callback_id )
+guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt )
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new slider to our list
     guiTypeButtonSlider * tmp = new guiTypeButtonSlider();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(sliderName, 210, 15, value, min, max, false);
     tmp->xmlName = xmlName;
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
 
     //we can say we want to an int or a float!
     if(isInt){
@@ -396,19 +402,18 @@ guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string
 }
 
 //---------------------------------------------
-guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames, BaseCallback* pCallback, int _callback_id )
-{
+guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames){
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new multi toggle to our list
     guiTypeTextDropDown * tmp = new guiTypeTextDropDown();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setDimensions(180, 60);
     tmp->setup(name, defaultBox, boxNames);
     tmp->xmlName = xmlName;
-    tmp->parameterCallback = pCallback;
-    tmp->callback_id = _callback_id;
 
     //we can say we want to an int or a float!
     tmp->setTypeInt();
@@ -425,6 +430,195 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
     return tmp;
 }
 
+//---------------------------------------------
+guiTypeVairableLister * ofxControlPanel::addVariableLister(string name, vector <guiVariablePointer> & varsIn){
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+
+    //add a new multi toggle to our list
+    guiTypeVairableLister * tmp = new guiTypeVairableLister();
+
+	setLayoutFlag(tmp);
+
+    //setup and dimensions
+    tmp->setDimensions(180, 60);
+    tmp->setup(name, varsIn);
+    tmp->xmlName = "NONE_NOT_NEEDED";
+
+    guiObjects.push_back(tmp);
+
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+
+    panels[currentPanel]->addElement( tmp );
+
+    return tmp;
+}
+
+//-----------------------------------------------------
+guiTypeChartPlotter * ofxControlPanel::addChartPlotter(string name, guiStatVarPointer varPtr, float width, float height, int maxNum, float minValY, float maxValY){
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+
+    //add a new multi toggle to our list
+    guiTypeChartPlotter * tmp = new guiTypeChartPlotter();
+
+	setLayoutFlag(tmp);
+
+    //setup and dimensions
+    tmp->setDimensions(width, height);
+    tmp->setup(name, varPtr, width, height, maxNum, minValY, maxValY);
+    tmp->xmlName = "NONE_NOT_NEEDED";
+
+    guiObjects.push_back(tmp);
+
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+
+    panels[currentPanel]->addElement( tmp );
+
+    return tmp;
+}
+
+//---------------------------------------------
+guiTypeLogger * ofxControlPanel::addLogger(string name, simpleLogger * logger, int drawW, int drawH){
+    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    guiTypeLogger * loggerType = new guiTypeLogger();
+
+	setLayoutFlag(loggerType);
+
+    loggerType->setup(name, logger, drawW, drawH);
+    panels[currentPanel]->addElement(loggerType);
+
+    guiObjects.push_back(loggerType);
+
+    if( bUseTTFFont ){
+        loggerType->setFont(&guiTTFFont);
+    }
+
+    return loggerType;
+}
+
+//---------------------------------------------
+guiTypeFileLister * ofxControlPanel::addFileLister(string name, simpleFileLister * lister, int drawW, int drawH){
+    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    guiTypeFileLister * listerType = new guiTypeFileLister();
+
+	setLayoutFlag(listerType);
+
+    listerType->setup(name, lister, drawW, drawH);
+    panels[currentPanel]->addElement(listerType);
+
+    guiObjects.push_back(listerType);
+
+    if( bUseTTFFont ){
+        listerType->setFont(&guiTTFFont);
+    }
+
+    return listerType;
+}
+
+
+// ############################################################## //
+// ##
+// ##       events 
+// ##
+// ############################################################## //
+
+//THIS SHOULD BE CALLED AFTER ALL GUI SETUP CALLS HAVE HAPPENED
+//---------------------------------------------
+void ofxControlPanel::setupEvents(){
+	eventsEnabled = true;
+	for(int i = 0; i < guiObjects.size(); i++){
+		ofAddListener(guiObjects[i]->guiEvent, this, &ofxControlPanel::eventsIn);
+	}
+	
+	//setup an event group for each panel
+	for(int i = 0; i < panels.size(); i++){
+	
+		vector <string> xmlNames;
+		
+		for(int j = 0; j < panels[i]->children.size(); j++){
+			xmlNames.push_back(panels[i]->children[j]->xmlName);
+		}
+		
+		string groupName = "PANEL_EVENT_"+ofToString(i);
+		createEventGroup(groupName, xmlNames);
+		printf("creating %s\n", groupName.c_str());
+	}
+	
+	bEventsSetup = true;
+}
+
+// Create a single common event which fired whenever any of the gui elements represented by xmlNames is changed
+//---------------------------------------------
+void ofxControlPanel::createEventGroup(string eventGroupName, vector <string> xmlNames){
+	customEvents.push_back( new guiCustomEvent() );
+	customEvents.back()->group = eventGroupName;
+	customEvents.back()->names = xmlNames;
+}		
+
+//---------------------------------------------
+void ofxControlPanel::enableEvents(){
+	if( !bEventsSetup ){
+		setupEvents();
+	}
+	eventsEnabled = true;
+}
+
+//---------------------------------------------
+void ofxControlPanel::disableEvents(){
+	eventsEnabled = false;
+}
+
+// Get an event object for just a panel
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getEventsForPanel(int panelNo){
+	if( panelNo < panels.size() ){
+		return getEventGroup("PANEL_EVENT_"+ofToString(panelNo));
+	}else{			
+		return guiEvent;
+	}
+}
+
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getAllEvents(){
+	return guiEvent;
+ } 
+
+
+// Use the name you made for your custom group to get back the event object
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getEventGroup(string eventGroupName){
+	for(int i = 0; i < customEvents.size(); i++){
+		if( eventGroupName == customEvents[i]->group ){
+			return customEvents[i]->guiEvent;
+		}
+	}
+	
+	//if we don't find a match we return the global event
+	ofLog(OF_LOG_ERROR, "error eventGroup %s does not exist - returning the global event instead", eventGroupName.c_str());
+	return guiEvent;
+}
+
+//This is protected
+//---------------------------------------------
+void ofxControlPanel::eventsIn(guiCallbackData & data){
+	if( !eventsEnabled ) return;
+	
+	//we notify the ofxControlPanel event object - aka the global ALL events callback
+	ofNotifyEvent(guiEvent, data, this);
+	
+	//we then check custom event groups
+	for(int i = 0; i < customEvents.size(); i++){
+		for(int k = 0; k < customEvents[i]->names.size(); k++){
+			if( customEvents[i]->names[k] == data.groupName ){
+				ofNotifyEvent(customEvents[i]->guiEvent, data, this);
+			}
+		}
+	}
+}
+		
 // ############################################################## //
 // ##
 // ##       get and set values
@@ -433,7 +627,7 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
 
 //---------------------------------------------
 void ofxControlPanel::setValueB(string xmlName, bool value,  int whichParam){
-    for(int i = 0; i < guiObjects.size(); i++){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
         if( guiObjects[i]->xmlName == xmlName){
             if( whichParam >= 0  ){
                 guiObjects[i]->value.setValue(value, whichParam);
@@ -445,7 +639,7 @@ void ofxControlPanel::setValueB(string xmlName, bool value,  int whichParam){
 
 //---------------------------------------------
 void ofxControlPanel::setValueI(string xmlName, int value,  int whichParam){
-    for(int i = 0; i < guiObjects.size(); i++){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
         if( guiObjects[i]->xmlName == xmlName){
             if( whichParam >= 0  ){
                 guiObjects[i]->value.setValue(value, whichParam);
@@ -457,7 +651,7 @@ void ofxControlPanel::setValueI(string xmlName, int value,  int whichParam){
 
 //---------------------------------------------
 void ofxControlPanel::setValueF(string xmlName, float value,  int whichParam){
-    for(int i = 0; i < guiObjects.size(); i++){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
         if( guiObjects[i]->xmlName == xmlName){
             if( whichParam >= 0  ){
                 guiObjects[i]->value.setValue(value, whichParam);
@@ -470,40 +664,40 @@ void ofxControlPanel::setValueF(string xmlName, float value,  int whichParam){
 
 //---------------------------------------------
 bool ofxControlPanel::getValueB(string xmlName, int whichParam){
-    for(int i = 0; i < xmlObjects.size(); i++){
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
             if( whichParam >= 0 && whichParam < xmlObjects[i].numParams ){
                 return xmlObjects[i].guiObj->value.getValueB(whichParam);
             }
         }
     }
-    ofLog(OF_LOG_WARNING, "ofxControlPanel - paramater requested %s doesn't exist - returning 0", xmlName.c_str());
+    ofLog(OF_LOG_WARNING, "ofxControlPanel - parameter requested %s doesn't exist - returning 0", xmlName.c_str());
     return 0;
 }
 
 //---------------------------------------------
 float ofxControlPanel::getValueF(string xmlName, int whichParam){
-    for(int i = 0; i < xmlObjects.size(); i++){
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
             if( whichParam >= 0 && whichParam < xmlObjects[i].numParams ){
                 return xmlObjects[i].guiObj->value.getValueF(whichParam);
             }
         }
     }
-    ofLog(OF_LOG_WARNING, "ofxControlPanel - paramater requested %s doesn't exist - returning 0", xmlName.c_str());
+    ofLog(OF_LOG_WARNING, "ofxControlPanel - parameter requested %s doesn't exist - returning 0", xmlName.c_str());
     return 0;
 }
 
 //---------------------------------------------
 int ofxControlPanel::getValueI(string xmlName, int whichParam){
-    for(int i = 0; i < xmlObjects.size(); i++){
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
             if( whichParam >= 0 && whichParam < xmlObjects[i].numParams ){
-                return (int) (xmlObjects[i].guiObj->value.getValueI(whichParam));
+                return xmlObjects[i].guiObj->value.getValueI(whichParam);
             }
         }
     }
-    ofLog(OF_LOG_WARNING, "ofxControlPanel - paramater requested %s doesn't exist - returning 0", xmlName.c_str());
+    ofLog(OF_LOG_WARNING, "ofxControlPanel - parameter requested %s doesn't exist - returning 0", xmlName.c_str());
     return 0;
 }
 
@@ -533,7 +727,7 @@ void ofxControlPanel::disableIncrementSave(){
 
 //-----------------------------
 void ofxControlPanel::loadSettings(string xmlFile){
-    for(int i = 0; i < guiObjects.size(); i++)guiObjects[i]->loadSettings(xmlFile);
+    for(unsigned int i = 0; i < guiObjects.size(); i++)guiObjects[i]->loadSettings(xmlFile);
 
     currentXmlFile = xmlFile;
 
@@ -546,7 +740,7 @@ void ofxControlPanel::loadSettings(string xmlFile){
     settings.loadFile(currentXmlFile);
     usingXml = true;
 
-    for(int i = 0; i < xmlObjects.size(); i++){
+    for(unsigned int i = 0; i < xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL ){
             int numParams = xmlObjects[i].numParams;
 
@@ -554,7 +748,7 @@ void ofxControlPanel::loadSettings(string xmlFile){
                 string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
                 float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
 
-                xmlObjects[i].guiObj->value.setValue(val, j);
+                xmlObjects[i].guiObj->setValue(val, j);
             }
             xmlObjects[i].guiObj->updateValue();
         }
@@ -563,22 +757,22 @@ void ofxControlPanel::loadSettings(string xmlFile){
 
 //-----------------------------
 void ofxControlPanel::reloadSettings(){
-    for(int i = 0; i < guiObjects.size(); i++)guiObjects[i]->reloadSettings();
+    for(unsigned int i = 0; i < guiObjects.size(); i++)guiObjects[i]->reloadSettings();
 
     if( currentXmlFile != "" ){
 
         bool loadedOK = settings.loadFile(currentXmlFile);
         if(loadedOK)
         {
-        usingXml = true;
+            usingXml = true;
 
-        for(int i = 0; i < xmlObjects.size(); i++){
-            if( xmlObjects[i].guiObj != NULL ){
-                int numParams = xmlObjects[i].numParams;
+            for(unsigned int i = 0; i < xmlObjects.size(); i++){
+                if( xmlObjects[i].guiObj != NULL ){
+                    int numParams = xmlObjects[i].numParams;
 
-                for(int j = 0; j < numParams; j++){
-                    string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
-                    float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                    for(int j = 0; j < numParams; j++){
+                        string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
+                        float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
 
                         xmlObjects[i].guiObj->setValue(val, j);
                     }
@@ -595,9 +789,9 @@ void ofxControlPanel::reloadSettings(){
 
 //-------------------------------
 void ofxControlPanel::saveSettings(string xmlFile){
-    for(int i = 0; i < guiObjects.size(); i++)guiObjects[i]->saveSettings(xmlFile);
+    for(int i = 0; i < (int) guiObjects.size(); i++)guiObjects[i]->saveSettings(xmlFile);
 
-    for(int i = 0; i < xmlObjects.size(); i++){
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL ){
             int numParams = xmlObjects[i].numParams;
 
@@ -623,10 +817,15 @@ void ofxControlPanel::saveSettings(string xmlFile){
 
 //-----------------------------
 void ofxControlPanel::saveSettings(){
-    for(int i = 0; i < guiObjects.size(); i++)guiObjects[i]->saveSettings();
+    for(int i = 0; i < (int) guiObjects.size(); i++)
+    {
+        guiObjects[i]->saveSettings();
+    }
 
-    for(int i = 0; i < xmlObjects.size(); i++){
-        if( xmlObjects[i].guiObj != NULL ){
+    for(int i = 0; i < (int) xmlObjects.size(); i++)
+    {
+        if( xmlObjects[i].guiObj != NULL )
+        {
             int numParams = xmlObjects[i].numParams;
 
             for(int j = 0; j < numParams; j++){
@@ -713,7 +912,7 @@ void ofxControlPanel::mousePressed(float x, float y, int button){
         dragging = true;
         mouseDownPoint.set(x - boundingBox.x, y-boundingBox.y, 0);
     }else if(!minimize){
-        for(int i = 0; i < panels.size(); i++){
+        for(int i = 0; i < (int) panels.size(); i++){
             if( isInsideRect(x, y, panelTabs[i]) ){
                 selectedPanel = i;
                 tabButtonPressed = true;
@@ -723,7 +922,7 @@ void ofxControlPanel::mousePressed(float x, float y, int button){
     }
 
     if(minimize == false && tabButtonPressed == false && isInsideRect(x, y, boundingBox) ){
-        for(int i = 0; i < panels.size(); i++){
+        for(int i = 0; i < (int) panels.size(); i++){
              if( i == selectedPanel )panels[i]->checkHit( x - hitArea.x, y - hitArea.y, button);
         }
     }
@@ -738,7 +937,7 @@ void ofxControlPanel::mouseDragged(float x, float y, int button){
 
     if(dragging)setPosition( MAX(0, x - mouseDownPoint.x), MAX(0, y -mouseDownPoint.y));
     else if(!minimize){
-        for(int i = 0; i < panels.size(); i++){
+        for(int i = 0; i < (int) panels.size(); i++){
             if( i == selectedPanel ){
 
                 if(button){
@@ -757,7 +956,7 @@ void ofxControlPanel::mouseDragged(float x, float y, int button){
 void ofxControlPanel::mouseReleased(){
     if( hidden ) return;
 
-    for(int i = 0; i < panels.size(); i++){
+    for(int i = 0; i < (int) panels.size(); i++){
         panels[i]->release();
     }
     dragging        = false;
@@ -776,16 +975,18 @@ void ofxControlPanel::mouseReleased(){
 void ofxControlPanel::update(){
     guiBaseObject::update();
 
-    topBar           = ofRectangle(boundingBox.x, boundingBox.y, boundingBox.width, 20);
+    topBar           = ofRectangle(boundingBox.x, boundingBox.y, boundingBox.width, MAX(20, displayText.getTextSingleLineHeight() * 1.2 ) );
     minimizeButton   = ofRectangle(boundingBox.x + boundingBox.width - 24, boundingBox.y + 4, 20, 10 );
-    saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, 40, 12 );
-    restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4, 60, 12 );
+    saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save")) , MAX(12, displayText.getTextSingleLineHeight()) );
+    restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
 
-    for(int i = 0; i < panels.size(); i++){
+	ofxControlPanel::topSpacing = MAX(20, topBar.height);
+
+    for(int i = 0; i < (int) panels.size(); i++){
         panels[i]->update();
 
         panelTabs[i].x      = i * tabWidth + hitArea.x + borderWidth;
-        panelTabs[i].y      = hitArea.y + topSpacing - tabHeight;
+        panelTabs[i].y      = hitArea.y + 20 - tabHeight;
         panelTabs[i].width  = tabWidth;
         panelTabs[i].height = tabHeight;
 
@@ -823,7 +1024,7 @@ void ofxControlPanel::draw(){
 
         float panelH = boundingBox.height;
         if( minimize ){
-            panelH = 20;
+            panelH = topBar.height;
         }
 
         glPushMatrix();
@@ -837,7 +1038,7 @@ void ofxControlPanel::draw(){
             ofNoFill();
             glColor4fv(outlineColor.getColorF());
             ofRect(0, 0, boundingBox.width, panelH);
-            ofLine(0, 20, boundingBox.width, 20);
+            ofLine(0, topBar.height, boundingBox.width, topBar.height);
         glPopMatrix();
 
         ofRect(minimizeButton.x, minimizeButton.y, minimizeButton.width, minimizeButton.height);
@@ -854,7 +1055,7 @@ void ofxControlPanel::draw(){
 			guiTTFFont.drawString("save", saveButton.x + 3, saveButton.y + saveButton.height -4);
 		}
 		else {
-         	      ofDrawBitmapString("save", saveButton.x + 3, saveButton.y + saveButton.height -3);
+			ofDrawBitmapString("save", saveButton.x + 3, saveButton.y + saveButton.height -3);
 		}
 
         ofPopStyle();
@@ -871,7 +1072,7 @@ void ofxControlPanel::draw(){
 			guiTTFFont.drawString("restore", restoreButton.x + 3, restoreButton.y + restoreButton.height -4);
 		}
 		else {
-            ofDrawBitmapString("restore", restoreButton.x + 3, restoreButton.y + restoreButton.height -3);
+			ofDrawBitmapString("restore", restoreButton.x + 3, restoreButton.y + restoreButton.height -3);
 		}
         ofPopStyle();
 
@@ -888,7 +1089,7 @@ void ofxControlPanel::draw(){
             glEnable(GL_SCISSOR_TEST);
             glScissor(boundingBox.x, ofGetHeight() - ( boundingBox.y + boundingBox.height - (-2 + topSpacing) ), boundingBox.width - borderWidth , boundingBox.height);
 
-                for(int i = 0; i < panelTabs.size(); i++){
+                for(int i = 0; i < (int) panelTabs.size(); i++){
                     if( i == selectedPanel){
                         ofPushStyle();
                             ofFill();
@@ -904,7 +1105,7 @@ void ofxControlPanel::draw(){
 
                 glPushMatrix();
                     glTranslatef(hitArea.x, hitArea.y, 0);
-                    for(int i = 0; i < panels.size(); i++){
+                    for(int i = 0; i < (int) panels.size(); i++){
                         if( i == selectedPanel )panels[i]->render();
                     }
                 glPopMatrix();
