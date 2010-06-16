@@ -23,7 +23,7 @@ ofxIIDCSettings::ofxIIDCSettings()
 
 ofxIIDCSettings::~ofxIIDCSettings()
 {
-
+	ofRemoveListener(panel.guiEvent, this, &ofxIIDCSettings::eventsIn);
 }
 
 

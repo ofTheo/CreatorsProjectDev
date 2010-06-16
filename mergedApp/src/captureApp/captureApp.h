@@ -8,11 +8,20 @@
 #include "ofxFileHelper.h"
 #include "ofxVideoGrabber.h"
 
+typedef enum{
+	CAMERA_CLOSED,
+	CAMERA_NEEDS_OPENING,
+	CAMERA_OPEN,
+	CAMERA_NEEDS_CLOSING,
+}cameraState;
+
 class captureApp : public ofBaseApp{
 
 public:
 	void update1394Cam();
 	void frameReceived(ofVideoGrabber& grabber);
+
+	void handleCamera();
 
 	void setup();
 	void update();
@@ -23,6 +32,7 @@ public:
 	void mousePressed(int x, int y, int button);	
 	void mouseReleased(int x, int y, int button);
 	void keyPressed(int key);
+
 
 	bool hidden;
 	ofxAutoControlPanel panel;
@@ -41,6 +51,9 @@ public:
 	int lastPatternType;
 	int lastOrientation;
 	bool lastFullscreen;
+	
+	cameraState camState;
+	cameraState prevCamState;
 
 	int lastMinBrightness;
 
@@ -48,14 +61,13 @@ public:
 	ofxImageSaver imageSaver;
 	
 	ofxVideoGrabber camera1394;
-	Libdc1394Grabber *sdk;
+	Libdc1394Grabber * sdk;
 	ofxIIDCSettings * settings;	
 
 	int cameraWidth, cameraHeight;
 	ofImage cameraImage;
 	vector<ofImage> recent;
 	vector<bool> needsUpdate;
-	bool lastEnableCamera;
 	int lastCameraRate;
 	int cameraFrameNum;
 	int patternFrame;

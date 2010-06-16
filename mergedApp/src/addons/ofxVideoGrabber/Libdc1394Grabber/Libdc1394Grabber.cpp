@@ -72,11 +72,11 @@ void Libdc1394Grabber::close()
 void Libdc1394Grabber::cleanupCamera()
 {
 	closeCamera = true;
-	stopThread();
+	ofxThread::stopThread();
 	ofLog(OF_LOG_VERBOSE,"Stopped capture thread.");
 
 	//this sleep seems necessary, at least on OSX, to avoid an occasional hang on exit
-	ofSleepMillis(40);
+	ofSleepMillis(150);
 
 	dc1394switch_t is_iso_on = DC1394_OFF;
 	if(camera) {
@@ -111,6 +111,7 @@ void Libdc1394Grabber::cleanupCamera()
 		pixels = NULL;
 	}
 
+	printf("Closed!\n");
 }
 
 
@@ -632,6 +633,7 @@ void Libdc1394Grabber::threadedFunction()
 {
     while( 1 )
     {
+		if( !threadRunning ) return;	
         captureFrame();
         ofSleepMillis(2);
     }

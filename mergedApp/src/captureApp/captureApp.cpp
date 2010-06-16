@@ -1,11 +1,12 @@
 #include "captureApp.h"
 
-static bool do1394 = true;
+static bool do1394 = false;
 string capturePrefix = "input/";
 
 static float lastTime = 0.0;
 static float camFps = 60.0f;
 int preCamMode = 0;
+float waitTillTime = 0.0;
 
 void measureCamFps(){
 	float timeDiff = ofGetElapsedTimef()-lastTime;
@@ -75,7 +76,11 @@ void captureApp::update1394Cam(){
 
 void captureApp::setup(){
 	hidden = false;
-	lastEnableCamera = false;
+
+	camState	 = CAMERA_CLOSED;
+	prevCamState = CAMERA_CLOSED;
+
+	preCamMode	= 0;
 	cameraFrameNum = 0;
 	sdk			= NULL;
 	settings	= NULL;
@@ -168,9 +173,104 @@ void captureApp::setup(){
 	ofBackground(0, 0, 0);
 }
 
+void captureApp::handleCamera(){
+	
+	if( ofGetElapsedTimef() > waitTillTime ){
+	
+		if( camState == CAMERA_OPEN && do1394 ){
+			update1394Cam();
+		}
+
+		if( camState == CAMERA_OPEN && panel.getValueB("cameraSettings")) {
+			if( !do1394 )camera.videoSettings();
+			panel.setValueB("cameraSettings", false);
+		}
+
+		//-- allow switching between QT and firewire
+		int requestedMode = panel.getValueI("camMode");
+		
+		if( preCamMode == requestedMode ){  // don't do anything
+			//
+		}else if( requestedMode == 0 && preCamMode > 0 ){ //if the camera is on but we want if off set closed
+			preCamMode = 0;
+			camState = CAMERA_NEEDS_CLOSING;
+		}else if( requestedMode == 1 && preCamMode == 2 ){
+			preCamMode = 0;
+			//switching is too buggy - so we only allow to close. 
+			panel.setValueI("camMode", 0);			
+			camState = CAMERA_NEEDS_CLOSING;			
+		}else if( requestedMode == 2 && preCamMode == 1 ){
+			preCamMode = 0;
+			//switching is too buggy - so we only allow to close. 
+			panel.setValueI("camMode", 0);			
+			camState = CAMERA_NEEDS_CLOSING;
+		}else{
+			camState = CAMERA_NEEDS_OPENING;
+			if( requestedMode == 2 ){
+				do1394 = true;
+			}else{
+				do1394 = false;
+			}
+			preCamMode = requestedMode;
+		}
+		
+		//-- end that shit
+			
+		if(camState != prevCamState) {
+			
+			if(camState == CAMERA_NEEDS_OPENING) {
+				
+				if(do1394){
+					camera1394.setDeviceID(0);
+					sdk = new Libdc1394Grabber();
+					//sdk->setFormat7(VID_FORMAT7_1);
+					sdk->listDevices();
+					sdk->setDiscardFrames(false);
+					//sdk->set1394bMode(true);
+					//sdk->setROI(0,0,320,200);
+					//sdk->setDeviceID("b09d01008bc69e:0");
+					settings = new ofxIIDCSettings;
+					camera1394.setVerbose(true);
+					camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_Y8, VID_FORMAT_RGB, 60, true, sdk, settings );
+					settings->setXMLFilename("mySettingsFile.xml");
+					settings->panel.setPosition(318, 136);
+				}else{
+					camera.setup(cameraWidth, cameraHeight, this);
+					camera.setDesiredFrameRate(60);
+				}
+				
+				camState = CAMERA_OPEN;
+
+			}else if( camState == CAMERA_NEEDS_CLOSING ){
+				
+				if( do1394 ){
+					printf("closing camera\n");
+					camera1394.close();
+					if( settings != NULL ){
+						delete settings;
+						delete sdk;
+						printf("deleting settings and sdk\n");
+						settings = NULL;
+						sdk		 = NULL;
+						do1394   = false;
+					}
+				}else{
+					camera.stopThread();
+					camera.close();
+				}
+				
+				camState	 = CAMERA_CLOSED;
+				waitTillTime = ofGetElapsedTimef() + 5.0; //wait 5 seconds before allowing next camera change. 
+			}
+		}
+	
+		prevCamState = camState;	
+	}	
+}
+
 void captureApp::update(){
 	panel.update();
-	
+		
 	// this is where an event/callback-based
 	// control panel would be really helpful!
 	int curWavelength = panel.getValueI("wavelength");
@@ -221,75 +321,6 @@ void captureApp::update(){
 		ofSetFullscreen(curFullscreen);
 	lastFullscreen = curFullscreen;
 
-	//-- allow switching between QT and firewire
-	bool curEnableCamera = false;
-	int currentCamMode = panel.getValueI("camMode");
-	
-	if( preCamMode == currentCamMode ){
-		curEnableCamera = (bool)currentCamMode;
-	}else if( currentCamMode == 0 || (currentCamMode == 1 && do1394) || (currentCamMode == 2 && !do1394) ){
-		curEnableCamera = false;		
-	}else{
-		curEnableCamera = true;
-		if( currentCamMode == 2 ){
-			do1394 = true;
-		}else{
-			do1394 = false;
-		}
-		preCamMode = currentCamMode;
-	}
-	
-	//-- end that shit
-		
-	if(curEnableCamera != lastEnableCamera) {
-		if(curEnableCamera) {
-			
-			if(do1394){
-				camera1394.setDeviceID(0);
-				sdk = new Libdc1394Grabber();
-				//sdk->setFormat7(VID_FORMAT7_1);
-				sdk->listDevices();
-				sdk->setDiscardFrames(false);
-				//sdk->set1394bMode(true);
-				//sdk->setROI(0,0,320,200);
-				//sdk->setDeviceID("b09d01008bc69e:0");
-				settings = new ofxIIDCSettings;
-				camera1394.setVerbose(true);
-				camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_Y8, VID_FORMAT_RGB, 60, true, sdk, settings );
-				settings->setXMLFilename("mySettingsFile.xml");
-				settings->panel.setPosition(318, 136);
-			}else{
-				camera.setup(cameraWidth, cameraHeight, this);
-				camera.setDesiredFrameRate(60);
-			}
-		} else {
-			if( do1394 ){
-				camera1394.close();
-				if( settings != NULL ){
-					delete settings;
-					delete sdk;
-					settings = NULL;
-					sdk		 = NULL;
-					do1394   = false;
-				}
-			}else{
-				camera.stopThread();
-				camera.close();
-			}
-		}
-	}
-	
-	if( do1394 && lastEnableCamera){
-		update1394Cam();
-	}
-	
-	lastEnableCamera = curEnableCamera;
-
-	if(panel.getValueB("cameraSettings")) {
-		if( !do1394 )camera.videoSettings();
-		panel.setValueB("cameraSettings", false);
-	}
-
 	int curPatternType = panel.getValueI("patternType");
 	if(curPatternType != lastPatternType) {
 		switch(curPatternType) {
@@ -300,6 +331,8 @@ void captureApp::update(){
 		}
 	}
 	lastPatternType = curPatternType;
+
+	handleCamera();
 
 	if(panel.getValueB("projectorLut")) {
 		curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
@@ -348,10 +381,10 @@ void captureApp::draw(){
 		
 		panel.draw();
 		
-		if( do1394 && lastEnableCamera){
+		if( do1394 && camState == CAMERA_OPEN ){
 			settings->draw();
 		}
-		if( lastEnableCamera ){
+		if( camState == CAMERA_OPEN  ){
 			ofSetColor(240, 10, 70);
 			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 600, 20);
 			ofSetColor(255, 255, 255, 255);
@@ -386,6 +419,7 @@ void captureApp::keyPressed(int key) {
 			string unique = ofToString(ofGetYear()) + ofToString(ofGetMonth()) + ofToString(ofGetDay()) + ofToString(ofGetHours()) + ofToString(ofGetMinutes()) + ofToString(ofGetSeconds());
 			ofxFileHelper::moveFromTo(capturePrefix+"capture", capturePrefix+"savedFolder"+unique);
 			ofxFileHelper::makeDirectory(capturePrefix+"capture");
+			cameraFrameNum = 0;
 		}
 	
 		hidden = !hidden;
