@@ -33,6 +33,9 @@ public:
 	void mouseReleased(int x, int y, int button);
 	void keyPressed(int key);
 	
+	void processFrame();
+	void exportToQT();
+	
 	void drawCloud();
 	void drawMesh();
 
@@ -60,14 +63,6 @@ public:
 	vector<string> styles, exportFormats;
 	bool hidden;
 
-	float lastDepthScale, lastDepthSkew;
-	float lastFilterMin, lastFilterMax;
-	int lastRangeThreshold, lastOrientation;
-	float lastGamma;
-	float lastJumpTo;
-	int lastCameraRate, lastCameraOffset;
-	bool lastPhasePersistence;
-
 	/// visualizations
 	bool redraw;
 	ofImage rangeIm;
@@ -81,7 +76,11 @@ public:
 	int sequenceFrame;
 
 	ofxQtVideoSaver movieOutput;
+	ofxQtVideoSaver expPngMovieSaver;
+	ofTexture rgbaTex;
+	string currentName;
 	ofImage screenCapture;
+	
 
 	static const unsigned char scol[8][3];
 

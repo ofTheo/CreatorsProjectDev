@@ -22,6 +22,7 @@ public:
 	void makeDepth();
 	void decode();
 	void filterDepth(int yDist, float yAmt);
+		
 	float* getPhase();
 	float* getWrappedPhase();
 	byte* getColor();
@@ -39,6 +40,7 @@ protected:
 	float* wrappedPhase;
 	bool* ready;
 	byte* color;
+	byte * colorDepth;
 	int sequenceSize;
 	float gamma;
 	int maxPasses;

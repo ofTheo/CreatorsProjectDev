@@ -131,7 +131,6 @@ class guiTypeChartPlotter : public guiBaseObject{
 							float xx = ofMap(i, 0, maxNum, x, x + hitArea.width, true);
 							float yy = ofMap(valueHistory[i], minVal, maxVal, y, y - hitArea.height, true);
 							
-							//printf("[%i] = %i xx is %f yy is %f - printf %f to %f\n", i, valueHistory[i], xx, yy, y, y-hitArea.height);
 							ofVertex(xx, yy);
 						}
 						ofEndShape(false);

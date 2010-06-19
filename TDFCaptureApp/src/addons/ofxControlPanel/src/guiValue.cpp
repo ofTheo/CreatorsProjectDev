@@ -1,7 +1,6 @@
 #include "guiValue.h"
 
 guiValue::guiValue(){
-
 }
 
 //------------------------------------------------
@@ -12,6 +11,7 @@ void guiValue::addValue(float val, float _min, float _max){
 	min.push_back(_min);
 	max.push_back(_max);
 	pct.push_back( 0.0 );
+	bChanged.push_back(false);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -25,6 +25,7 @@ void guiValue::addValueI(int val, int _min, int _max){
 	min.push_back((float)_min);
 	max.push_back((float)_max);
 	pct.push_back( 0.0 );
+	bChanged.push_back(false);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -38,6 +39,7 @@ void guiValue::addValueB(bool val){
 	min.push_back(0);
 	max.push_back(1);
 	pct.push_back( 0.0 );
+	bChanged.push_back(false);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -53,6 +55,10 @@ bool guiValue::setValue(float val, unsigned int which){
 		if(val < min[which])        val = min[which];
 		else if(val > max[which])   val = max[which];
 
+		if( val != value[which] ){
+			bChanged[which] = true;
+		}
+
 		value[which]  =  val;
 		valueI[which] = (int)val;
 		valueB[which] = (bool)val;
@@ -63,6 +69,21 @@ bool guiValue::setValue(float val, unsigned int which){
 		return true;
 	}
 	return false;
+}
+
+//------------------------------------------------
+bool guiValue::hasValueChanged(unsigned int which){
+	if( which < value.size() ){
+		return bChanged[which];
+	}
+	return false;
+}
+
+//------------------------------------------------
+void guiValue::clearChangedFlag(){
+	for(int i = 0; i < bChanged.size(); i++){
+		bChanged[i] = false;
+	}
 }
 
 //------------------------------------------------

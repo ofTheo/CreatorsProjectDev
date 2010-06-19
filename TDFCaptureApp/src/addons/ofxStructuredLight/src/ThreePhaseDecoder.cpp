@@ -171,23 +171,50 @@ void ThreePhaseDecoder::makeColor() {
 	#endif
 	for (int i = 0; i < n; i++) {
 		#ifdef ACCURATE_COLOR
-		// This comes from "Recent progresses on real-time 3D shape measurement..."
-		// The scaling factor "brightness" is due to i1,i2,i3 not necessarily being
-		// perfectly sampled from out of phase cosines.
-		i1 = (float) colorSequence[0][i];
-		i2 = (float) colorSequence[1][i];
-		i3 = (float) colorSequence[2][i];
-		a = i1 - i3;
-		b = 2 * i2 - i1 - i3;
-		c = (i1 + i2 + i3 + sqrtf(3 * a * a + b * b)) / 3;
-		color[i] = (byte) (c * brightness);
+			// This comes from "Recent progresses on real-time 3D shape measurement..."
+			// The scaling factor "brightness" is due to i1,i2,i3 not necessarily being
+			// perfectly sampled from out of phase cosines.
+			i1 = (float) colorSequence[0][i];
+			i2 = (float) colorSequence[1][i];
+			i3 = (float) colorSequence[2][i];
+			a = i1 - i3;
+			b = 2 * i2 - i1 - i3;
+			c = (i1 + i2 + i3 + sqrtf(3 * a * a + b * b)) / 3;
+			color[i] = (byte) (c * brightness);
 		#else
-		color[i] = (byte)
+			color[i] = (byte)
 			(((short) colorSequence[0][i] +
 			(short) colorSequence[1][i] +
 			(short) colorSequence[2][i]) / 3);
 		#endif
 	}
+	
+}
+
+byte * ThreePhaseDecoder::getColorAndDepth(float minDist, float maxDist){
+
+	int num = width * height;
+	int k = 0;
+	int j = 0;
+	int d = 0;
+	
+	for(int i = 0; i < num; i++){
+		colorDepth[d]	= color[j];
+		colorDepth[d+1] = color[j+1];
+		colorDepth[d+2] = color[j+2];
+		
+		if( depth[i] == 0.0 || depth[i] > maxDist || depth[i] < minDist ) colorDepth[d+3] = 0;
+		else colorDepth[d+3] = (byte)ofMap(depth[i], minDist, maxDist, 1, 255, true);
+		
+//		if( depth[i] > 0 ){
+//			printf("%f %i \n", depth[i],  colorDepth[d+3]);
+//		}
+
+		j+=3;
+		d+=4;
+	}
+	
+	return colorDepth;
 }
 
 float* ThreePhaseDecoder::getRange() {

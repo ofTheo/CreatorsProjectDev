@@ -42,6 +42,8 @@ public:
 	const float* getLut(int i) const;
 	#endif
 
+	byte * getColorAndDepth(float minDist, float maxDist);
+
 protected:
 	void makePhase();
 	void unwrapPhase();

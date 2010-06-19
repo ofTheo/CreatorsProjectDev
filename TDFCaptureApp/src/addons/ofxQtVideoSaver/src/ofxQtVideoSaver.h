@@ -16,7 +16,7 @@ class ofxQtVideoSaver{
 
 	public :
 								ofxQtVideoSaver			();
-		void					setup					(int width , int height , string fileName );
+		void					setup					(int width , int height , string fileName, int nChannels = 3 );
 		void					finishMovie				();
 		void					addFrame				(unsigned char* data, float frameLengthInSecs = (1/30.0f));
 		void					listCodecs				();
@@ -27,13 +27,13 @@ class ofxQtVideoSaver{
 		
 		bool					bAmSetupForRecording	() { return bSetupForRecordingMovie; }
 		void					addAudioTrack(string audioPath);
-	private:
-		
+	
+	private:		
 		//-------------------------------- movie
 		
 		bool					bSetupForRecordingMovie;
 		
-		
+		int						numChannels;
 		int						w; 
 		int						h;
 	    int						codecQualityLevel;

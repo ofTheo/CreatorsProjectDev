@@ -552,10 +552,22 @@ void ofxControlPanel::setupEvents(){
 
 // Create a single common event which fired whenever any of the gui elements represented by xmlNames is changed
 //---------------------------------------------
-void ofxControlPanel::createEventGroup(string eventGroupName, vector <string> xmlNames){
+ofEvent <guiCallbackData> & ofxControlPanel::createEventGroup(string eventGroupName, vector <string> xmlNames){
 	customEvents.push_back( new guiCustomEvent() );
 	customEvents.back()->group = eventGroupName;
 	customEvents.back()->names = xmlNames;
+	return customEvents.back()->guiEvent;	
+}		
+
+//this takes a single GUI name and makes it an event group - ie if you wanted to listen to just one slider or button
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::createEventGroup(string xmlName){
+	vector <string> xmlNames;
+	xmlNames.push_back(xmlName);
+	customEvents.push_back( new guiCustomEvent() );
+	customEvents.back()->group = xmlName;
+	customEvents.back()->names = xmlNames;
+	return customEvents.back()->guiEvent;
 }		
 
 //---------------------------------------------
@@ -612,7 +624,7 @@ void ofxControlPanel::eventsIn(guiCallbackData & data){
 	//we then check custom event groups
 	for(int i = 0; i < customEvents.size(); i++){
 		for(int k = 0; k < customEvents[i]->names.size(); k++){
-			if( customEvents[i]->names[k] == data.groupName ){
+			if( customEvents[i]->names[k] == data.getXmlName() ){
 				ofNotifyEvent(customEvents[i]->guiEvent, data, this);
 			}
 		}
@@ -699,6 +711,17 @@ int ofxControlPanel::getValueI(string xmlName, int whichParam){
     }
     ofLog(OF_LOG_WARNING, "ofxControlPanel - parameter requested %s doesn't exist - returning 0", xmlName.c_str());
     return 0;
+}
+
+//---------------------------------------------
+bool ofxControlPanel::hasValueChanged(string xmlName, int whichParam){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
+        if( guiObjects[i]->xmlName == xmlName){
+            if( whichParam >= 0  ){
+				return guiObjects[i]->value.hasValueChanged(whichParam);
+            }
+        }
+    }
 }
 
 //---------------------------------------------
@@ -990,6 +1013,13 @@ void ofxControlPanel::update(){
         panelTabs[i].width  = tabWidth;
         panelTabs[i].height = tabHeight;
 
+    }
+}
+
+//---------------------------------------------
+void ofxControlPanel::clearAllChanged(){
+	for(int i = 0; i < (int) guiObjects.size(); i++){
+		guiObjects[i]->value.clearChangedFlag();
     }
 }
 

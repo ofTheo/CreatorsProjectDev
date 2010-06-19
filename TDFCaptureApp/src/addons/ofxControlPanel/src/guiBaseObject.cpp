@@ -174,16 +174,15 @@ void guiBaseObject::update(){
 }
 
 //-----------------------------------------------
+bool guiBaseObject::hasValueChanged(unsigned int which){
+	return value.hasValueChanged(which);
+}
+
+//-----------------------------------------------
 void guiBaseObject::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(xmlName);
-	
-	if( dataType == SG_TYPE_INT || dataType == SG_TYPE_BOOL ){
-		cbVal.addInt(value.getValueI());
-	}else if( dataType == SG_TYPE_FLOAT ){
-		cbVal.addFloat(value.getValueF());
-	}
-
+	cbVal.setup(xmlName, name);
+	cbVal.addValueF(value.getValueF());
 	ofNotifyEvent(guiEvent,cbVal,this);
 	//CB
 }

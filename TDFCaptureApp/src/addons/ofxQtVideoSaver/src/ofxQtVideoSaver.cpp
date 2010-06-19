@@ -14,7 +14,7 @@ ofxQtVideoSaver::ofxQtVideoSaver (){
 	lMaxCompressionSize = 0L;
 	hImageDescription = NULL;
 	codecType			= kJPEGCodecType;
-	codecQualityLevel	= OF_QT_SAVER_CODEC_QUALITY_HIGH;
+	codecQualityLevel	= OF_QT_SAVER_CODEC_QUALITY_NORMAL;
 	bSetupForRecordingMovie = false;
 }
 
@@ -28,11 +28,19 @@ void ofxQtVideoSaver::setCodecQualityLevel(int level) {
 }
 
 
-void ofxQtVideoSaver::setup( int width , int height, string movieName){
+void ofxQtVideoSaver::setup( int width, int height, string movieName, int nChannels){
 
 	w = width;
 	h = height;
-
+	numChannels = nChannels;
+	
+	if( numChannels != 3 && numChannels != 4 ){
+		numChannels = 3;
+	}
+	
+	if( numChannels == 4 ){
+		codecType = kPNGCodecType;
+	}
 
     fileName = (ofToDataPath(movieName));
     //pszFlatFilename = flatFileName;
@@ -58,7 +66,7 @@ void ofxQtVideoSaver::setup( int width , int height, string movieName){
 		/// kill a file and make a new one if needed:
 		FILE * pFile;
 		pFile = fopen (fileName.c_str(),"w");
-	fclose (pFile);
+		fclose (pFile);
 
 		Boolean isdir;
 		osErr = FSPathMakeRef((const UInt8*)fileName.c_str(), &fsref, &isdir);
@@ -155,7 +163,7 @@ void ofxQtVideoSaver::setup( int width , int height, string movieName){
     osErr = NewGWorld
       (
       &pMovieGWorld,                   /* receives the new GWorld.           */
-      24,                              /* pixel depth in bits/pixel          */
+      numChannels == 3 ? 24 : 32,                              /* pixel depth in bits/pixel          */
       &rect,                           /* desired size of the GWorld.        */
       NULL,
       NULL,
@@ -187,21 +195,20 @@ void ofxQtVideoSaver::setup( int width , int height, string movieName){
     ====================================================================  */
 
 
-    osErr = GetMaxCompressionSize
-      (
-      pixMapHandle,							/* the pixel map to compress from.    */
-      &rect,								/* the image rectangle.               */
-      0,									/* let ICM choose image bit depth.    */
-      codecHighQuality,						/* compression quality specifier.     */
-      kRawCodecType,						/* desired compression type           */   // < set to RAW in case we set to a new compression type...
-      (CompressorComponent) anyCodec,		/* codec specifier.                   */
-      &lMaxCompressionSize					/* receives max bytes needed for cmp. */
-      );
-    if (osErr != noErr)
-      {
-      printf ("GetMaxCompressionSize failed %d\n", osErr);
-      goto bail;
-      }
+	osErr = GetMaxCompressionSize(
+		pixMapHandle,							/* the pixel map to compress from.    */
+		&rect,								/* the image rectangle.               */
+		0,									/* let ICM choose image bit depth.    */
+		codecHighQuality,						/* compression quality specifier.     */
+		kRawCodecType,						/* desired compression type           */   // < set to RAW in case we set to a new compression type...
+		(CompressorComponent) anyCodec,		/* codec specifier.                   */
+		&lMaxCompressionSize					/* receives max bytes needed for cmp. */
+		);
+
+	if (osErr != noErr){
+		printf ("GetMaxCompressionSize failed %d\n", osErr);
+		goto bail;
+	}
 
 
 /*  Allocate a buffer to hold the compressed image data by creating a new
@@ -450,8 +457,8 @@ void ofxQtVideoSaver::addFrame(unsigned char* data, float frameLengthInSecs){
     long   gwWidth;
     gwAddressBase = GetPixBaseAddr( GetGWorldPixMap( pMovieGWorld ) );   /* Get head address of offscreen      */
     gwWidth = ( **GetGWorldPixMap( pMovieGWorld ) ).rowBytes & 0x3fff;   /* Get with of offscreen              */
-    ///gwAddress = gwAddressBase + ( x * 3 ) + ( y * gwWidth );  /* Get adress for current pixel       */
-    int myWidth = w*3;
+    ///gwAddress = gwAddressBase + ( x * numChannels ) + ( y * gwWidth );  /* Get adress for current pixel       */
+    int myWidth = w*numChannels;
     unsigned char * myData = data;
 
 	#ifdef TARGET_OSX
@@ -461,12 +468,12 @@ void ofxQtVideoSaver::addFrame(unsigned char* data, float frameLengthInSecs){
 		gwAddress = gwAddressBase + i * gwWidth;
 		myData = data + i * myWidth;
 		for (int j = 0; j < w; j++){
-         memcpy(gwAddress+1, myData, 3);
+         memcpy(gwAddress+1, myData, numChannels);
          /*gwAddress[1] = myData[2];
          gwAddress[2] = myData[1];
          gwAddress[3] = myData[0];*/
          gwAddress+= 4;
-         myData+= 3;
+         myData+= numChannels;
       }
 	}
 	#endif
@@ -550,8 +557,13 @@ void ofxQtVideoSaver::setGworldPixel( GWorldPtr gwPtr, int r, int g, int b, shor
     char   red, blue, green;
     gwAddressBase = GetPixBaseAddr( GetGWorldPixMap( gwPtr ) );   /* Get head address of offscreen      */
     gwWidth = ( **GetGWorldPixMap( gwPtr ) ).rowBytes & 0x3fff;   /* Get with of offscreen              */
-    gwAddress = gwAddressBase + ( x * 3 ) + ( y * gwWidth );  /* Get adress for current pixel       */
+    gwAddress = gwAddressBase + ( x * numChannels) + ( y * gwWidth );  /* Get adress for current pixel       */
     *gwAddress = (unsigned char)r;                        /* Put red and move address forward   */
-    *(gwAddress+1) = (unsigned char)g;                /* Put green and move address forward */
-    *(gwAddress+2)   = (unsigned char)b;                       /* Put blue                           */
+    if( numChannels == 3 ){
+		*(gwAddress+1) = (unsigned char)g;                /* Put green and move address forward */
+		*(gwAddress+2)   = (unsigned char)b;                       /* Put blue                           */
+	}
+	if( numChannels == 4 ){
+		*(gwAddress+3)   = 255;                       /* Put alpha                           */
+	}
 }

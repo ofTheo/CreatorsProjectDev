@@ -13,6 +13,7 @@ PhaseDecoder::PhaseDecoder() :
 		maxPasses(1),
 		minRemaining(0),
 		color(NULL),
+		colorDepth(NULL),
 		orientation(PHASE_VERTICAL),
 		phasePersistence(false),
 		lastPhase(false),
@@ -41,6 +42,7 @@ void PhaseDecoder::setup(int width, int height, int sequenceSize) {
 	depth = new float[n];
 	depthCopy = new float[n];
 	color = new byte[n * 3];
+	colorDepth = new byte[n*4];
 
 	blur.setup(width, height);
 
@@ -59,6 +61,7 @@ PhaseDecoder::~PhaseDecoder() {
 		delete [] phase;
 		delete [] ready;
 		delete [] color;
+		delete [] colorDepth;
 		delete [] lastPhase;
 		delete [] range;
 	}
@@ -223,7 +226,7 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt){
 		int minY = -yDist;
 		if( y - minY < 0 ) minY = -y;
 		int maxY = yDist;
-		if( y + maxY >= height ) maxY = height-y;
+		if( y + maxY >= height ) maxY = (height-1)-y;
 		
 		int num = maxY - minY;
 		if( num == 0 ){
@@ -238,6 +241,10 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt){
 			float amnt = 0.0;
 			int numReal = 0;
 			for(int j = minY; j <= maxY; j++){
+				if( j + y == height ){
+					printf("FOOOOOOOOOOOOL\n");
+					assert(0);
+				}
 				if( !mask[k + j*width] ){
 					amnt +=  depthCopy[k + j*width];
 					numReal++;

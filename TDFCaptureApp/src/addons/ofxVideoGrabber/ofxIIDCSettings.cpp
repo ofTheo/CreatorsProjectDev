@@ -217,9 +217,10 @@ void ofxIIDCSettings::eventsIn(guiCallbackData & data)
 	//printf("data.groupname is %s\n", data.groupName.c_str());	
 
 	//if this is a feature mode setting
-	if( data.groupName.find("_MODE") != string::npos ){
+	string guiName = data.getXmlName();
+	if( guiName.find("_MODE") != string::npos ){
 		
-		int param_id = titleToCameraFeature( data.groupName.substr(0, data.groupName.size()-5) );
+		int param_id = titleToCameraFeature( guiName.substr(0, guiName.size()-5) );
 		if( param_id != NULL_FEATURE ){
 
 			//printf("mode is %s\n", cameraFeatureToTitle( mode ).c_str() );
@@ -229,7 +230,7 @@ void ofxIIDCSettings::eventsIn(guiCallbackData & data)
 		
 	}else{
 		//its a value setting
-		int param_id = titleToCameraFeature(data.groupName);
+		int param_id = titleToCameraFeature(data.getXmlName());
 		if( param_id != NULL_FEATURE ){
 			if( param_id == FEATURE_WHITE_BALANCE ){
 				videoGrabber->setFeatureValue(data.getFloat(0), data.getFloat(1), param_id);
