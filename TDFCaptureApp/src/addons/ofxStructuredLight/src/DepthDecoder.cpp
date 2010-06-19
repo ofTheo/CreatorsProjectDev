@@ -4,13 +4,15 @@ DepthDecoder::DepthDecoder() :
 		width(0),
 		height(0),
 		mask(NULL),
-		depth(NULL) {
+		depth(NULL), 
+		depthCopy(NULL){
 }
 
 DepthDecoder::~DepthDecoder() {
 	if (mask != NULL) {
 		delete [] mask;
 		delete [] depth;
+		delete [] depthCopy;
 	}
 }
 

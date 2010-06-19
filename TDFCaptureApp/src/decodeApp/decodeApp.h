@@ -47,7 +47,7 @@ public:
 	ofxEasyCam camera;
 
 	ThreePhaseDecoder* threePhase;
-
+	
 	string inputDir;
 
 	simpleFileLister inputList;

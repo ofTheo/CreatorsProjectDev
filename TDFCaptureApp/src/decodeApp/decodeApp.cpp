@@ -39,6 +39,7 @@ void decodeApp::setup(){
 	panel.addPanel("decode", 1);
 	panel.addPanel("export", 1);
 	panel.addPanel("misc", 1);
+	panel.addPanel("smoothing", 1);
 
 	panel.setWhichPanel("input");
 
@@ -96,6 +97,10 @@ void decodeApp::setup(){
 
 	panel.addSlider("maxPhase", "maxPhase", 10.0, 0.0, 100.0, false);
 	panel.addSlider("maxDepth power", "maxDepth", 3.0, 0.0, 5.0, false);
+
+	panel.setWhichPanel("smoothing");
+	panel.addSlider("smooth y dist", "smooth_y_dist", 1, 1, 20, true);
+	panel.addSlider("smooth y amnt", "smooth_y_amnt", 0, 0, 1.0, false);
 
 	panel.loadSettings("controlDecode.xml");
 	
@@ -345,6 +350,8 @@ void decodeApp::update() {
 			threePhase->decode();
 			if (curFilterMin != -1024 || curFilterMax != 1024)
 				threePhase->filterRange(curFilterMin, curFilterMax);
+
+			threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"));
 
 			redraw = true;
 		}

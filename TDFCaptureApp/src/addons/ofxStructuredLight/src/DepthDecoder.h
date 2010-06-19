@@ -26,4 +26,5 @@ protected:
 	int width, height;
 	bool* mask;
 	float* depth;
+	float * depthCopy;
 };

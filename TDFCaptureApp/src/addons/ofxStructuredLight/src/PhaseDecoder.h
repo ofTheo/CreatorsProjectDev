@@ -21,6 +21,7 @@ public:
 	void set(int i, byte* image, int channels = 3);
 	void makeDepth();
 	void decode();
+	void filterDepth(int yDist, float yAmt);
 	float* getPhase();
 	float* getWrappedPhase();
 	byte* getColor();
@@ -63,6 +64,6 @@ protected:
 	virtual int getStart();
 	float getRemaining();
 
-	static const int offsetBinSize = 128;
+	static const int offsetBinSize  = 128;
 	static const int offsetBinCount = 256;
 };

@@ -39,6 +39,7 @@ void PhaseDecoder::setup(int width, int height, int sequenceSize) {
 	mask = new bool[n];
 	ready = new bool[n];
 	depth = new float[n];
+	depthCopy = new float[n];
 	color = new byte[n * 3];
 
 	blur.setup(width, height);
@@ -210,6 +211,45 @@ void PhaseDecoder::makeDepth() {
 
 	for(int i = 0; i < n; i++)
 		depth[i] -= offset;
+}
+
+//theo - wip - messy and prob slow for now. 
+void PhaseDecoder::filterDepth(int yDist, float yAmt){
+	memcpy(depthCopy, depth, sizeof(float)*width*height);
+	
+	int k = 0;
+	for(int y = 0; y < height; y++){
+	
+		int minY = -yDist;
+		if( y - minY < 0 ) minY = -y;
+		int maxY = yDist;
+		if( y + maxY >= height ) maxY = height-y;
+		
+		int num = maxY - minY;
+		if( num == 0 ){
+			k+= width;
+			continue;
+		}
+		
+		float averageAmnt = 1.0/(float)(1+num);
+		for(int x = 0; x < width; x++){
+		
+			depth[k] *= (1.0-yAmt);
+			float amnt = 0.0;
+			int numReal = 0;
+			for(int j = minY; j <= maxY; j++){
+				if( !mask[k + j*width] ){
+					amnt +=  depthCopy[k + j*width];
+					numReal++;
+				}
+			}
+			
+			amnt /= (float)(numReal+1);
+			depth[k] += yAmt * amnt;
+			
+			k++;
+		}
+	}
 }
 
 byte* PhaseDecoder::getColor() {
