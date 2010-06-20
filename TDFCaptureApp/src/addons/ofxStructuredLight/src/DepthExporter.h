@@ -10,7 +10,7 @@ public:
 	static void exportCloud(string filename, int width, int height, const bool* mask, const float* depth, const unsigned char* color = NULL);
 	static void exportMesh(string filename, int width, int height, const bool* mask, const float* depth, const unsigned char* color = NULL);
 	static void exportTexture(string filename, int width, int height, const bool* mask, const unsigned char* color);
-private:
+	static void exportDepthAndTexture(string filename, int width, int height, const bool* mask, const float* depth, float min, float max, const unsigned char* color);private:
 	static string getExtension(string filename);
 
 	static void exportObjVertex(ostream& obj, int x, int y, float z);

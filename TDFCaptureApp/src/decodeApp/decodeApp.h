@@ -49,6 +49,8 @@ public:
 
 	ofxEasyCam camera;
 
+	LutFilter lut;
+
 	ThreePhaseDecoder* threePhase;
 	
 	string inputDir;

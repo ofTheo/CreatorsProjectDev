@@ -591,11 +591,11 @@ void captureApp::keyPressed(int key) {
 		}
 	}
 	
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_LEFT){
+	if(panel.getValueB("frameByFrame") && key == OF_KEY_UP){
 		patternFrame--;
 	}
 
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_RIGHT){
+	if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
 		patternFrame++;
 	}
 }

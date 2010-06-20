@@ -10,3 +10,5 @@
 #include "ThreePhaseDecoder.h"
 #include "TwoPlusOneDecoder.h"
 
+#include "LutFilter.h"
+

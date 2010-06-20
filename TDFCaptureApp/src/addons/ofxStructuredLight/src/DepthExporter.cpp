@@ -70,6 +70,29 @@ void DepthExporter::exportTexture(string filename, int width, int height, const 
 	img.saveImage(filename);
 }
 
+/*
+ 
+ This code can be sped up with pointer iteration.
+ */
+void DepthExporter::exportDepthAndTexture(string filename, int width, int height, const bool* mask, const float* depth, float min, float max, const unsigned char* color) {
+	ofImage img;
+	img.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+	unsigned char* pixels = img.getPixels();
+	int n = width * height;
+	for (int i = 0; i < n; i++) {
+		pixels[i * 4 + 0] = color[i * 3 + 0];
+		pixels[i * 4 + 1] = color[i * 3 + 1];
+		pixels[i * 4 + 2] = color[i * 3 + 2];
+		if (mask[i]) {
+			pixels[i * 4 + 3] = 0;
+		} else {
+			pixels[i * 4 + 3] = (unsigned char) ofClamp(ofMap(depth[i], min, max, 1, 256), 1, 255);
+		}
+	}
+	
+	img.saveImage(filename);
+}
+
 // Flipping the y is one way to orient the model correctly.
 inline void DepthExporter::exportObjVertex(ostream& obj, int x, int y, float z) {
 	obj << "v " << x << " " << -y << " " << z << endl;

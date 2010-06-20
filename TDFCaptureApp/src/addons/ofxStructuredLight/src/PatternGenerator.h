@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include <fstream>
+#include "LutFilter.h"
 
 class PatternGenerator {
 protected:

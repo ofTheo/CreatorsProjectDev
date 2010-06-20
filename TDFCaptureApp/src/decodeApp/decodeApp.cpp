@@ -12,6 +12,8 @@ void decodeApp::setup(){
 	sequenceFrame = 0;
 	threePhase = NULL;
 
+	lut.setup(ofToDataPath("firefly-lut.csv"));
+
 	// setup control panel
 	panel.setup("control", 0, 0, 300, 720);
 	panel.addPanel("input", 1);
@@ -23,10 +25,11 @@ void decodeApp::setup(){
 	panel.setWhichPanel("input");
 
 	inputList.listDir("input");
-	panel.addFileLister("input", &inputList, 240, 440);
+	panel.addFileLister("input", &inputList, 240, 400);
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
 	panel.addSlider("play rate", "playRate", 1, 1, 60, true);
+	panel.addToggle("use camera lut", "useCameraLut", true);
 
 	panel.setWhichPanel("decode");
 
@@ -60,6 +63,7 @@ void decodeApp::setup(){
 	exportFormats.push_back(".obj");
 	exportFormats.push_back(".ply");
 	exportFormats.push_back(".png");
+	exportFormats.push_back("ARGB");
 	panel.addMultiToggle("export format", "exportFormat", 0, exportFormats);
 
 	panel.addToggle("export", "export", false);
@@ -122,8 +126,11 @@ void decodeApp::nextFrame() {
 			cout << "couldn't load file " << (inputDir + imageList.getName(cameraFrame)) << endl;
 			return;
 		}
-		threePhase->set(sequenceFrame % 3, phase.getPixels());
-
+		if(panel.getValueB("useCameraLut")) {
+			lut.filter(phase);
+			phase.setImageType(OF_IMAGE_GRAYSCALE);
+		}
+		threePhase->set(sequenceFrame % 3, phase.getPixels(), phase.type == OF_IMAGE_GRAYSCALE ? 1 : 3);
 	} else {
 		movieInput.setFrame(cameraFrame);
 		threePhase->set(sequenceFrame % 3, movieInput.getPixels()); // TBD can movies have different than 24 bpp?
@@ -191,7 +198,7 @@ void decodeApp::setupInput() {
 		currentName = name;
 		totalImages = imageList.listDir(inputDir);
 		ofImage phase;
-		//  TBD
+		//  this image loading is just so the dimensions are known
 		string imageName = imageList.getName(0);
 		if (!phase.loadImage(inputDir + imageName)) {
 			cout << "couldn't load file " << (inputDir + imageName) << endl;
@@ -319,6 +326,8 @@ void decodeApp::update() {
 			if (curFormat == ".png") {
 				threePhase->exportDepth("output/" + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 				threePhase->exportTexture("output/" + name + "-texture.png");
+			} else if(curFormat == "ARGB") {
+				threePhase->exportDepthAndTexture("output/" + name + ".png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 			} else {
 				int curStyle = panel.getValueI("style");
 				string outputFile = "output/" + name + "-" + styles[curStyle] + curFormat;
