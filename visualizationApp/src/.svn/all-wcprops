@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/185/trunk/OpenFrameworks/apps/structuredLight/decode/src
+END
+testApp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/185/trunk/OpenFrameworks/apps/structuredLight/decode/src/testApp.cpp
+END
+main.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/142/trunk/OpenFrameworks/apps/structuredLight/decode/src/main.cpp
+END
+testApp.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/146/trunk/OpenFrameworks/apps/structuredLight/decode/src/testApp.h
+END
+ofxAutoControlPanel.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/76/trunk/OpenFrameworks/apps/structuredLight/decode/src/ofxAutoControlPanel.h
+END
