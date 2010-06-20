@@ -62,10 +62,10 @@ void threadedScanLoader::loadScans(string pathName) {
 			
 			if (bDepth == true){
 				depthFrames[whoAmI].loadImage(pathName + "/" + fileName);
-				ofSleepMillis(10);
+				//ofSleepMillis(10);
 			} else {
 				imageFrames[whoAmI].loadImage(pathName + "/" + fileName);
-				ofSleepMillis(10);
+				//ofSleepMillis(10);
 			}
 		}
 	}
