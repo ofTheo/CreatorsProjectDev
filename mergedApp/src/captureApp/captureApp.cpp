@@ -1,6 +1,6 @@
 #include "captureApp.h"
 
-static bool do1394 = false;
+static bool do1394 = true;
 string capturePrefix = "input/";
 
 static float lastTime = 0.0;
@@ -12,9 +12,8 @@ void measureCamFps(){
 	float timeDiff = ofGetElapsedTimef()-lastTime;
 	lastTime = ofGetElapsedTimef();
 		
-	float fps = 1.0/ofClamp(timeDiff, 0.01, 1000.0);
-	camFps *= 0.95;
-	camFps += 0.05 * fps;
+	float curFps = 1.0/ofClamp(timeDiff, .01, 1000);
+	camFps = ofLerp(curFps, camFps, .95);
 }
 
 void captureApp::frameReceived(ofVideoGrabber& grabber) {
@@ -335,7 +334,7 @@ void captureApp::update(){
 	handleCamera();
 
 	if(panel.getValueB("projectorLut")) {
-		curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
+		curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
 		panel.setValueB("projectorLut", false);
 	}
 }
@@ -431,11 +430,11 @@ void captureApp::keyPressed(int key) {
 		if(!hidden)
 			imageSaver.saveAll();
 	}
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_LEFT){
+	if(panel.getValueB("frameByFrame") && key == OF_KEY_UP){
 		patternFrame--;
 	}
 
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_RIGHT){
+	if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
 		patternFrame++;
 	}
 }

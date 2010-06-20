@@ -13,6 +13,7 @@
 		031CEAFD1139577C00EC790C /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAF71139577C00EC790C /* tinyxmlerror.cpp */; };
 		031CEAFE1139577C00EC790C /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAF81139577C00EC790C /* tinyxmlparser.cpp */; };
 		031CEAFF1139577C00EC790C /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */; };
+		3B3E8FD511CDAEE9004EE522 /* LutFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B3E8FD311CDAEE9004EE522 /* LutFilter.cpp */; };
 		E441408811C46F9C00F8D93E /* captureApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E441401511C46F9B00F8D93E /* captureApp.cpp */; };
 		E441409D11C46F9C00F8D93E /* decodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E441406511C46F9B00F8D93E /* decodeApp.cpp */; };
 		E441409E11C46F9C00F8D93E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E441406711C46F9B00F8D93E /* main.cpp */; };
@@ -82,7 +83,7 @@
 		E4B8790211AE4024009488DD /* ofxMatrix3x3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F511AE4024009488DD /* ofxMatrix3x3.cpp */; };
 		E4B8790311AE4024009488DD /* ofxMatrix4x4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F711AE4024009488DD /* ofxMatrix4x4.cpp */; };
 		E4B8790411AE4024009488DD /* ofxQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878FC11AE4024009488DD /* ofxQuaternion.cpp */; };
-		E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworks.a */; };
+		E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
 		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
@@ -150,6 +151,8 @@
 		031CEAF81139577C00EC790C /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		031CEAFB1139577C00EC790C /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
+		3B3E8FD311CDAEE9004EE522 /* LutFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LutFilter.cpp; path = src/addons/ofxStructuredLight/src/LutFilter.cpp; sourceTree = SOURCE_ROOT; };
+		3B3E8FD411CDAEE9004EE522 /* LutFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LutFilter.h; path = src/addons/ofxStructuredLight/src/LutFilter.h; sourceTree = SOURCE_ROOT; };
 		E441401511C46F9B00F8D93E /* captureApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = captureApp.cpp; path = src/captureApp/captureApp.cpp; sourceTree = SOURCE_ROOT; };
 		E441401611C46F9B00F8D93E /* captureApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = captureApp.h; path = src/captureApp/captureApp.h; sourceTree = SOURCE_ROOT; };
 		E441401911C46F9B00F8D93E /* ofxImageSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxImageSaver.h; path = src/captureApp/ofxImageSaver.h; sourceTree = SOURCE_ROOT; };
@@ -345,7 +348,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */,
+				E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */,
 				E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */,
 				E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
@@ -439,6 +442,8 @@
 		E4413F9211C46F9B00F8D93E /* src */ = {
 			isa = PBXGroup;
 			children = (
+				3B3E8FD311CDAEE9004EE522 /* LutFilter.cpp */,
+				3B3E8FD411CDAEE9004EE522 /* LutFilter.h */,
 				E44140A111C470C400F8D93E /* addons */,
 				E4413F9311C46F9B00F8D93E /* captureApp */,
 				E441401B11C46F9B00F8D93E /* decodeApp */,
@@ -1020,7 +1025,7 @@
 		E4C2421710CC549C004149E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4C2421E10CC549C004149E2 /* openFrameworks.a */,
+				E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1148,10 +1153,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4C2421E10CC549C004149E2 /* openFrameworks.a */ = {
+		E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworks.a;
+			path = openFrameworksDebug.a;
 			remoteRef = E4C2421D10CC549C004149E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1241,6 +1246,7 @@
 				E493E30B11C70DCA00C270F2 /* simpleColor.cpp in Sources */,
 				E493E30C11C70DCA00C270F2 /* simpleFileLister.cpp in Sources */,
 				E493E30D11C70DCA00C270F2 /* simpleLogger.cpp in Sources */,
+				3B3E8FD511CDAEE9004EE522 /* LutFilter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

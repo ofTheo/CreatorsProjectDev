@@ -45,6 +45,8 @@ public:
 	void setupInput();
 
 	ofxEasyCam camera;
+	
+	LutFilter lut;
 
 	ThreePhaseDecoder* threePhase;
 

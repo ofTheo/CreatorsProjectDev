@@ -257,3 +257,7 @@ void PhaseDecoder::exportMesh(string filename) {
 void PhaseDecoder::exportTexture(string filename) {
 	DepthExporter::exportTexture(filename, width, height, mask, color);
 }
+
+void PhaseDecoder::exportDepthAndTexture(string filename, float min, float max) {
+	DepthExporter::exportDepthAndTexture(filename, width, height, mask, depth, min, max, color);
+}
