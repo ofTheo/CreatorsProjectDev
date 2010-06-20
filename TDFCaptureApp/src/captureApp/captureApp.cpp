@@ -488,7 +488,7 @@ void captureApp::startCapture(){
 void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
-		(int)state = (int)state + 1;
+		state = (CapAppState) (state + 1);
 		ofShowCursor();
 	
 		if(state == CAP_STATE_SAVING){

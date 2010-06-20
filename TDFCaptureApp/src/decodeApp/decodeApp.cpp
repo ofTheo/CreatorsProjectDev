@@ -176,7 +176,7 @@ void decodeApp::exportToQT(){
 	expPngMovieSaver.setup(threePhase->getWidth(), threePhase->getHeight(), "output/"+currentName+".mov", 4);
 	for(int i = 0; i < totalFrames; i++){
 		processFrame();
-		printf("[%2.00f%]\n", ((float)i/totalFrames) * 100.0 );
+		printf("[%2.00f%%]\n", ((float)i/totalFrames) * 100.0 ); // % is printed using %%
 		threePhase->getColorAndDepth(curFilterMin, curFilterMax);
 		expPngMovieSaver.addFrame(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 1.0/60.0f);
 		nextFrame();
