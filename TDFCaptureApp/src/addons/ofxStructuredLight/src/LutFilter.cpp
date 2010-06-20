@@ -24,9 +24,9 @@ void LutFilter::setup(string filename) {
 			level++;
 		}
 		file.close();
-		printf("cool!");
+		ofLog(OF_LOG_VERBOSE, "LUT file loaded");
 	}else{
-		printf("fuck!");
+		ofLog(OF_LOG_ERROR, "LUT file not found!");
 	}
 }
 
