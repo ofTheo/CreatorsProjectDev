@@ -206,6 +206,7 @@ void decodeApp::processSeqFromMemory(vector <unsigned char *> images, int width,
 		}
 		pipeline(images[i], 3, i);				
 		processFrame();
+<<<<<<< HEAD
 		
 		//down sample and go from 60 fps to 15 fps
 		if( i % 4 == 0 ){
@@ -215,6 +216,12 @@ void decodeApp::processSeqFromMemory(vector <unsigned char *> images, int width,
 		}
 		
 		printf("[%2.00f\%]\n", ((float)i/numImages) * 100.0 );
+=======
+		printf("[%2.00f%%]\n", ((float)i/totalFrames) * 100.0 ); // % is printed using %%
+		threePhase->getColorAndDepth(curFilterMin, curFilterMax);
+		expPngMovieSaver.addFrame(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 1.0/60.0f);
+		nextFrame();
+>>>>>>> e39ce72b9e0791a88781d5473da54b7deece474c
 	}
 	
 	printf("done - took %f secs\n", ofGetElapsedTimef()-start);

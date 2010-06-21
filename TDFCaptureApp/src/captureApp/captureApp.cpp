@@ -521,7 +521,11 @@ void captureApp::startCapture(){
 void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
+<<<<<<< HEAD
 		state = CAP_STATE_SAVING;
+=======
+		state = (CapAppState) (state + 1);
+>>>>>>> e39ce72b9e0791a88781d5473da54b7deece474c
 		ofShowCursor();
 	
 		if(state == CAP_STATE_SAVING){
