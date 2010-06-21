@@ -363,7 +363,7 @@ void decodeApp::handleExport(){
 			string curFormat = exportFormats[panel.getValueI("exportFormat")];
 			string name = inputList.getSelectedName();
 			
-			string exportPath = "output/"+name+"/";
+			string exportPath = EXPORT_FOLDER+name+"/";
 			if( !ofxFileHelper::doesFileExist(exportPath) ){
 				ofxFileHelper::makeDirectory(exportPath);
 			}
@@ -741,7 +741,7 @@ void decodeApp::keyPressed(int key) {
 		if (panel.getValueB("renderMovie")) {
 			if (hidden) {
 				screenCapture.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_COLOR);
-				movieOutput.setup(ofGetWidth(), ofGetHeight(), "output/" + ofToString(ofGetFrameNum()) + ".mov");
+				movieOutput.setup(ofGetWidth(), ofGetHeight(), EXPORT_FOLDER + getTimeAsUniqueString() + ".mov");
 			} else {
 				movieOutput.finishMovie();
 			}

@@ -10,6 +10,8 @@
 #include "faceFinder.h"
 #include "decodeAndExport.h"
 
+#include "appConstants.h"
+
 typedef enum{
 	CAMERA_CLOSED,
 	CAMERA_NEEDS_OPENING,
@@ -22,10 +24,20 @@ typedef enum{
 	CAP_STATE_PERSON_DETECTED,
 	CAP_STATE_COUNTDOWN,
 	CAP_STATE_CAPTURE,
+	CAP_STATE_START_DECODE,
+	CAP_STATE_DECODING,
+	CAP_STATE_END_DECODE,
 	CAP_STATE_SAVING,
 	CAP_STATE_NOTIFY,
 	CAP_STATE_OUTPUT_AND_DISPLAY
 }CapAppState;
+
+enum{
+	POST_CAPTURE_SAVE,
+	POST_CAPTURE_DECODE,
+	POST_CAPTURE_DECODE_EXPORT,
+	POST_CAPTURE_ALL_AND_NOTIFY
+};
 
 typedef enum{
 	CAP_DEBUG,
@@ -48,6 +60,12 @@ public:
 
 	void startCapture();
 	void endCapture();
+	
+	void exportFramesToDisk();
+	
+	void startDecode();
+	void handleDecode();
+	void endDecode();
 
 	void handleFaceTrigger();
 	void handleProjection();

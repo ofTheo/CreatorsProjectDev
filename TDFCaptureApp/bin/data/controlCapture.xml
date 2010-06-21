@@ -79,3 +79,9 @@
 <maxBrightness>
     <val_0>255.000000</val_0>
 </maxBrightness>
+<largeVideo>
+    <val_0>0.000000</val_0>
+</largeVideo>
+<postCapture>
+    <val_0>2.000000</val_0>
+</postCapture>

@@ -16,5 +16,6 @@ class guiTypeToggle : public guiBaseObject{
 		void updateGui(float x, float y, bool firstHit, bool isRelative);
         void render();
 		void notify();
-
+		
+		void updateBoundingBox();
 };

@@ -19,6 +19,8 @@
 #include "ofxFileHelper.h"
 #include <fstream>
 
+#include "appConstants.h"
+
 class decodeApp : public ofBaseApp {
 
 public:

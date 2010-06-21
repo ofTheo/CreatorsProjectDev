@@ -1,12 +1,13 @@
 #include "captureApp.h"
 
-static bool do1394 = false;
-string capturePrefix = "input/";
+static bool do1394			= false;
+string capturePrefix		= CAPTURE_MAIN_FOLDER;
+string currentCaptureFolder = capturePrefix + FRAME_CAPTURE_FOLDER;
 
-static float lastTime = 0.0;
-static float camFps = 60.0f;
-int preCamMode = 0;
-float waitTillTime = 0.0;
+static float lastTime	= 0.0;
+static float camFps		= 60.0f;
+int preCamMode			= 0;
+float waitTillTime		= 0.0;
 
 #include "decodeApp.h"
 extern decodeApp  * dAppPtr;
@@ -37,7 +38,7 @@ void captureApp::frameReceived(ofVideoGrabber& grabber) {
 					camera.getThreadedPixels(recent[curFrame].getPixels());
 					needsUpdate[curFrame] = true;
 				} else {
-					string filename = capturePrefix+"capture/" + ofToString(cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					camera.getThreadedPixels(imageSaver.getPixels());
 					imageSaver.next();
@@ -68,7 +69,7 @@ void captureApp::update1394Cam(){
 					memcpy(recent[curFrame].getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					needsUpdate[curFrame] = true;
 				}else{
-					string filename = capturePrefix+"capture/" + ofToString(cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					memcpy(imageSaver.getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					imageSaver.next();
@@ -100,11 +101,11 @@ void captureApp::setup(){
 
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
-	panel.addPanel("capture", 1);
-	panel.addPanel("extra settings", 1);
+	panel.addPanel("app settings", 1);
+	panel.addPanel("pattern settings", 1);
 	panel.addPanel("face trigger settings", 1);
 
-	panel.setWhichPanel("capture");
+	panel.setWhichPanel("app settings");
 	
 	vector <string> camModes;
 	camModes.push_back("camera off");
@@ -118,20 +119,31 @@ void captureApp::setup(){
 	panel.addToggle("frame by frame", "frameByFrame", false);
 	panel.addToggle("large video", "largeVideo", false);
 
+	vector<string> postCapModes;
+	postCapModes.push_back("save frames");
+	postCapModes.push_back("decode and frames");
+	postCapModes.push_back("decode, export and frames");
+	postCapModes.push_back("all above + notify");
+	panel.addMultiToggle("post capture:", "postCapture", 2, postCapModes);
+	
+	panel.addSlider("capture time f", "CAPTURE_TIME_F", 4.0, 2.0, 15.0, false);
+
+
+	panel.setWhichPanel("pattern settings");
+
+	panel.addSlider("pattern rate", "patternRate", 1, 1, 6, true);
+	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
+	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
+
+	panel.addToggle("reverse", "reverse", false);
+
 	vector<string> orientations;
 	orientations.push_back("vertical");
 	orientations.push_back("horizonal");
 	panel.addMultiToggle("orientation", "orientation", 0, orientations);
 
-	panel.addToggle("reverse", "reverse", false);
-	panel.addSlider("pattern rate", "patternRate", 1, 1, 6, true);
-	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
-	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
 	panel.addSlider("min brightness", "minBrightness", 0, 0, 255, true);
-	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);
-	panel.addSlider("capture time f", "CAPTURE_TIME_F", 4.0, 2.0, 15.0, false);
-
-	panel.setWhichPanel("extra settings");
+	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);	
 	panel.addSlider("3 phase - wavelength", "wavelength", 64, 8, 512, true);
 	panel.addToggle("use projector lut", "projectorLut", false);
 
@@ -201,35 +213,16 @@ void captureApp::update(){
 	
 	if( state == CAP_STATE_CAPTURE && ofGetElapsedTimef() >= timeToEndCapture ){
 		printf("time is %f - time to end is %f\n", ofGetElapsedTimef(), timeToEndCapture);
-		
-		endCapture();
-		
+		endCapture();		
 		if( panel.getValueB("B_FACE_TRIGGER") ){
 			bNeedsToLeaveFrame = true;
+		}else{
+			bNeedsToLeaveFrame = false;
 		}
 	}
 	
-	if( state == CAP_STATE_SAVING ){
-		
-		if( saveIndex < imageSaver.getSize() ){
-			float filterMin =  dAppPtr->panel.getValueF("filterMin");
-			float filterMax =  dAppPtr->panel.getValueF("filterMax");
-			float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
-			int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
-			
-			printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
-			decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
-			
-			if( saveIndex % 3 == 0 ){
-				decoder.exportFrameToTGA("output/incoming/", 10000+saveIndex);
-			}
-			
-			saveIndex++;
-		}else{
-			state = CAP_STATE_NOTIFY;
-			startThread(false, true); //now save jpegs in background ! 
-		}
-		
+	if( state == CAP_STATE_DECODING ){
+		handleDecode();
 	}else{	
 		handleProjection();
 		handleCamera();
@@ -243,6 +236,150 @@ void captureApp::update(){
 	
 	panel.clearAllChanged();
 
+}
+
+//-----------------------------------------------
+void captureApp::startDecode(){
+	printf("startDecode\n");
+	
+	if( imageSaver.getSize() ){
+		state = CAP_STATE_DECODING;
+	
+		saveIndex = 0;
+		decoder.setupDecoder(imageSaver.width, imageSaver.height);
+		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
+
+		if( !ofxFileHelper::doesFileExist("output/incoming/") ){
+			ofxFileHelper::makeDirectory("output/incoming/");
+		}
+
+	}else{
+		ofLog(OF_LOG_ERROR, "startDecode - no images to decode");
+	}
+	
+}
+
+//-----------------------------------------------
+void captureApp::handleDecode(){
+	if( state == CAP_STATE_DECODING ){
+
+		if( saveIndex < imageSaver.getSize() ){
+			float filterMin =  dAppPtr->panel.getValueF("filterMin");
+			float filterMax =  dAppPtr->panel.getValueF("filterMax");
+			float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
+			int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
+			
+			printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
+			decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
+			
+			bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
+			
+			if( saveIndex % 3 == 0 && bSaveToDisk ){
+				decoder.exportFrameToTGA(DECODE_FOLDER, 10000+saveIndex);
+			}
+			
+			saveIndex++;
+		}else{
+			endDecode();
+		}
+
+	}
+}
+
+//-----------------------------------------------
+void captureApp::endDecode(){
+	printf("endDecode\n");
+	if( state == CAP_STATE_DECODING ){
+		//in this case we want to copy decoded files and notify viz app first then export frames last. 
+		if( panel.getValueI("postCapture") == POST_CAPTURE_ALL_AND_NOTIFY ){
+			
+		}else{
+			exportFramesToDisk();
+		}
+	}
+}
+
+//-----------------------------------------------
+void captureApp::exportFramesToDisk(){
+	if( imageSaver.getSize() >  0){
+		state = CAP_STATE_SAVING;
+
+		//backup the current capture folder
+		if( ofxFileHelper::doesFileExist(capturePrefix+FRAME_CAPTURE_NAME) ){
+			string unique = getTimeAsUniqueString();
+			ofxFileHelper::moveFromTo(capturePrefix+FRAME_CAPTURE_NAME, capturePrefix+"savedFolder"+unique);
+		}
+		
+		//make a new folder with a settings folder inside
+		ofxFileHelper::makeDirectory(currentCaptureFolder);
+		ofxFileHelper::makeDirectory(currentCaptureFolder+"_settings");		
+
+		//save the current capture and decode settings to the settings folder
+		panel.saveSettings(currentCaptureFolder+"_settings/captureSettings.xml");
+		dAppPtr->panel.saveSettings(currentCaptureFolder+"_settings/decodeSettings.xml");
+	
+		startThread(false, true); //now save jpegs in background ! - this calls threadedFunction ( below )
+	}else{
+		ofLog(OF_LOG_ERROR, "exportFramesToDisk no frames to export");
+	}
+}
+
+//-----------------------------------------------
+void captureApp::threadedFunction(){
+	if( lock() ){
+	
+		printf("threadedFunction - saving started! at %f since app start\n",ofGetElapsedTimef()); 
+		imageSaver.saveAll();
+		printf("threadedFunction - saving done! at %f since app start\n",ofGetElapsedTimef()); 		
+		state = CAP_STATE_WAITING;
+		unlock();
+	}
+}
+
+//-----------------------------------------------
+void captureApp::startCapture(){
+	printf("startCapture\n");
+
+	if( camState == CAMERA_CLOSED ){
+		printf("ERROR - OPEN CAMERA STUPID!\n");
+		return;
+	}
+
+	if( state <= CAP_STATE_CAPTURE ){
+		state = CAP_STATE_CAPTURE;
+
+		//clear the image saver buffer
+		imageSaver.clear();
+		cameraFrameNum = 0;
+
+		ofHideCursor();
+		printf("time is %f time to end is %f\n",ofGetElapsedTimef(), panel.getValueF("CAPTURE_TIME_F"));
+		timeToEndCapture = ofGetElapsedTimef() + panel.getValueF("CAPTURE_TIME_F");
+	}else{
+		printf("ERROR - sorry - you can't capture yet!\n");
+		if( state == CAP_STATE_SAVING ){
+			printf("we are still saving!\n");
+		}
+	}
+	
+}
+
+//-----------------------------------------------
+void captureApp::endCapture(){
+	printf("endCapture\n");
+	if( state == CAP_STATE_CAPTURE ){
+		ofShowCursor();
+		
+		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
+			startDecode();
+		}else{
+			exportFramesToDisk();
+		}
+		
+	}else{
+		printf("ERROR sorry - we weren't capturing!!!!!\n");
+	}
+	
 }
 
 //--------------------------------------------------------
@@ -401,6 +538,11 @@ void captureApp::handleFaceTrigger(){
 			prevFaceCheckTimeF = ofGetElapsedTimef();
 		}
 		
+		if( panel.hasValueChanged("B_FACE_TRIGGER") && panel.getValueB("B_FACE_TRIGGER") ){
+				bNeedsToLeaveFrame = false;
+				face.resetCounters();
+		}
+		
 		if( bNeedsToLeaveFrame ){
 			if( face.getState() == FACE_NONE ){
 				bNeedsToLeaveFrame = false;
@@ -416,94 +558,12 @@ void captureApp::handleFaceTrigger(){
 
 }
 
-//-----------------------------------------------
-void captureApp::threadedFunction(){
-	if( lock() ){
-	
-		printf("saving started! at %f since app start\n",ofGetElapsedTimef()); 
-		imageSaver.saveAll();
-		printf("saving done! at %f since app start\n",ofGetElapsedTimef()); 
-
-		//printf("processSeqFromMemory start - %i images\n",imageSaver.getSize());		
-		//dAppPtr->processSeqFromMemory(imageSaver.images, imageSaver.width, imageSaver.height, imageSaver.getSize());
-		//printf("processSeqFromMemory done\n");
-
-		printf("fake notify and copy files here!\n");
-		state = CAP_STATE_WAITING;
-		unlock();
-	}
-}
-
-//-----------------------------------------------
-void captureApp::startCapture(){
-	printf("startCapture\n");
-
-	if( camState == CAMERA_CLOSED ){
-		printf("ERROR - OPEN CAMERA STUPID!\n");
-		return;
-	}
-
-	if( state <= CAP_STATE_CAPTURE ){
-		imageSaver.clear();
-	
-		if( ofxFileHelper::doesFileExist(capturePrefix+"capture") ){
-			string unique = ofToString(ofGetYear()) + ofToString(ofGetMonth()) + ofToString(ofGetDay()) + ofToString(ofGetHours()) + ofToString(ofGetMinutes()) + ofToString(ofGetSeconds());
-			ofxFileHelper::moveFromTo(capturePrefix+"capture", capturePrefix+"savedFolder"+unique);
-		}
-		
-		ofxFileHelper::makeDirectory(capturePrefix+"capture");
-		ofxFileHelper::makeDirectory(capturePrefix+"capture/_settings");
-		
-		cameraFrameNum = 0;
-		
-		state = CAP_STATE_CAPTURE;
-		ofHideCursor();
-		printf("time is %f time to end is %f\n",ofGetElapsedTimef(), panel.getValueF("CAPTURE_TIME_F"));
-		timeToEndCapture = ofGetElapsedTimef() + panel.getValueF("CAPTURE_TIME_F");
-	}else{
-		printf("ERROR - sorry - you can't capture yet!\n");
-		if( state == CAP_STATE_SAVING ){
-			printf("we are still saving!\n");
-		}
-	}
-	
-}
-
-//-----------------------------------------------
-void captureApp::endCapture(){
-	printf("endCapture\n");
-	if( state == CAP_STATE_CAPTURE ){
-		state = CAP_STATE_SAVING;
-		ofShowCursor();
-	
-		if(state == CAP_STATE_SAVING){
-			if( !ofxFileHelper::doesFileExist(capturePrefix+"capture/_settings") ){
-				ofxFileHelper::makeDirectory(capturePrefix+"capture/_settings");
-			}
-			panel.saveSettings(capturePrefix+"capture/_settings/captureSettings.xml");
-		
-			saveIndex = 0;
-			decoder.setupDecoder(imageSaver.width, imageSaver.height);
-			decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
-
-			if( !ofxFileHelper::doesFileExist("output/incoming/") ){
-				ofxFileHelper::makeDirectory("output/incoming/");
-			}
-			
-			//do threaded image saving!
-			//startThread(false, true);
-		}	
-	}else{
-		printf("ERROR sorry - we weren't capturing!!!!!\n");
-	}
-	
-}
 
 
 //-------------------------------------------------------------
 void captureApp::draw(){
 
-	if( state == CAP_STATE_SAVING ){
+	if( state == CAP_STATE_DECODING ){
 		camera3D.place();
 		ofBackground(0, 0, 0);
 		glEnable(GL_DEPTH_TEST);
