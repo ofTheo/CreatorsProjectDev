@@ -38,10 +38,7 @@ public:
 	
 	void handlePlayback();
 	void handleExport();
-	
-
-	void pipeline(unsigned char * pixels, int numChannelsIn, int frameIndex);
-	void processSeqFromMemory(vector <unsigned char *> images, int width, int height, int numImages);
+		void pipeline(unsigned char * pixels, int numChannelsIn, int frameIndex);
 	
 	void processFrame();
 	

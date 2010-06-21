@@ -2,6 +2,8 @@
 
 ThreePhaseGenerator::ThreePhaseGenerator() :
 	orientation(PHASE_VERTICAL),
+	minBrightness(0),
+	maxBrightness(256),
 	wavelength(0) {
 }
 
@@ -17,6 +19,10 @@ void ThreePhaseGenerator::setMinBrightness(float minBrightness) {
     this->minBrightness = minBrightness;
 }
 
+void ThreePhaseGenerator::setMaxBrightness(float maxBrightness) {
+    this->maxBrightness = maxBrightness;
+}
+
 void ThreePhaseGenerator::generate() {
 	allocateSequence(3);
 	float offsets[] = {-TWO_PI / 3, 0, +TWO_PI / 3};
@@ -28,10 +34,10 @@ void ThreePhaseGenerator::generate() {
 		int i = 0;
 		for(int j = 0; j < side; j++) {
 			float curPhase = (cosf(j * normalize + offsets[k]) + 1) / 2;
-			curPhase *= (256-minBrightness);
+			curPhase *= (maxBrightness-minBrightness);
 			curPhase += minBrightness;
-			if(curPhase >= 256)
-				curPhase = 255;
+			if(curPhase >= maxBrightness)
+				curPhase = maxBrightness-1;
 			unsigned char value = (unsigned char) curPhase;
 			single[i++] = value;
 			single[i++] = value;

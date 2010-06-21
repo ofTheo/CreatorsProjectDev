@@ -168,65 +168,6 @@ void decodeApp::processFrame(){
 	}
 }
 
-//--------------------------------------------------------------
-// TODO theo note: this is SLOW even without the QT code - anyway to speed this up?
-// is this the right way to do this? nextFrame() load an ofImage from disk. 
-void decodeApp::processSeqFromMemory(vector <unsigned char *> images, int width, int height, int numImages){
-	printf("processSeqFromMemory!\n");
-	
-	if( threePhase == NULL ){
-		printf("threePhase is NULL - doing init and settings\n");
-	}
-	
-	initDecoder(width, height);
-	updateDecoderSettings();
-	
-	float start = ofGetElapsedTimef();
-		
-	float curFilterMin = panel.getValueF("filterMin");
-	float curFilterMax = panel.getValueF("filterMax");
-	int curCameraRate = panel.getValueI("cameraRate");
-	int curCameraOffset = panel.getValueI("cameraOffset");
-
-	unsigned totalFrames = (numImages - curCameraOffset) / curCameraRate;
-	
-	printf("starting pipeline export!\n");
-	
-	ofImage pngImg;
-	pngImg.setUseTexture(false);
-	pngImg.allocate(threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
-	
-	printf("starting!\n");
-	
-	int k = 0;
-	for(int i = 0; i < numImages; i++){
-		if( i == 0 ){
-			pipeline(images[i], 3, i);
-			pipeline(images[i], 3, i);
-		}
-		pipeline(images[i], 3, i);				
-		processFrame();
-<<<<<<< HEAD
-		
-		//down sample and go from 60 fps to 15 fps
-		if( i % 4 == 0 ){
-			pngImg.setFromPixels(threePhase->getColorAndDepth(curFilterMin, curFilterMax), pngImg.getWidth(), pngImg.getHeight(), OF_IMAGE_COLOR_ALPHA);
-			pngImg.saveImage("output/incoming/"+ofToString(10000+k)+".tga");
-			k++;
-		}
-		
-		printf("[%2.00f\%]\n", ((float)i/numImages) * 100.0 );
-=======
-		printf("[%2.00f%%]\n", ((float)i/totalFrames) * 100.0 ); // % is printed using %%
-		threePhase->getColorAndDepth(curFilterMin, curFilterMax);
-		expPngMovieSaver.addFrame(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 1.0/60.0f);
-		nextFrame();
->>>>>>> e39ce72b9e0791a88781d5473da54b7deece474c
-	}
-	
-	printf("done - took %f secs\n", ofGetElapsedTimef()-start);
-}
-
 //------------------------------------------------------------------------------
 void decodeApp::initDecoder(int w, int h){
 	if (threePhase != NULL){
@@ -340,7 +281,6 @@ void decodeApp::update() {
 	handleExport();
 	
 	panel.clearAllChanged();
-
 }
 
 //--------------------------------------------------------------
@@ -396,7 +336,7 @@ void decodeApp::handlePlayback(){
 		if(reload || panel.hasValueChanged("gamma") || panel.hasValueChanged("rangeThreshold") 
 			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("filterMin") 
 			|| panel.hasValueChanged("filterMax") || panel.hasValueChanged("depthScale") 
-			|| panel.hasValueChanged("depthSkew")) {
+			|| panel.hasValueChanged("depthSkew")  || panel.hasValueChanged("smooth_y_amnt") || panel.hasValueChanged("smooth_y_dist") ) {
 
 			processFrame();
 			
@@ -415,7 +355,7 @@ void decodeApp::handlePlayback(){
 //--------------------------------------------------------------
 void decodeApp::handleExport(){
 	if( threePhase != NULL ){
-
+		
 		// export handling
 		bool curExport = panel.getValueB("export");
 		bool curRecord = panel.getValueB("record");
@@ -427,7 +367,7 @@ void decodeApp::handleExport(){
 			if( !ofxFileHelper::doesFileExist(exportPath) ){
 				ofxFileHelper::makeDirectory(exportPath);
 			}
-			
+						
 			if (curRecord)
 				name += "-" + ofToString(sequenceFrame);
 			if (curFormat == ".png") {

@@ -29,7 +29,7 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-    <val_0>14.166667</val_0>
+    <val_0>0.000000</val_0>
 </minBrightness>
 <projectorLut>
     <val_0>0.000000</val_0>
@@ -76,3 +76,6 @@
 <confidence_gate_stop>
     <val_0>0.400000</val_0>
 </confidence_gate_stop>
+<maxBrightness>
+    <val_0>255.000000</val_0>
+</maxBrightness>

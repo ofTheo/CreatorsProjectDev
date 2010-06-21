@@ -11,7 +11,7 @@ void guiValue::addValue(float val, float _min, float _max){
 	min.push_back(_min);
 	max.push_back(_max);
 	pct.push_back( 0.0 );
-	bChanged.push_back(false);
+	bChanged.push_back(true);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -25,7 +25,7 @@ void guiValue::addValueI(int val, int _min, int _max){
 	min.push_back((float)_min);
 	max.push_back((float)_max);
 	pct.push_back( 0.0 );
-	bChanged.push_back(false);
+	bChanged.push_back(true);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -39,7 +39,7 @@ void guiValue::addValueB(bool val){
 	min.push_back(0);
 	max.push_back(1);
 	pct.push_back( 0.0 );
-	bChanged.push_back(false);
+	bChanged.push_back(true);
 
 	//update our pct
 	updatePct(value.size()-1);
@@ -97,9 +97,16 @@ bool guiValue::setValueAsPct(float percent, unsigned int which){
 
 		pct[which]    =  percent;
 
+		//for bChanged
+		float val = value[which];
+
 		value[which]  =  ( pct[which] * ( max[which] - min[which] ) ) + min[which];
 		valueI[which] = (int)value[which];
 		valueB[which] = (bool)value[which];
+
+		if( val != value[which] ){
+			bChanged[which] = true;
+		}
 
 		return true;
 	}

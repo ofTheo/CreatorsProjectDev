@@ -722,6 +722,7 @@ bool ofxControlPanel::hasValueChanged(string xmlName, int whichParam){
             }
         }
     }
+	return false;
 }
 
 //---------------------------------------------

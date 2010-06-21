@@ -63,20 +63,8 @@ public:
 	ofxAutoControlPanel panel;
 
 	ThreePhaseGenerator threePhase;
-	int lastWavelength;
-
-	GrayCodeGenerator grayCode;
-	int lastSubdivisions;
 	float timeToEndCapture;
-
-	TwoPlusOneGenerator twoPlusOne;
-
-	GradientGenerator gradient;
-
 	PatternGenerator* curGenerator;
-	int lastPatternType;
-	int lastOrientation;
-	bool lastFullscreen;
 	
 	cameraState camState;
 	cameraState prevCamState;
@@ -88,13 +76,12 @@ public:
 	float prevFaceCheckTimeF;
 	bool bNeedsToLeaveFrame;
 	
+	bool bSetup;
 	ofxEasyCam camera3D;
 
 	decodeAndExport decoder;
 	int saveIndex;
 	
-	int lastMinBrightness;
-
 	ofxThreadedVideoGrabber camera;
 	ofxImageSaver imageSaver;
 	
@@ -106,6 +93,7 @@ public:
 	ofImage cameraImage;
 	vector<ofImage> recent;
 	vector<bool> needsUpdate;
+
 	int lastCameraRate;
 	int cameraFrameNum;
 	int patternFrame;

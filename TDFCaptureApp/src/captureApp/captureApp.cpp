@@ -98,18 +98,6 @@ void captureApp::setup(){
 	threePhase.setWavelength(64);
 	threePhase.generate();
 
-	grayCode.setSize(1024, 768);
-	grayCode.setLength(1024);
-	grayCode.setSubdivisions(10);
-	grayCode.generate();
-
-	twoPlusOne.setSize(1024, 768);
-	twoPlusOne.setWavelength(64);
-	twoPlusOne.generate();
-
-	gradient.setSize(1024, 768);
-	gradient.generate();
-
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
 	panel.addPanel("capture", 1);
@@ -128,27 +116,23 @@ void captureApp::setup(){
 	panel.addToggle("camera settings", "cameraSettings", false);
 	panel.addToggle("fullscreen", "fullscreen", false);
 	panel.addToggle("frame by frame", "frameByFrame", false);
+	panel.addToggle("large video", "largeVideo", false);
 
-	vector<string> patternTypes;
-	patternTypes.push_back("three phase");
-//	patternTypes.push_back("gray code");
-//	patternTypes.push_back("gradient");
-//	patternTypes.push_back("two + one");
-	panel.addMultiToggle("pattern type", "patternType", 0, patternTypes);
 	vector<string> orientations;
 	orientations.push_back("vertical");
 	orientations.push_back("horizonal");
 	panel.addMultiToggle("orientation", "orientation", 0, orientations);
+
 	panel.addToggle("reverse", "reverse", false);
 	panel.addSlider("pattern rate", "patternRate", 1, 1, 6, true);
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
 	panel.addSlider("min brightness", "minBrightness", 0, 0, 255, true);
-	panel.addSlider("capture time f", "CAPTURE_TIME_F", 10.0, 2.0, 45.0, false);
+	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);
+	panel.addSlider("capture time f", "CAPTURE_TIME_F", 4.0, 2.0, 15.0, false);
 
 	panel.setWhichPanel("extra settings");
 	panel.addSlider("3 phase - wavelength", "wavelength", 64, 8, 512, true);
-	panel.addSlider("gray code - subdivisions", "subdivisions", 10, 1, 10, true);
 	panel.addToggle("use projector lut", "projectorLut", false);
 
 	panel.setWhichPanel("face trigger settings");
@@ -176,11 +160,12 @@ void captureApp::setup(){
 	panel.setValueI("fullscreen", 0);
 	panel.setValueI("cameraSettings", 0);
 	panel.setValueI("frameByFrame", 0);
+	panel.setValueI("largeVideo", 0);
 	
 	cameraWidth  = 640;
 	cameraHeight = 480;
 	
-	int n = 3; // no patterns have more than 10 frames
+	int n = 3; // no patterns have more than 3 frames
 	for(int i = 0; i < n; i++) {
 		recent.push_back(ofImage());
 		recent.back().allocate(
@@ -191,7 +176,7 @@ void captureApp::setup(){
 	}
 	curGenerator = &threePhase;
 
-	int captureTime = 10;
+	int captureTime = 15;
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
 
 	ofSetVerticalSync(true);
@@ -224,11 +209,6 @@ void captureApp::update(){
 		}
 	}
 	
-	if( state == CAP_STATE_NOTIFY ){
-		printf("fake notify and copy files here!\n");
-		state = CAP_STATE_WAITING;
-	}
-	
 	if( state == CAP_STATE_SAVING ){
 		
 		if( saveIndex < imageSaver.getSize() ){
@@ -247,7 +227,7 @@ void captureApp::update(){
 			saveIndex++;
 		}else{
 			state = CAP_STATE_NOTIFY;
-			startThread(false, true);
+			startThread(false, true); //now save jpegs in background ! 
 		}
 		
 	}else{	
@@ -260,70 +240,41 @@ void captureApp::update(){
 			panel.setValueB("projectorLut", false);
 		}
 	}
+	
+	panel.clearAllChanged();
+
 }
 
 //--------------------------------------------------------
 void captureApp::handleProjection(){
 		// this is where an event/callback-based
 	// control panel would be really helpful!
-	int curWavelength = panel.getValueI("wavelength");
-	if(curWavelength != lastWavelength) {
+		
+	if( panel.hasValueChanged("wavelength") ){
+		int curWavelength = panel.getValueI("wavelength");
 		threePhase.setWavelength(curWavelength);
 		threePhase.generate();
-		twoPlusOne.setWavelength(curWavelength);
-		twoPlusOne.generate();
 	}
-	lastWavelength = curWavelength;
 
-	int minBrightness = panel.getValueI("minBrightness");
-	if (minBrightness != lastMinBrightness) {
-		threePhase.setMinBrightness(minBrightness);
+	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") ){	
+		threePhase.setMinBrightness(panel.getValueI("minBrightness"));
+		threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
 		threePhase.generate();
-		twoPlusOne.setMinBrightness(minBrightness);
-		twoPlusOne.generate();
 	}
-	lastMinBrightness = minBrightness;
 
-	int curOrientation = panel.getValueI("orientation");
-	if(curOrientation != lastOrientation) {
+	if(panel.hasValueChanged("orientation") ) {
+		int curOrientation = panel.getValueI("orientation");
 		phaseOrientation orientation = curOrientation == 0 ? PHASE_VERTICAL : PHASE_HORIZONTAL;
 		threePhase.setOrientation(orientation);
 		threePhase.generate();
-		grayCode.setOrientation(orientation);
-		grayCode.generate();
-		gradient.setOrientation(orientation);
-		gradient.generate();
-		twoPlusOne.setOrientation(orientation);
-		twoPlusOne.generate();
 	}
-	lastOrientation = curOrientation;
-
-	int curSubdivisions = panel.getValueI("subdivisions");
-	if(curSubdivisions != lastSubdivisions) {
-		grayCode.setSubdivisions(curSubdivisions);
-		grayCode.generate();
-	}
-	lastSubdivisions = curSubdivisions;
 
 	threePhase.setReverse(panel.getValueB("reverse"));
-	twoPlusOne.setReverse(panel.getValueB("reverse"));
-	grayCode.setReverse(panel.getValueB("reverse"));
 
-	int curFullscreen = panel.getValueB("fullscreen");
-	if(curFullscreen !=	lastFullscreen)
-		ofSetFullscreen(curFullscreen);
-	lastFullscreen = curFullscreen;
-
-	int curPatternType = panel.getValueI("patternType");
-	if(curPatternType != lastPatternType) {
-		switch(curPatternType) {
-			case 0: curGenerator = &threePhase; break;
-			case 1: curGenerator = &grayCode; break;
-			case 2: curGenerator = &gradient; break;
-			case 3: curGenerator = &twoPlusOne; break;
-		}
+	if( panel.hasValueChanged("fullscreen") ) {
+		ofSetFullscreen(panel.getValueB("fullscreen"));
 	}
-	lastPatternType = curPatternType;
+	
 }
 
 //--------------------------------------------------------
@@ -477,7 +428,8 @@ void captureApp::threadedFunction(){
 		//dAppPtr->processSeqFromMemory(imageSaver.images, imageSaver.width, imageSaver.height, imageSaver.getSize());
 		//printf("processSeqFromMemory done\n");
 
-		state = CAP_STATE_NOTIFY;		
+		printf("fake notify and copy files here!\n");
+		state = CAP_STATE_WAITING;
 		unlock();
 	}
 }
@@ -521,11 +473,7 @@ void captureApp::startCapture(){
 void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
-<<<<<<< HEAD
 		state = CAP_STATE_SAVING;
-=======
-		state = (CapAppState) (state + 1);
->>>>>>> e39ce72b9e0791a88781d5473da54b7deece474c
 		ofShowCursor();
 	
 		if(state == CAP_STATE_SAVING){
@@ -589,7 +537,7 @@ void captureApp::draw(){
 		int recentWidth = 160;
 		int recentHeight = 120;
 		
-		if( panel.getValueB("frameByFrame") ){
+		if( panel.getValueB("largeVideo") ){
 			recentWidth		= 640;
 			recentHeight	= 480;
 		}
