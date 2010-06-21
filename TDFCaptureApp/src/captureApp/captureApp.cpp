@@ -206,7 +206,8 @@ void captureApp::update(){
 	
 	if( state == CAP_STATE_CAPTURE ){
 		panel.hidden = true;
-		if( ofGetFrameNum() % 4 == 0 )printf("fps is %f\n", ofToString(camFps, 2).c_str());
+		if( ofGetFrameNum() % 4 == 0 )
+			printf("fps is %s\n", ofToString(camFps, 2).c_str());
 	}else if( debugState == CAP_DEBUG ){
 		panel.hidden = false;
 	}
@@ -229,7 +230,7 @@ void captureApp::update(){
 		handleFaceTrigger();
 
 		if(panel.getValueB("projectorLut")) {
-			curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
+			curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
 			panel.setValueB("projectorLut", false);
 		}
 	}
