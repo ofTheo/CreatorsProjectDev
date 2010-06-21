@@ -8,6 +8,7 @@
 #include "ofxFileHelper.h"
 #include "ofxVideoGrabber.h"
 #include "faceFinder.h"
+#include "decodeAndExport.h"
 
 typedef enum{
 	CAMERA_CLOSED,
@@ -22,7 +23,8 @@ typedef enum{
 	CAP_STATE_COUNTDOWN,
 	CAP_STATE_CAPTURE,
 	CAP_STATE_SAVING,
-	CAP_STATE_NOTIFY
+	CAP_STATE_NOTIFY,
+	CAP_STATE_OUTPUT_AND_DISPLAY
 }CapAppState;
 
 typedef enum{
@@ -37,6 +39,7 @@ public:
 	void frameReceived(ofVideoGrabber& grabber);
 	
 
+	void drawCloud();
 	void setup();
 	void update();
 	void draw();
@@ -85,6 +88,10 @@ public:
 	float prevFaceCheckTimeF;
 	bool bNeedsToLeaveFrame;
 	
+	ofxEasyCam camera3D;
+
+	decodeAndExport decoder;
+	int saveIndex;
 	
 	int lastMinBrightness;
 

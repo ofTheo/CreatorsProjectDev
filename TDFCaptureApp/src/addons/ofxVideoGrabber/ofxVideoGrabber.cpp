@@ -32,8 +32,9 @@ bool ofxVideoGrabber::initGrabber( int _width, int _height, int _format, int _ta
     bpp = videoGrabber->bpp;
     bUseTexture = _useTexture;
 
+	targetFormat = _targetFormat;
+
     if (bUseTexture){
-        targetFormat = _targetFormat;
 
         /* create the texture, set the pixels to black and upload them to the texture (so at least we see nothing black the callback) */
         if(targetFormat == VID_FORMAT_GREYSCALE)

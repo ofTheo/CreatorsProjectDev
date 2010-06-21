@@ -1,12 +1,12 @@
 #pragma once
 
 class ofxImageSaver {
-protected:
+//protected:
+public:
 	unsigned int width, height, n;
 	unsigned int position, total;
 	vector<unsigned char*> images;
 	vector<string> filenames;
-public:
 	ofxImageSaver() :
 		width(0), height(0), n(0),
 		position(0), total(0) {

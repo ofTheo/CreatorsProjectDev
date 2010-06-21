@@ -20,16 +20,16 @@
     <val_0>1.000000</val_0>
 </reverse>
 <patternRate>
-    <val_0>2.916667</val_0>
+    <val_0>2.222222</val_0>
 </patternRate>
 <cameraRate>
     <val_0>1.000000</val_0>
 </cameraRate>
 <cameraOffset>
-    <val_0>0.000000</val_0>
+    <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-    <val_0>0.000000</val_0>
+    <val_0>14.166667</val_0>
 </minBrightness>
 <projectorLut>
     <val_0>0.000000</val_0>
@@ -50,7 +50,7 @@
     <val_0>0.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
-    <val_0>10.000000</val_0>
+    <val_0>3.911111</val_0>
 </CAPTURE_TIME_F>
 <B_FACE_TRIGGER>
     <val_0>0.000000</val_0>

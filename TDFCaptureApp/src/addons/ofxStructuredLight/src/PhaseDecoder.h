@@ -33,7 +33,7 @@ public:
 	void exportTexture(string filename);
 	void exportDepthAndTexture(string filename, float min, float max);
 	float* unwrapOrder;
-protected:
+//protected:
 	byte** colorSequence;
 	byte** graySequence;
 	byte* reflectivity;

@@ -7,7 +7,7 @@
  *
  */
  
- #include "ofxCvHaarFinder.h"
+#include "ofxCvHaarFinder.h"
 
 typedef enum{
 	FACE_NONE,

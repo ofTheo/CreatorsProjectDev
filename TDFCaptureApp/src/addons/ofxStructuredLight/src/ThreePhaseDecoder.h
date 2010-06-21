@@ -43,6 +43,7 @@ public:
 	#endif
 
 	byte * getColorAndDepth(float minDist, float maxDist);
+	void getDepthAsChar(byte * depthPix, float minDist, float maxDist);
 
 protected:
 	void makePhase();

@@ -77,7 +77,7 @@ void PhaseDecoder::setMinRemaining(float minRemaining) {
 
 void PhaseDecoder::set(int position, byte* image, int channels) {
 	byte* curColor = colorSequence[position];
-	byte* curGray = graySequence[position];
+	byte* curGray  = graySequence[position];
 
 	int n = width * height;
 	int i = 0;
@@ -224,7 +224,7 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt){
 	for(int y = 0; y < height; y++){
 	
 		int minY = -yDist;
-		if( y - minY < 0 ) minY = -y;
+		if( y + minY < 0 ) minY = -y;
 		int maxY = yDist;
 		if( y + maxY >= height ) maxY = (height-1)-y;
 		
@@ -241,7 +241,7 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt){
 			float amnt = 0.0;
 			int numReal = 0;
 			for(int j = minY; j <= maxY; j++){
-				if( j + y == height ){
+				if( j+y < 0 || j + y == height ){
 					printf("FOOOOOOOOOOOOL\n");
 					assert(0);
 				}

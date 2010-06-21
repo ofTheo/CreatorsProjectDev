@@ -1116,8 +1116,8 @@ void ofxControlPanel::draw(){
         if( !minimize ){
 
             //don't let gui elements go out of their panels
-            glEnable(GL_SCISSOR_TEST);
-            glScissor(boundingBox.x, ofGetHeight() - ( boundingBox.y + boundingBox.height - (-2 + topSpacing) ), boundingBox.width - borderWidth , boundingBox.height);
+            //glEnable(GL_SCISSOR_TEST);
+            //glScissor(boundingBox.x, ofGetHeight() - ( boundingBox.y + boundingBox.height - (-2 + topSpacing) ), boundingBox.width - borderWidth , boundingBox.height);
 
                 for(int i = 0; i < (int) panelTabs.size(); i++){
                     if( i == selectedPanel){
@@ -1140,7 +1140,7 @@ void ofxControlPanel::draw(){
                     }
                 glPopMatrix();
 
-            glDisable(GL_SCISSOR_TEST);
+            //glDisable(GL_SCISSOR_TEST);
         }
 
     ofPopStyle();

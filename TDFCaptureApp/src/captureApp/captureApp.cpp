@@ -8,6 +8,9 @@ static float camFps = 60.0f;
 int preCamMode = 0;
 float waitTillTime = 0.0;
 
+#include "decodeApp.h"
+extern decodeApp  * dAppPtr;
+
 //--------------------------------------------------------
 void measureCamFps(){
 	float timeDiff = ofGetElapsedTimef()-lastTime;
@@ -128,9 +131,9 @@ void captureApp::setup(){
 
 	vector<string> patternTypes;
 	patternTypes.push_back("three phase");
-	patternTypes.push_back("gray code");
-	patternTypes.push_back("gradient");
-	patternTypes.push_back("two + one");
+//	patternTypes.push_back("gray code");
+//	patternTypes.push_back("gradient");
+//	patternTypes.push_back("two + one");
 	panel.addMultiToggle("pattern type", "patternType", 0, patternTypes);
 	vector<string> orientations;
 	orientations.push_back("vertical");
@@ -177,7 +180,7 @@ void captureApp::setup(){
 	cameraWidth  = 640;
 	cameraHeight = 480;
 	
-	int n = 10; // no patterns have more than 10 frames
+	int n = 3; // no patterns have more than 10 frames
 	for(int i = 0; i < n; i++) {
 		recent.push_back(ofImage());
 		recent.back().allocate(
@@ -188,7 +191,7 @@ void captureApp::setup(){
 	}
 	curGenerator = &threePhase;
 
-	int captureTime = 15;
+	int captureTime = 10;
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
 
 	ofSetVerticalSync(true);
@@ -206,6 +209,7 @@ void captureApp::update(){
 	
 	if( state == CAP_STATE_CAPTURE ){
 		panel.hidden = true;
+		if( ofGetFrameNum() % 4 == 0 )printf("fps is %f\n", ofToString(camFps, 2).c_str());
 	}else if( debugState == CAP_DEBUG ){
 		panel.hidden = false;
 	}
@@ -221,18 +225,40 @@ void captureApp::update(){
 	}
 	
 	if( state == CAP_STATE_NOTIFY ){
-		//
 		printf("fake notify and copy files here!\n");
 		state = CAP_STATE_WAITING;
 	}
 	
-	handleProjection();
-	handleCamera();
-	handleFaceTrigger();
+	if( state == CAP_STATE_SAVING ){
+		
+		if( saveIndex < imageSaver.getSize() ){
+			float filterMin =  dAppPtr->panel.getValueF("filterMin");
+			float filterMax =  dAppPtr->panel.getValueF("filterMax");
+			float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
+			int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
+			
+			printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
+			decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
+			
+			if( saveIndex % 3 == 0 ){
+				decoder.exportFrameToTGA("output/incoming/", 10000+saveIndex);
+			}
+			
+			saveIndex++;
+		}else{
+			state = CAP_STATE_NOTIFY;
+			startThread(false, true);
+		}
+		
+	}else{	
+		handleProjection();
+		handleCamera();
+		handleFaceTrigger();
 
-	if(panel.getValueB("projectorLut")) {
-		curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
-		panel.setValueB("projectorLut", false);
+		if(panel.getValueB("projectorLut")) {
+			curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
+			panel.setValueB("projectorLut", false);
+		}
 	}
 }
 
@@ -358,8 +384,8 @@ void captureApp::handleCamera(){
 					//sdk->setROI(0,0,320,200);
 					//sdk->setDeviceID("b09d01008bc69e:0");
 					settings = new ofxIIDCSettings;
-					camera1394.setVerbose(true);
-					camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_Y8, VID_FORMAT_RGB, 60, true, sdk, settings );
+					//camera1394.setVerbose(true);
+					camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_YUV422, VID_FORMAT_RGB, 60.0, false, sdk, settings );
 					settings->setXMLFilename("mySettingsFile.xml");
 					settings->panel.setPosition(318, 136);
 				}else{
@@ -442,10 +468,16 @@ void captureApp::handleFaceTrigger(){
 //-----------------------------------------------
 void captureApp::threadedFunction(){
 	if( lock() ){
+	
 		printf("saving started! at %f since app start\n",ofGetElapsedTimef()); 
 		imageSaver.saveAll();
-		state = CAP_STATE_NOTIFY;
 		printf("saving done! at %f since app start\n",ofGetElapsedTimef()); 
+
+		//printf("processSeqFromMemory start - %i images\n",imageSaver.getSize());		
+		//dAppPtr->processSeqFromMemory(imageSaver.images, imageSaver.width, imageSaver.height, imageSaver.getSize());
+		//printf("processSeqFromMemory done\n");
+
+		state = CAP_STATE_NOTIFY;		
 		unlock();
 	}
 }
@@ -460,6 +492,7 @@ void captureApp::startCapture(){
 	}
 
 	if( state <= CAP_STATE_CAPTURE ){
+		imageSaver.clear();
 	
 		if( ofxFileHelper::doesFileExist(capturePrefix+"capture") ){
 			string unique = ofToString(ofGetYear()) + ofToString(ofGetMonth()) + ofToString(ofGetDay()) + ofToString(ofGetHours()) + ofToString(ofGetMinutes()) + ofToString(ofGetSeconds());
@@ -488,7 +521,7 @@ void captureApp::startCapture(){
 void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
-		(int)state = (int)state + 1;
+		state = CAP_STATE_SAVING;
 		ofShowCursor();
 	
 		if(state == CAP_STATE_SAVING){
@@ -497,8 +530,16 @@ void captureApp::endCapture(){
 			}
 			panel.saveSettings(capturePrefix+"capture/_settings/captureSettings.xml");
 		
+			saveIndex = 0;
+			decoder.setupDecoder(imageSaver.width, imageSaver.height);
+			decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
+
+			if( !ofxFileHelper::doesFileExist("output/incoming/") ){
+				ofxFileHelper::makeDirectory("output/incoming/");
+			}
+			
 			//do threaded image saving!
-			startThread(false, true);
+			//startThread(false, true);
 		}	
 	}else{
 		printf("ERROR sorry - we weren't capturing!!!!!\n");
@@ -507,7 +548,28 @@ void captureApp::endCapture(){
 }
 
 
+//-------------------------------------------------------------
 void captureApp::draw(){
+
+	if( state == CAP_STATE_SAVING ){
+		camera3D.place();
+		ofBackground(0, 0, 0);
+		glEnable(GL_DEPTH_TEST);
+			ofPushMatrix();
+				ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);		
+				decoder.drawCloud();
+			ofPopMatrix();
+			glDisable(GL_DEPTH_TEST);			
+		camera3D.remove();	
+		decoder.drawCurrentFrame(0, 0, 320, 240);
+		ofNoFill();
+		ofSetColor(255, 255, 255, 255);
+		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofGetWidth()/2, 60);	
+		ofFill();
+		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofMap(saveIndex, 0, imageSaver.getSize(), 0.0, 1.0, true) * (float)(ofGetWidth()/2), 60);			
+		return;
+	}
+
 	if(!panel.getValueB("frameByFrame")){
 		patternFrame = ofGetFrameNum() / panel.getValueI("patternRate");
 	}

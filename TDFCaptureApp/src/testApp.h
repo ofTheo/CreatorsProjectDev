@@ -22,8 +22,9 @@ class testApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		
 		bool bCapture;
-		decodeApp dApp;
 		captureApp cApp;
+		decodeApp dApp;
+		
 };
 
 #endif

@@ -16,7 +16,7 @@
 #include "ofxStructuredLight.h"
 #include "ofxAutoControlPanel.h"
 #include "ofxQtVideoSaver.h"
-
+#include "ofxFileHelper.h"
 #include <fstream>
 
 class decodeApp : public ofBaseApp {
@@ -33,8 +33,17 @@ public:
 	void mouseReleased(int x, int y, int button);
 	void keyPressed(int key);
 	
+	void initDecoder(int width, int height);
+	void updateDecoderSettings();
+	
+	void handlePlayback();
+	void handleExport();
+	
+
+	void pipeline(unsigned char * pixels, int numChannelsIn, int frameIndex);
+	void processSeqFromMemory(vector <unsigned char *> images, int width, int height, int numImages);
+	
 	void processFrame();
-	void exportToQT();
 	
 	void drawCloud();
 	void drawMesh();
@@ -46,6 +55,8 @@ public:
 	void nextFrame();
 	void jumpTo(unsigned frame);
 	void setupInput();
+
+	bool reload;
 
 	ofxEasyCam camera;
 

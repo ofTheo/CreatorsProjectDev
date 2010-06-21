@@ -1,10 +1,16 @@
 #include "testApp.h"
 
+captureApp * cAppPtr = NULL;
+decodeApp  * dAppPtr = NULL;
+		
 //--------------------------------------------------------------
 void testApp::setup(){
 	bCapture = true;
 	dApp.setup();
 	cApp.setup();
+	
+	cAppPtr = &cApp;
+	dAppPtr = &dApp;
 }
 
 //--------------------------------------------------------------

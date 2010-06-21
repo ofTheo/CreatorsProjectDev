@@ -191,6 +191,20 @@ void ThreePhaseDecoder::makeColor() {
 	
 }
 
+
+void ThreePhaseDecoder::getDepthAsChar(byte * depthPix, float minDist, float maxDist){
+	int num = width * height;
+
+	for(int i = 0; i < num; i++){
+		if( mask[i] || depth[i] > maxDist || depth[i] < minDist ){
+			depthPix[i] = 0;
+		}else {
+			depthPix[i] = (byte)ofMap(depth[i], minDist, maxDist, 1, 255, true);
+		}
+	}
+	
+}
+
 byte * ThreePhaseDecoder::getColorAndDepth(float minDist, float maxDist){
 
 	int num = width * height;
@@ -203,12 +217,11 @@ byte * ThreePhaseDecoder::getColorAndDepth(float minDist, float maxDist){
 		colorDepth[d+1] = color[j+1];
 		colorDepth[d+2] = color[j+2];
 		
-		if( depth[i] == 0.0 || depth[i] > maxDist || depth[i] < minDist ) colorDepth[d+3] = 0;
-		else colorDepth[d+3] = (byte)ofMap(depth[i], minDist, maxDist, 1, 255, true);
-		
-//		if( depth[i] > 0 ){
-//			printf("%f %i \n", depth[i],  colorDepth[d+3]);
-//		}
+		if( mask[i] || depth[i] > maxDist || depth[i] < minDist ){
+			colorDepth[d+3] = 0;
+		}else{
+			colorDepth[d+3] = (byte)ofMap(depth[i], minDist, maxDist, 1, 255, true);
+		}
 
 		j+=3;
 		d+=4;

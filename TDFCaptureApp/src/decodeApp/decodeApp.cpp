@@ -111,29 +111,31 @@ void decodeApp::jumpTo(unsigned frame) {
 		nextFrame();
 }
 
+ofImage phase;
 //--------------------------------------------------------------
 void decodeApp::nextFrame() {
 	int cameraRate = panel.getValueI("cameraRate");
 	int cameraOffset = panel.getValueI("cameraOffset");
-
 	unsigned totalFrames = (totalImages - cameraOffset) / cameraRate;
 
 	int cameraFrame = (sequenceFrame * cameraRate) + cameraOffset;
 	cameraFrame %= totalImages;
 	if (usingDirectory) {
-		ofImage phase;
+		phase.setUseTexture(false);
 		if (!phase.loadImage(inputDir + imageList.getName(cameraFrame))) {
 			cout << "couldn't load file " << (inputDir + imageList.getName(cameraFrame)) << endl;
 			return;
 		}
 		if(panel.getValueB("useCameraLut")) {
-			lut.filter(phase);
+			//force it for now - note that just changing the image to grayscale helps the ripple quality.
+			//actually commenting out lut.filter looks the same as having it in. 
 			phase.setImageType(OF_IMAGE_GRAYSCALE);
+			lut.filter(phase);
 		}
-		threePhase->set(sequenceFrame % 3, phase.getPixels(), phase.type == OF_IMAGE_GRAYSCALE ? 1 : 3);
+		pipeline(phase.getPixels(), phase.type == OF_IMAGE_GRAYSCALE ? 1 : 3, sequenceFrame);		
 	} else {
-		movieInput.setFrame(cameraFrame);
-		threePhase->set(sequenceFrame % 3, movieInput.getPixels()); // TBD can movies have different than 24 bpp?
+		movieInput.setFrame(cameraFrame);		
+		pipeline(movieInput.getPixels(), 3, sequenceFrame);
 	}
 
 	sequenceFrame = (sequenceFrame + 1) % totalFrames;
@@ -143,9 +145,15 @@ void decodeApp::nextFrame() {
 }
 
 //--------------------------------------------------------------
+void decodeApp::pipeline(unsigned char * pixels, int numChannelsIn, int frameIndex){
+	if( threePhase == NULL )return;	
+	threePhase->set(frameIndex % 3, pixels, numChannelsIn == 3 ? 3 : 1);
+}
+
+//--------------------------------------------------------------
 void decodeApp::processFrame(){
 	if( threePhase == NULL )return;
-	
+
 	threePhase->decode();
 
 	float curFilterMin = panel.getValueF("filterMin");
@@ -155,59 +163,112 @@ void decodeApp::processFrame(){
 		threePhase->filterRange(curFilterMin, curFilterMax);
 	}
 	
-	threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"));
+	if( panel.getValueF("smooth_y_amnt") > 0.0 ){
+		threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"));
+	}
 }
 
 //--------------------------------------------------------------
-
 // TODO theo note: this is SLOW even without the QT code - anyway to speed this up?
 // is this the right way to do this? nextFrame() load an ofImage from disk. 
-void decodeApp::exportToQT(){
-	if( threePhase == NULL )return;
+void decodeApp::processSeqFromMemory(vector <unsigned char *> images, int width, int height, int numImages){
+	printf("processSeqFromMemory!\n");
+	
+	if( threePhase == NULL ){
+		printf("threePhase is NULL - doing init and settings\n");
+	}
+	
+	initDecoder(width, height);
+	updateDecoderSettings();
+	
+	float start = ofGetElapsedTimef();
 		
 	float curFilterMin = panel.getValueF("filterMin");
 	float curFilterMax = panel.getValueF("filterMax");
 	int curCameraRate = panel.getValueI("cameraRate");
 	int curCameraOffset = panel.getValueI("cameraOffset");
 
-	unsigned totalFrames = (totalImages - curCameraOffset) / curCameraRate;
+	unsigned totalFrames = (numImages - curCameraOffset) / curCameraRate;
 	
-	jumpTo(0);
-	expPngMovieSaver.setup(threePhase->getWidth(), threePhase->getHeight(), "output/"+currentName+".mov", 4);
-	for(int i = 0; i < totalFrames; i++){
+	printf("starting pipeline export!\n");
+	
+	ofImage pngImg;
+	pngImg.setUseTexture(false);
+	pngImg.allocate(threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
+	
+	printf("starting!\n");
+	
+	int k = 0;
+	for(int i = 0; i < numImages; i++){
+		if( i == 0 ){
+			pipeline(images[i], 3, i);
+			pipeline(images[i], 3, i);
+		}
+		pipeline(images[i], 3, i);				
 		processFrame();
-		printf("[%2.00f%]\n", ((float)i/totalFrames) * 100.0 );
-		threePhase->getColorAndDepth(curFilterMin, curFilterMax);
-		expPngMovieSaver.addFrame(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 1.0/60.0f);
-		nextFrame();
+		
+		//down sample and go from 60 fps to 15 fps
+		if( i % 4 == 0 ){
+			pngImg.setFromPixels(threePhase->getColorAndDepth(curFilterMin, curFilterMax), pngImg.getWidth(), pngImg.getHeight(), OF_IMAGE_COLOR_ALPHA);
+			pngImg.saveImage("output/incoming/"+ofToString(10000+k)+".tga");
+			k++;
+		}
+		
+		printf("[%2.00f\%]\n", ((float)i/numImages) * 100.0 );
 	}
-	expPngMovieSaver.finishMovie();
+	
+	printf("done - took %f secs\n", ofGetElapsedTimef()-start);
+}
+
+//------------------------------------------------------------------------------
+void decodeApp::initDecoder(int w, int h){
+	if (threePhase != NULL){
+		delete threePhase;
+	}
+	threePhase = new ThreePhaseDecoder();
+	threePhase->setup(w, h);	
 }
 
 //------------------------------------------------------------------------------
 void decodeApp::setupInput() {
-	if (threePhase != NULL)
-		delete threePhase;
 	
-	threePhase = new ThreePhaseDecoder();
 	string name = inputList.getSelectedName();
 	usingDirectory = name.find('.') == string::npos;
 	
 	if(usingDirectory) {
+			
 		inputDir = "input/" + name + "/";
-		currentName = name;
+		imageList.reset();
+		imageList.allowExt("jpg");
+		imageList.allowExt("JPG");
+		imageList.allowExt("png");
+		imageList.allowExt("PNG");
+		imageList.allowExt("tga");
+		imageList.allowExt("tiff");		
+		imageList.allowExt("jpeg");		
 		totalImages = imageList.listDir(inputDir);
 		ofImage phase;
 		//  this image loading is just so the dimensions are known
+		
+		if (totalImages <= 0 ){
+			reload = false;
+			ofLog(OF_LOG_ERROR, "no images in %s", inputDir.c_str());
+			return;
+		 }
+
 		string imageName = imageList.getName(0);
-		if (!phase.loadImage(inputDir + imageName)) {
+		 if( imageName == "" || !phase.loadImage(inputDir + imageName) ) {
 			cout << "couldn't load file " << (inputDir + imageName) << endl;
-			delete threePhase;
+			ofLog(OF_LOG_ERROR, "couldn't load file from %s", inputDir.c_str());
+			reload = false;
 			return;
 		}
+
+		currentName = name;		
 		int w = (int) phase.getWidth();
 		int h = (int) phase.getHeight();
-		threePhase->setup(w, h);
+
+		initDecoder(w, h);
 
 		phaseUnwrapped.clear();
 		phaseUnwrapped.allocate(w, h, OF_IMAGE_COLOR);
@@ -224,45 +285,24 @@ void decodeApp::setupInput() {
 		movieInput.loadMovie("input/" + name);
 		movieInput.setVolume(0);
 		totalImages = movieInput.getTotalNumFrames();
-		threePhase->setup((int) movieInput.getWidth(), (int) movieInput.getHeight());
+		
+		initDecoder((int) movieInput.getWidth(), (int) movieInput.getHeight());		
 	}
 	jumpTo(0);
 }
 
-//--------------------------------------------------------------
-void decodeApp::update() {
-	panel.update();
 
-	float curDepthScale			= panel.getValueF("depthScale");
-	float curDepthSkew			= panel.getValueF("depthSkew");
-	int curRangeThreshold		= panel.getValueI("rangeThreshold");
-	int curOrientation			= panel.getValueI("orientation");
-	float curFilterMin			= panel.getValueF("filterMin");
-	float curFilterMax			= panel.getValueF("filterMax");
-	bool curPlaySequence		= panel.getValueB("playSequence");
-	int curPlayRate				= panel.getValueF("playRate");
-	float curJumpTo				= panel.getValueF("jumpTo");
-	bool curPhasePersistence	= panel.getValueB("phasePersistence");
-	int curCameraRate			= panel.getValueI("cameraRate");
-	int curCameraOffset			= panel.getValueI("cameraOffset");
-	bool curStopMotion			= panel.getValueB("stopMotion");
-	float gamma					= panel.getValueF("gamma");
-
-	bool curResetView = panel.getValueB("resetView");
-	if(curResetView) {
-		camera = ofxEasyCam();
-		panel.setValueB("resetView", false);
-	}
-
-	bool reload = inputList.selectedHasChanged();
-	if (reload) {
-		setupInput();
-		inputList.clearChangedFlag();
-	}
-
-	unsigned totalFrames = (totalImages - curCameraOffset) / curCameraRate;
-
-	if (threePhase != NULL) {
+//------------------------------------------------------------------------------
+void decodeApp::updateDecoderSettings(){
+	if( threePhase != NULL ){
+		
+		int curRangeThreshold		= panel.getValueI("rangeThreshold");
+		float gamma					= panel.getValueF("gamma");
+		float curDepthScale			= panel.getValueF("depthScale");
+		float curDepthSkew			= panel.getValueF("depthSkew");
+		int curOrientation			= panel.getValueI("orientation");
+		bool curPhasePersistence	= panel.getValueB("phasePersistence");
+		
 		threePhase->setGamma(gamma);
 		threePhase->setDepthScale(curDepthScale);
 		threePhase->setDepthSkew(curDepthSkew);
@@ -273,7 +313,51 @@ void decodeApp::update() {
 		if (panel.hasValueChanged("phasePersistence")){
 			threePhase->clearLastPhase();
 		}
+	
+	
+	}
+}
 
+//--------------------------------------------------------------
+void decodeApp::update() {
+	panel.update();
+
+	reload = inputList.selectedHasChanged();
+	if (reload) {
+		setupInput();
+		inputList.clearChangedFlag();
+	}
+
+	updateDecoderSettings();
+	handlePlayback();
+	handleExport();
+	
+	panel.clearAllChanged();
+
+}
+
+//--------------------------------------------------------------
+void decodeApp::handlePlayback(){
+	
+	bool curPlaySequence		= panel.getValueB("playSequence");
+	int curPlayRate				= panel.getValueF("playRate");
+	float curJumpTo				= panel.getValueF("jumpTo");
+	int curCameraRate			= panel.getValueI("cameraRate");
+	int curCameraOffset			= panel.getValueI("cameraOffset");
+	bool curStopMotion			= panel.getValueB("stopMotion");
+	float curFilterMin			= panel.getValueF("filterMin");
+	float curFilterMax			= panel.getValueF("filterMax");	
+
+	bool curResetView = panel.getValueB("resetView");
+	if(curResetView) {
+		camera = ofxEasyCam();
+		panel.setValueB("resetView", false);
+	}
+
+	unsigned totalFrames = (totalImages - curCameraOffset) / curCameraRate;
+
+	if (threePhase != NULL) {
+				
 		if (panel.hasValueChanged("jumpTo")) {
 			// map slider to entire range of input images
 			unsigned targetFrame = (unsigned) ofMap(panel.getValueI("jumpTo"), 0, 100, 0, totalFrames);
@@ -306,14 +390,24 @@ void decodeApp::update() {
 			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("filterMin") 
 			|| panel.hasValueChanged("filterMax") || panel.hasValueChanged("depthScale") 
 			|| panel.hasValueChanged("depthSkew")) {
-			
+
 			processFrame();
-			
-			//theo added - for debugging
-			rgbaTex.loadData(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 640, 480, GL_RGBA);
 			
 			redraw = true;
 		}
+
+		if( redraw ){
+			//theo added - for debugging		
+			rgbaTex.loadData(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 640, 480, GL_RGBA);
+		}
+
+	}
+
+}
+
+//--------------------------------------------------------------
+void decodeApp::handleExport(){
+	if( threePhase != NULL ){
 
 		// export handling
 		bool curExport = panel.getValueB("export");
@@ -321,16 +415,22 @@ void decodeApp::update() {
 		if (curExport || curRecord) {
 			string curFormat = exportFormats[panel.getValueI("exportFormat")];
 			string name = inputList.getSelectedName();
+			
+			string exportPath = "output/"+name+"/";
+			if( !ofxFileHelper::doesFileExist(exportPath) ){
+				ofxFileHelper::makeDirectory(exportPath);
+			}
+			
 			if (curRecord)
 				name += "-" + ofToString(sequenceFrame);
 			if (curFormat == ".png") {
-				threePhase->exportDepth("output/" + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
-				threePhase->exportTexture("output/" + name + "-texture.png");
+				threePhase->exportDepth(exportPath + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
+				threePhase->exportTexture(exportPath + name + "-texture.png");
 			} else if(curFormat == "ARGB") {
-				threePhase->exportDepthAndTexture("output/" + name + ".png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
+				threePhase->exportDepthAndTexture(exportPath + name + ".png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 			} else {
 				int curStyle = panel.getValueI("style");
-				string outputFile = "output/" + name + "-" + styles[curStyle] + curFormat;
+				string outputFile = exportPath + name + "-" + styles[curStyle] + curFormat;
 				if (curStyle == 0) {
 					threePhase->exportCloud(outputFile);
 				} else if (curStyle == 1) {
@@ -339,10 +439,7 @@ void decodeApp::update() {
 			}
 			panel.setValueB("export", false);
 		}
-	}
-	
-	panel.clearAllChanged();
-
+	}	
 }
 
 //--------------------------------------------------------------
@@ -703,11 +800,7 @@ void decodeApp::keyPressed(int key) {
 			}
 		}
 	}
-	
-	if( key == 'S' ){
-		exportToQT();
-	}
-	
+		
 	//panel.keyPressed(key);
 	
 }
