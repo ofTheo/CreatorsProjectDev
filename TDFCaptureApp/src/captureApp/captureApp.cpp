@@ -252,8 +252,11 @@ void captureApp::startDecode(){
 		decoder.setupDecoder(imageSaver.width, imageSaver.height);
 		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
 
-		if( !ofxFileHelper::doesFileExist("output/incoming/") ){
-			ofxFileHelper::makeDirectory("output/incoming/");
+		if( !ofxFileHelper::doesFileExist(DECODE_FOLDER) ){
+			ofxFileHelper::makeDirectory(DECODE_FOLDER);
+		}else if( !ofxFileHelper::isDirectoryEmpty(DECODE_FOLDER) ){
+			ofxFileHelper::moveFromTo( ofxFileHelper::removeBackslash(DECODE_FOLDER), string(EXPORT_FOLDER) + "savedDecode"+getTimeAsUniqueString() );
+			ofxFileHelper::makeDirectory(DECODE_FOLDER);			
 		}
 
 	}else{
