@@ -15,6 +15,7 @@ guiBaseObject::guiBaseObject(){
 	locked				= false;
 	bRemoveFromLayout	= false;
 	dataType			= SG_TYPE_FLOAT;
+	state				= SG_STATE_NORMAL;
 
 	numDecimalPlaces    = 2;
 	storedTextWidth     = 0;

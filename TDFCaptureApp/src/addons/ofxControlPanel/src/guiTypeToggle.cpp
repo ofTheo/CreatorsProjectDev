@@ -18,9 +18,9 @@ void guiTypeToggle::updateGui(float x, float y, bool firstHit, bool isRelative){
 
 	if( state == SG_STATE_SELECTED){
 		if( value.getValueI() == 0 ){
-			value.setValue(1, 0);
+			value.setValue(1);
 		}else{
-			value.setValue(0, 0);
+			value.setValue(0);
 		}
 
 		//CB

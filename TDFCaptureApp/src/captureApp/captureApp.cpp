@@ -228,14 +228,16 @@ void captureApp::update(){
 		handleCamera();
 		handleFaceTrigger();
 
-		if(panel.getValueB("projectorLut")) {
-			curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
+		if( panel.getValueB("projectorLut") ){
+			if(  ofxFileHelper::doesFileExist("projector-lut.tsv") ){
+				//TODO: note this is cumulative - it shouldn't be
+				curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
+			}
 			panel.setValueB("projectorLut", false);
 		}
 	}
 	
 	panel.clearAllChanged();
-
 }
 
 //-----------------------------------------------
