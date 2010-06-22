@@ -23,6 +23,7 @@ void decodeApp::setup(){
 	panel.setWhichPanel("input");
 
 	inputList.listDir("input");
+	inputList.reverseOrder();
 	panel.addFileLister("input", &inputList, 240, 400);
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);

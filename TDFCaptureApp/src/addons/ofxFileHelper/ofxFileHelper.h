@@ -127,7 +127,7 @@ class ofxFileHelper{
 	}
 
 	//------------------------------------------------------------------------------------------------------------
-	static string prependBackslash(string path){
+	static string addLeadingSlash(string path){
 		if(path.length() > 0){
 			if( path[0] != '/'){
 				path = "/"+path;
@@ -137,7 +137,7 @@ class ofxFileHelper{
 	}
 
 	//------------------------------------------------------------------------------------------------------------
-	static string appendBackslash(string path){
+	static string addTrailingSlash(string path){
 		if(path.length() > 0){
 			if( path[path.length()-1] != '/'){
 				path += "/";
@@ -147,7 +147,7 @@ class ofxFileHelper{
 	}
 	
 	//------------------------------------------------------------------------------------------------------------
-	static string removeBackslash(string path){
+	static string removeTrailingSlash(string path){
 		if( path.length() > 0 && path[path.length()-1] == '/' ){
 			path = path.substr(0, path.length()-1);
 		}

@@ -2,7 +2,6 @@
 
 static bool do1394			= false;
 string capturePrefix		= CAPTURE_MAIN_FOLDER;
-string currentCaptureFolder = capturePrefix + FRAME_CAPTURE_FOLDER;
 
 static float lastTime	= 0.0;
 static float camFps		= 60.0f;
@@ -98,7 +97,15 @@ void captureApp::setup(){
 	threePhase.setSize(1024, 768);
 	threePhase.setWavelength(64);
 	threePhase.generate();
-
+	
+	ofxXmlSettings xml;
+	xml.loadFile("locationSettings.xml");
+	currentCity			= xml.getValue("city_name", "NYC");
+	transformSpaces(currentCity); //remove space and add underscores
+	currentDecodeFolder = DECODE_FOLDER;
+	currentCaptureFolder   = string(CAPTURE_MAIN_FOLDER) + CAPTURE_MAIN_FOLDER;
+	currentTimestamp    = (ofxTimeStamp()).getUnixTimeAsString();
+	
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
 	panel.addPanel("app settings", 1);
@@ -125,9 +132,12 @@ void captureApp::setup(){
 	postCapModes.push_back("decode, export and frames");
 	postCapModes.push_back("all above + notify");
 	panel.addMultiToggle("post capture:", "postCapture", 2, postCapModes);
+
+	panel.addToggle("rysnc return immediately", "rsyncThreaded", true);
+
+	panel.addSlider("decode skip frames", "decodeSkipFrame", 2, 0, 5, true);
 	
 	panel.addSlider("capture time f", "CAPTURE_TIME_F", 4.0, 2.0, 15.0, false);
-
 
 	panel.setWhichPanel("pattern settings");
 
@@ -248,17 +258,19 @@ void captureApp::startDecode(){
 	if( imageSaver.getSize() ){
 		state = CAP_STATE_DECODING;
 	
+		timeToDecode = 0.0;
 		saveIndex = 0;
+		saveCount = 0;
 		decoder.setupDecoder(imageSaver.width, imageSaver.height);
 		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
 
-		if( !ofxFileHelper::doesFileExist(DECODE_FOLDER) ){
-			ofxFileHelper::makeDirectory(DECODE_FOLDER);
-		}else if( !ofxFileHelper::isDirectoryEmpty(DECODE_FOLDER) ){
-			ofxFileHelper::moveFromTo( ofxFileHelper::removeBackslash(DECODE_FOLDER), string(EXPORT_FOLDER) + "savedDecode"+getTimeAsUniqueString() );
-			ofxFileHelper::makeDirectory(DECODE_FOLDER);			
+		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
+			ofxFileHelper::makeDirectory(currentDecodeFolder);
+		}else if( !ofxFileHelper::isDirectoryEmpty(currentDecodeFolder) ){
+			ofxFileHelper::moveFromTo( ofxFileHelper::removeTrailingSlash(currentDecodeFolder), string(EXPORT_FOLDER) + "savedDecode"+currentTimestamp );
+			ofxFileHelper::makeDirectory(currentDecodeFolder);			
 		}
-
+		
 	}else{
 		ofLog(OF_LOG_ERROR, "startDecode - no images to decode");
 	}
@@ -268,25 +280,39 @@ void captureApp::startDecode(){
 //-----------------------------------------------
 void captureApp::handleDecode(){
 	if( state == CAP_STATE_DECODING ){
+	
+		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
+			ofLog(OF_LOG_ERROR, "handleDecode - decode folder not found - can't save files!\n");
+		}
 
-		if( saveIndex < imageSaver.getSize() ){
-			float filterMin =  dAppPtr->panel.getValueF("filterMin");
-			float filterMax =  dAppPtr->panel.getValueF("filterMax");
-			float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
-			int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
+		float filterMin =  dAppPtr->panel.getValueF("filterMin");
+		float filterMax =  dAppPtr->panel.getValueF("filterMax");
+		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
+		int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
+		
+		int numMissed	= 1+ panel.getValueI("decodeSkipFrame");
+		
+		//you can changed this to a higher number to decode more frames per app frame. 
+		for(int k = 0; k < numMissed; k++){
+			if( saveIndex < imageSaver.getSize() ){
 			
-			printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
-			decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
-			
-			bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
-			
-			if( saveIndex % 3 == 0 && bSaveToDisk ){
-				decoder.exportFrameToTGA(DECODE_FOLDER, 10000+saveIndex);
+				printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
+				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
+				
+				bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
+				
+				if( saveIndex % ( numMissed ) == 0 && bSaveToDisk ){
+					float t1 = ofGetElapsedTimef();
+					decoder.exportFrameToTGA(currentDecodeFolder, 10000+saveIndex);
+					timeToDecode += ofGetElapsedTimef()-t1;
+					saveCount++;
+				}
+				
+				saveIndex++;
+			}else{
+				endDecode();
+				break;
 			}
-			
-			saveIndex++;
-		}else{
-			endDecode();
 		}
 
 	}
@@ -300,6 +326,11 @@ void captureApp::endDecode(){
 	}
 	
 	if( state == CAP_STATE_END_DECODE ){
+		
+		if( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT ){
+			printf("total time to save %i to tga is %f - average %f\n", saveCount, timeToDecode, (float)timeToDecode/saveCount);
+		}
+		
 		//in this case we want to copy decoded files and notify viz app first then export frames last. 
 		if( panel.getValueI("postCapture") == POST_CAPTURE_ALL_AND_NOTIFY ){
 
@@ -309,15 +340,22 @@ void captureApp::endDecode(){
 			xml.setVerbose(true);
 			if( xml.loadFile("notification.xml") ){
 				string command		= xml.getValue("command", "");
-				string localFolder	= ofToDataPath(xml.getValue("local_folder", ""));
 				string remoteUser   = xml.getValue("remote_user", "");
 				string remoteip     = xml.getValue("remote_ip", "");
+
+				string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodeFolder));
 				
 				printf("command is %s\n", command.c_str());
 				
+				//TODO: put this in threadedFunction?
 				vector <string> explode = ofSplitString(command, "!");
 				if( explode.size() >=5 ){
 					string execute = explode[0] + localFolder + explode[1] + remoteUser + explode[2] + remoteip + explode[3] + remoteUser + explode[4];
+					
+					if( panel.getValueB("rsyncThreaded") ){
+						execute = execute + " &";
+					}
+					
 					printf("executing %s\n", execute.c_str());
 					system(execute.c_str());
 				}
@@ -338,9 +376,8 @@ void captureApp::exportFramesToDisk(){
 		state = CAP_STATE_SAVING;
 
 		//backup the current capture folder
-		if( ofxFileHelper::doesFileExist(capturePrefix+FRAME_CAPTURE_NAME) ){
-			string unique = getTimeAsUniqueString();
-			ofxFileHelper::moveFromTo(capturePrefix+FRAME_CAPTURE_NAME, capturePrefix+"savedFolder"+unique);
+		if( ofxFileHelper::doesFileExist(currentCaptureFolder) ){
+			ofxFileHelper::moveFromTo(ofxFileHelper::removeTrailingSlash(currentCaptureFolder), capturePrefix+"savedFolder"+currentTimestamp);
 		}
 		
 		//make a new folder with a settings folder inside
@@ -384,6 +421,13 @@ void captureApp::startCapture(){
 		//clear the image saver buffer
 		imageSaver.clear();
 		cameraFrameNum = 0;
+		
+		ofxTimeStamp ts;
+		ts.setTimestampToCurrentTime();
+		currentTimestamp	= ts.getUnixTimeAsString();
+		currentDecodeFolder = EXPORT_FOLDER + string("decoded-") + currentCity + "-" + currentTimestamp + "/";
+		currentCaptureFolder   = CAPTURE_MAIN_FOLDER + string("capture-") + currentCity + "-" + currentTimestamp + "/";
+		printf("decoding to %s\n frames saved to %s\n", currentDecodeFolder.c_str(), currentCaptureFolder.c_str());			
 
 		ofHideCursor();
 		printf("time is %f time to end is %f\n",ofGetElapsedTimef(), panel.getValueF("CAPTURE_TIME_F"));
@@ -402,7 +446,7 @@ void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
 		ofShowCursor();
-		
+			
 		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
 			startDecode();
 		}else{
@@ -546,7 +590,7 @@ void captureApp::handleCamera(){
 //-----------------------------------------------
 void captureApp::handleFaceTrigger(){
 	
-	if( camState != CAMERA_CLOSED && state != CAP_STATE_CAPTURE ){
+	if( camState != CAMERA_CLOSED && state < CAP_STATE_CAPTURE ){
 	
 		float faceFps  = panel.getValueF("FACE_FPS");
 		float timeDiff = 1.0/ofClamp(faceFps, 4.0, 60.0);

@@ -9,7 +9,7 @@
 #include "ofxVideoGrabber.h"
 #include "faceFinder.h"
 #include "decodeAndExport.h"
-
+#include "ofxTimeStamp.h"
 #include "appConstants.h"
 
 typedef enum{
@@ -99,6 +99,13 @@ public:
 
 	decodeAndExport decoder;
 	int saveIndex;
+	int saveCount;
+	float timeToDecode;
+	
+	string currentTimestamp;
+	string currentDecodeFolder;
+	string currentCaptureFolder;
+	string currentCity;
 	
 	ofxThreadedVideoGrabber camera;
 	ofxImageSaver imageSaver;

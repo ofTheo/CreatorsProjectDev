@@ -1,8 +1,5 @@
 <!-- note you need to leave the trailing slash of the local folder -->
 <!-- also you need to setup and ssh keys so the machines don't need to use passwords -->
-<local_folder>
-    output/incoming
-</local_folder>
 <remote_user>
     theo
 </remote_user>

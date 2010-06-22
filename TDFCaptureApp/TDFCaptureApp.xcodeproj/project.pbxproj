@@ -161,6 +161,7 @@
 		031CEAF81139577C00EC790C /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		031CEAFB1139577C00EC790C /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
+		E42DA42E11D10298009ACAC2 /* ofxTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimeStamp.h; path = src/addons/ofxTimeStamp/ofxTimeStamp.h; sourceTree = SOURCE_ROOT; };
 		E43C87B511CEC34100973BFC /* decodeAndExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decodeAndExport.h; sourceTree = "<group>"; };
 		E43C87B611CEC34100973BFC /* decodeAndExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decodeAndExport.cpp; sourceTree = "<group>"; };
 		E441401511C46F9B00F8D93E /* captureApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = captureApp.cpp; path = src/captureApp/captureApp.cpp; sourceTree = SOURCE_ROOT; };
@@ -491,6 +492,15 @@
 			path = ../../../addons/ofxXmlSettings/src;
 			sourceTree = SOURCE_ROOT;
 		};
+		E42DA42D11D10298009ACAC2 /* ofxTimeStamp */ = {
+			isa = PBXGroup;
+			children = (
+				E42DA42E11D10298009ACAC2 /* ofxTimeStamp.h */,
+			);
+			name = ofxTimeStamp;
+			path = src/addons/ofxTimeStamp;
+			sourceTree = SOURCE_ROOT;
+		};
 		E4413F9211C46F9B00F8D93E /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -515,8 +525,8 @@
 				E44708BB11CD147A003B3250 /* faceFinder.h */,
 				E441401511C46F9B00F8D93E /* captureApp.cpp */,
 				E441401611C46F9B00F8D93E /* captureApp.h */,
-				E43C87B511CEC34100973BFC /* decodeAndExport.h */,
 				E43C87B611CEC34100973BFC /* decodeAndExport.cpp */,
+				E43C87B511CEC34100973BFC /* decodeAndExport.h */,
 				E441401911C46F9B00F8D93E /* ofxImageSaver.h */,
 				E441401A11C46F9B00F8D93E /* ofxThreadedVideoGrabber.h */,
 			);
@@ -537,6 +547,7 @@
 		E44140A111C470C400F8D93E /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				E42DA42D11D10298009ACAC2 /* ofxTimeStamp */,
 				E4B7A4B211CE6A710096261A /* ofxStructuredLight */,
 				E493E2BE11C70DCA00C270F2 /* ofxControlPanel */,
 				E44140A211C470C400F8D93E /* ofx3DUtils */,
