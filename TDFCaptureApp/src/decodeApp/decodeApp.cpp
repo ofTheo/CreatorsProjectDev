@@ -12,8 +12,6 @@ void decodeApp::setup(){
 	sequenceFrame = 0;
 	threePhase = NULL;
 
-	lut.setup(ofToDataPath("firefly-lut.csv"));
-
 	// setup control panel
 	panel.setup("control", 0, 0, 300, 720);
 	panel.addPanel("input", 1);
@@ -29,7 +27,12 @@ void decodeApp::setup(){
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
 	panel.addSlider("play rate", "playRate", 1, 1, 60, true);
-	panel.addToggle("use camera lut", "useCameraLut", true);
+	
+	//only add the toggle if it finds the csv file
+	if( ofxFileHelper::doesFileExist("firefly-lut.csv")){
+		lut.setup(ofToDataPath("firefly-lut.csv"));
+		panel.addToggle("use camera lut", "useCameraLut", true);
+	}	
 
 	panel.setWhichPanel("decode");
 
@@ -126,6 +129,7 @@ void decodeApp::nextFrame() {
 			cout << "couldn't load file " << (inputDir + imageList.getName(cameraFrame)) << endl;
 			return;
 		}
+		
 		if(panel.getValueB("useCameraLut")) {
 			//force it for now - note that just changing the image to grayscale helps the ripple quality.
 			//actually commenting out lut.filter looks the same as having it in. 

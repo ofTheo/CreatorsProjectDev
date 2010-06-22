@@ -296,9 +296,36 @@ void captureApp::handleDecode(){
 void captureApp::endDecode(){
 	printf("endDecode\n");
 	if( state == CAP_STATE_DECODING ){
+		state = CAP_STATE_END_DECODE;
+	}
+	
+	if( state == CAP_STATE_END_DECODE ){
 		//in this case we want to copy decoded files and notify viz app first then export frames last. 
 		if( panel.getValueI("postCapture") == POST_CAPTURE_ALL_AND_NOTIFY ){
+
+			printf("postCapture == POST_CAPTURE_ALL_AND_NOTIFY \n");
 			
+			ofxXmlSettings xml;
+			xml.setVerbose(true);
+			if( xml.loadFile("notification.xml") ){
+				string command		= xml.getValue("command", "");
+				string localFolder	= ofToDataPath(xml.getValue("local_folder", ""));
+				string remoteUser   = xml.getValue("remote_user", "");
+				string remoteip     = xml.getValue("remote_ip", "");
+				
+				printf("command is %s\n", command.c_str());
+				
+				vector <string> explode = ofSplitString(command, "!");
+				if( explode.size() >=5 ){
+					string execute = explode[0] + localFolder + explode[1] + remoteUser + explode[2] + remoteip + explode[3] + remoteUser + explode[4];
+					printf("executing %s\n", execute.c_str());
+					system(execute.c_str());
+				}
+			}else{
+				printf("error loading notification.xml");
+			}
+			
+			exportFramesToDisk();
 		}else{
 			exportFramesToDisk();
 		}
