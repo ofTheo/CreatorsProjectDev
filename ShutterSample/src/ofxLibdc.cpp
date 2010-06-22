@@ -75,17 +75,16 @@ void ofxLibdc::setup(int cameraNumber) {
 	dc1394_video_get_supported_modes(camera, &video_modes);
 	dc1394video_mode_t video_mode;
 	dc1394color_coding_t coding;
-	dc1394color_coding_t targetCoding = getLibdcType(imageType);
 	for (int i = video_modes.num - 1; i >= 0; i--) {
 		if (!dc1394_is_video_mode_scalable(video_modes.modes[i])) {
 			dc1394_get_color_coding_from_video_mode(camera, video_modes.modes[i], &coding);
-			if (coding == targetCoding) {
+			if (coding == DC1394_COLOR_CODING_MONO8) {
 				video_mode = video_modes.modes[i];
 				break;
 			}
 		}
 		if(i == 0) {
-			ofLog(OF_LOG_ERROR, "Camera does not support the target mode.");
+			ofLog(OF_LOG_ERROR, "Camera does not support DC1394_COLOR_CODING_MONO8.");
 			return;
 		}
 	}
@@ -222,6 +221,17 @@ void ofxLibdc::getOneShot(ofImage& img) {
 	dc1394_video_set_one_shot(camera, DC1394_ON);
 	dc1394video_frame_t *frame;
 	dc1394_capture_dequeue(camera, DC1394_CAPTURE_POLICY_WAIT, &frame);
+	img.allocate(width, height, imageType);
+	if(imageType == OF_IMAGE_GRAYSCALE) {
+		memcpy(img.getPixels(), frame->image, width * height);
+	} else if(imageType == OF_IMAGE_COLOR) {
+		// this shouldn't be reallocated every frame!
+		dc1394video_frame_t* rgbFrame = (dc1394video_frame_t*) calloc(1, sizeof(dc1394video_frame_t));
+    rgbFrame->color_coding = DC1394_COLOR_CODING_RGB8;
+    dc1394_convert_frames(frame, rgbFrame);
+		memcpy(img.getPixels(), rgbFrame->image, 3 * width * height);
+		free(rgbFrame);
+	}
 	img.setFromPixels(frame->image, width, height, imageType);
 	dc1394_capture_enqueue(camera, frame);
 }

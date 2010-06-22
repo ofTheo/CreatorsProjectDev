@@ -1,7 +1,7 @@
 #include "testApp.h"
 
 void testApp::setup(){
-	passCount = 128; // how many images to capture
+	passCount = 16; // how many images to capture
 	wait = 100; // how long to wait, in ms, between captures
 	camera.setImageType(OF_IMAGE_GRAYSCALE); // comment this out for color
 	
@@ -16,6 +16,7 @@ void testApp::setup(){
 	
 	pass = 0;	
 	images.resize(passCount);
+	shutter.resize(passCount);
 	captureMode = false;
 	saved = false;
 }
@@ -28,12 +29,14 @@ void testApp::update(){
 			ofSleepMillis(wait); // need to wait for settings to be applied
 			camera.getOneShot(curImage);
 			images[pass] = curImage;
+			shutter[pass] = camera.getShutterAbs();
 			pass++;
 		} else {
 			if(!saved) {
 				cout << "Saving images." << endl;
 				for(int i = 0; i < passCount; i++) {
-					images[i].saveImage(ofToString(i) + ".png");
+					int curShutter = (int) (1000 * 1000 * shutter[i]); // us
+					images[i].saveImage(ofToString(curShutter) + ".png");
 				}
 				cout << "Images saved." << endl;
 				saved = true;

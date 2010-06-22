@@ -42,7 +42,6 @@ public:
 	void setImageType(int imageType);
 	
 private:
-	
 	static dc1394_t* libdcContext;
 	static int libdcCameras;
 	static void startLibdcContext();
