@@ -798,16 +798,14 @@ void captureApp::draw(){
 	}
 
 	if (!panel.getValueB("brightnessSetting")){
+		ofSetColor(255, 255, 255, 255);
 		curGenerator->get(patternFrame).draw(0, 0);
-
 	} else {
 		int checkBrightness = panel.getValueI("checkBrightness");
 		ofSetColor(checkBrightness, checkBrightness, checkBrightness);
 		ofRect(0, 0, ofGetWidth(), ofGetHeight());
 	}
 
-	ofSetColor(255, 255, 255, 255);
-	curGenerator->get(patternFrame).draw(0, 0);
 	if( state == CAP_STATE_CAPTURE ){
 		return;
 	}
