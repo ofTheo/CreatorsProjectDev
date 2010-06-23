@@ -23,6 +23,7 @@ typedef enum{
 	CAP_STATE_WAITING,
 	CAP_STATE_PERSON_DETECTED,
 	CAP_STATE_COUNTDOWN,
+	CAP_STATE_FADEIN,
 	CAP_STATE_CAPTURE,
 	CAP_STATE_START_DECODE,
 	CAP_STATE_DECODING,
@@ -59,7 +60,10 @@ public:
 	void threadedFunction();
 
 	void startCapture();
+	void handleCapture();
 	void endCapture();
+	
+	void startFadeIn();
 	
 	void exportFramesToDisk();
 	
@@ -96,11 +100,16 @@ public:
 	
 	bool bSetup;
 	ofxEasyCam camera3D;
+	
+	ofSoundPlayer scanningSound;
+	ofImage spotLightImage;
+	float spotLightAlpha;
 
 	decodeAndExport decoder;
 	int saveIndex;
 	int saveCount;
 	float timeToDecode;
+	float fadeInStartTime;
 	
 	string currentTimestamp;
 	string currentDecodeFolder;

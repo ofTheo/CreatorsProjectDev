@@ -33,7 +33,7 @@ void ofxIIDCSettings::setupGUI()
     videoGrabber->getAllFeatureValues();
 
     panel.setup("ofxIIDCSettings", 0, 0, 480, ofGetHeight());
-	panel.loadFont("myFont.ttf", 10);
+//	panel.loadFont("myFont.ttf", 10);
     panel.addPanel("Settings", 2, false);
 	panel.setWhichPanel("Settings");
     panel.setWhichColumn(0);

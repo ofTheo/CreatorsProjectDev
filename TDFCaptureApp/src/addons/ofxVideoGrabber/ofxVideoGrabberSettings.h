@@ -18,7 +18,10 @@ class ofxVideoGrabberSettings
         virtual void mouseDragged(ofMouseEventArgs & args);
         virtual void mouseReleased(ofMouseEventArgs & args);
 
-        virtual void setupGUI() = 0;
+        virtual void enableGuiEvents();
+		virtual void disableGuiEvents();
+		
+		virtual void setupGUI() = 0;
         virtual void update() = 0;
         virtual void draw() = 0;
 
@@ -28,8 +31,7 @@ class ofxVideoGrabberSettings
         ofxVideoGrabberSDK* videoGrabber;
 
     protected:
-        void setupGUIEvents();
-
+		bool bGuiEvents;
 
 
 };

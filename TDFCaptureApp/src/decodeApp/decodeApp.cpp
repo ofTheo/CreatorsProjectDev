@@ -24,7 +24,16 @@ void decodeApp::setup(){
 
 	inputList.listDir("input");
 	inputList.reverseOrder();
-	panel.addFileLister("input", &inputList, 240, 400);
+	panel.addFileLister("input", &inputList, 240, 500);
+
+	panel.setWhichPanel("decode");
+
+	panel.addToggle("play sequence", "playSequence", false);
+	panel.addSlider("jump to", "jumpTo", 0, 0, 100, false);
+	panel.addToggle("phase persistence", "phasePersistence", false);
+
+	panel.addToggle("reset view ", "resetView", false);
+
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
 	panel.addSlider("play rate", "playRate", 1, 1, 60, true);
@@ -35,30 +44,14 @@ void decodeApp::setup(){
 		panel.addToggle("use camera lut", "useCameraLut", true);
 	}	
 
-	panel.setWhichPanel("decode");
-
-	panel.addToggle("stop motion", "stopMotion", false);
-	panel.addToggle("play sequence", "playSequence", false);
-	panel.addSlider("jump to", "jumpTo", 0, 0, 100, false);
-	panel.addToggle("phase persistence", "phasePersistence", false);
-
-	panel.addToggle("reset view ", "resetView", false);
-
 	styles.push_back("cloud");
 	styles.push_back("mesh");
 	styles.push_back("none");
 	panel.addMultiToggle("style", "style", 0, styles);
 
-	vector<string> orientation;
-	orientation.push_back("horizontal");
-	orientation.push_back("vertical");
-	panel.addMultiToggle("orientation", "orientation", 0, orientation);
-
 	panel.addSlider("range threshold", "rangeThreshold", 40, 0, 255, true);
-
 	panel.addSlider("depth scale", "depthScale", 130, -500, 500, false);
 	panel.addSlider("depth skew", "depthSkew", -28, -50, 50, false);
-
 	panel.addSlider("filter min", "filterMin", -1024, -1024, 1024, false);
 	panel.addSlider("filter max", "filterMax", 1024, -1024, 1024, false);
 
@@ -77,6 +70,10 @@ void decodeApp::setup(){
 	panel.addSlider("movie framerate", "movieFramerate", 60, 5, 60, true);
 
 	panel.setWhichPanel("misc");
+	vector<string> orientation;
+	orientation.push_back("horizontal");
+	orientation.push_back("vertical");
+	panel.addMultiToggle("orientation", "orientation", 0, orientation);	
 	panel.addSlider("gamma", "gamma", 1, 0.0, 1.0, false);
 	panel.addToggle("hud", "hud", false);
 	panel.addSlider("hudWidth", "hudWidth", 300.0, 0.0, 2000.0, false);
@@ -97,7 +94,6 @@ void decodeApp::setup(){
 	panel.setValueI("record", 0);
 	panel.setValueI("renderMovie", 0);
 	panel.setValueI("playSequence", 0);	
-	panel.setValueI("stopMotion", 0);	
 	
 	rgbaTex.allocate(640, 480, GL_RGBA);
 
@@ -188,6 +184,8 @@ void decodeApp::setupInput() {
 	string name = inputList.getSelectedName();
 	usingDirectory = name.find('.') == string::npos;
 	
+	bool success = false;
+	
 	if(usingDirectory) {
 			
 		inputDir = "input/" + name + "/";
@@ -233,15 +231,24 @@ void decodeApp::setupInput() {
 		unwrapOrderIm.allocate(w, h, OF_IMAGE_COLOR);
 		depthIm.clear();
 		depthIm.allocate(w, h, OF_IMAGE_COLOR);
-
-	} else {
-		movieInput.loadMovie("input/" + name);
-		movieInput.setVolume(0);
-		totalImages = movieInput.getTotalNumFrames();
 		
-		initDecoder((int) movieInput.getWidth(), (int) movieInput.getHeight());		
+		success = true;
+
+	} else if( ofxFileHelper::getFileExt(name) == "mov" ||  ofxFileHelper::getFileExt(name) == "mp4" ){
+		movieInput.loadMovie("input/" + name);
+		if( movieInput.bLoaded ){
+			totalImages = movieInput.getTotalNumFrames();
+			if( totalImages > 0 ){
+				movieInput.setVolume(0);
+				initDecoder((int) movieInput.getWidth(), (int) movieInput.getHeight());	
+				success = true;				
+			}
+		}
 	}
-	jumpTo(0);
+	
+	if( success ){
+		jumpTo(0);
+	}
 }
 
 
@@ -293,10 +300,8 @@ void decodeApp::handlePlayback(){
 	
 	bool curPlaySequence		= panel.getValueB("playSequence");
 	int curPlayRate				= panel.getValueF("playRate");
-	float curJumpTo				= panel.getValueF("jumpTo");
 	int curCameraRate			= panel.getValueI("cameraRate");
 	int curCameraOffset			= panel.getValueI("cameraOffset");
-	bool curStopMotion			= panel.getValueB("stopMotion");
 	float curFilterMin			= panel.getValueF("filterMin");
 	float curFilterMax			= panel.getValueF("filterMax");	
 
@@ -315,26 +320,17 @@ void decodeApp::handlePlayback(){
 			unsigned targetFrame = (unsigned) ofMap(panel.getValueI("jumpTo"), 0, 100, 0, totalFrames);
 			// clamp to amaxmimum of last image - 3, so you don't try reading in a loop
 			targetFrame = (unsigned) ofClamp(targetFrame, 0, totalFrames - 3);
-			// quantize location if stop motion is enabled
-			if (curStopMotion)
-				targetFrame = (targetFrame / 3) * 3;
+
 			// so long as we're not just jumping to the same place
 			if ((targetFrame + 3) % totalFrames != sequenceFrame) {
 				jumpTo(targetFrame);
 				reload = true;
 			}
-		} else if (ofGetFrameNum() % curPlayRate == 0 &&
-		           (curPlaySequence || panel.hasValueChanged("playRate") || panel.hasValueChanged("cameraOffset"))) {
-			if (curStopMotion) {
-				// make sure to quantize current frame, in case we're switching from non-stop-motion
-				sequenceFrame = (sequenceFrame / 3) * 3;
-				for (int i = 0; i < 3; i++)
-					nextFrame();
-			} else
-				nextFrame();
+		} else if (ofGetFrameNum() % curPlayRate == 0 && (curPlaySequence || panel.hasValueChanged("playRate") || panel.hasValueChanged("cameraOffset"))) {
+
+			nextFrame();
 				
 			panel.setValueF("jumpTo", ofMap(sequenceFrame, 0, totalFrames, 0, 100));
-			curJumpTo = panel.getValueF("jumpTo");
 			reload = true;
 		}
 
@@ -344,7 +340,6 @@ void decodeApp::handlePlayback(){
 			|| panel.hasValueChanged("depthSkew")  || panel.hasValueChanged("smooth_y_amnt") || panel.hasValueChanged("smooth_y_dist") ) {
 
 			processFrame();
-			
 			redraw = true;
 		}
 
@@ -728,12 +723,15 @@ void decodeApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void decodeApp::mousePressed(int x, int y, int button){
-	panel.mousePressed(x, y, button);
+	if( panel.mousePressed(x, y, button) ){
+		camera.disableMouseEvents();
+	}
 }
 
 //--------------------------------------------------------------
 void decodeApp::mouseReleased(int x, int y, int button){
 	panel.mouseReleased();
+	camera.enableMouseEvents();
 }
 
 //--------------------------------------------------------------

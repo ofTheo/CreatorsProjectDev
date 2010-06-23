@@ -155,8 +155,8 @@ class ofxControlPanel: public guiBaseObject{
         void hide();
 
         void toggleView();
-        void mousePressed(float x, float y, int button);
-        void mouseDragged(float x, float y, int button);
+        bool mousePressed(float x, float y, int button);
+        bool mouseDragged(float x, float y, int button);
         void mouseReleased();
 
         void updateBoundingBox();

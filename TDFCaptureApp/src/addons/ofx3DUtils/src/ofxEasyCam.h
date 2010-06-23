@@ -29,6 +29,7 @@ private:
 	bool mouseHasMoved, mouseClicked;
 	float dmouseX, dmouseY, pmouseX, pmouseY;
 	int mouseButton;
+	bool bMouseEvents;
 public:
 	float zoomSpeed, orbitSpeed, panSpeed;
 
@@ -44,14 +45,32 @@ public:
 		panSpeed(1)
 		{
 
-		ofAddListener(ofEvents.mousePressed, this, &ofxEasyCam::mousePressed);
-		ofAddListener(ofEvents.mouseReleased, this, &ofxEasyCam::mouseReleased);
-		ofAddListener(ofEvents.mouseDragged, this, &ofxEasyCam::mouseDragged);
-
+		bMouseEvents = false;
+		enableMouseEvents();
+		
 		float theta = PI * fieldOfView / 360.0f;
 		float opposite = ofGetWidth() / 2;
 		posCoord.z = opposite / tanf(theta);
 	}
+	
+	void enableMouseEvents(){
+		if( !bMouseEvents ){
+			ofAddListener(ofEvents.mousePressed, this, &ofxEasyCam::mousePressed);
+			ofAddListener(ofEvents.mouseReleased, this, &ofxEasyCam::mouseReleased);
+			ofAddListener(ofEvents.mouseDragged, this, &ofxEasyCam::mouseDragged);
+			bMouseEvents = true;
+		}
+	}
+	
+	void disableMouseEvents(){
+		if( bMouseEvents ){
+			ofRemoveListener(ofEvents.mousePressed, this, &ofxEasyCam::mousePressed);
+			ofRemoveListener(ofEvents.mouseReleased, this, &ofxEasyCam::mouseReleased);
+			ofRemoveListener(ofEvents.mouseDragged, this, &ofxEasyCam::mouseDragged);
+			bMouseEvents = false;			
+		}
+	}
+	
 	void place() {
 		ofxVec3f relx = getDir().getCrossed(getUp()).normalize();
 		ofxVec3f rely = getDir().getCrossed(relx).normalize();

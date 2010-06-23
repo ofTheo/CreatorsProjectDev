@@ -42,7 +42,7 @@ void faceFinder::resetCounters(){
 }
 
 //------------------------------------------------------------------------------------------------------
-void faceFinder::update( unsigned char * pix, int w, int h  ){
+void faceFinder::updatePixels( unsigned char * pix, int w, int h  ){
 	if( w <= 0 || h <= 0 || !bSetup){
 		printf("Big Error faceFinder::update - returning \n");
 		return;
@@ -66,6 +66,10 @@ void faceFinder::update( unsigned char * pix, int w, int h  ){
 	
 	numFaces = faceHaar.findHaarObjects(cvGrayResized);
 
+}
+
+void faceFinder::update(){
+	
 	confidence *= confidenceFadeRate;
 	
 	if( numFaces > 0 ){
@@ -95,6 +99,7 @@ void faceFinder::update( unsigned char * pix, int w, int h  ){
 			faceState = FACE_NONE;
 		}
 	}
+
 }
 
 //------------------------------------------------------------------------------------------------------

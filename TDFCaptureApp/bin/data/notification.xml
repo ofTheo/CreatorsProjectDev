@@ -6,6 +6,9 @@
 <remote_ip>
     192.168.2.12
 </remote_ip>
+<remote_osc_port>
+    70007
+</remote_osc_port>
 <command>
     rsync -avz -e ssh ! !@!:/Users/!/Desktop/test/
 </command>

@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>0.000000</val_0>
+    <val_0>2.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>
@@ -56,7 +56,7 @@
     <val_0>0.000000</val_0>
 </B_FACE_TRIGGER>
 <FACE_FPS>
-    <val_0>9.000000</val_0>
+    <val_0>3.000000</val_0>
 </FACE_FPS>
 <FACE_DETECT_TIME>
     <val_0>2.000000</val_0>
@@ -85,3 +85,9 @@
 <postCapture>
     <val_0>2.000000</val_0>
 </postCapture>
+<rsyncThreaded>
+    <val_0>1.000000</val_0>
+</rsyncThreaded>
+<decodeSkipFrame>
+    <val_0>2.000000</val_0>
+</decodeSkipFrame>

@@ -22,7 +22,8 @@ class faceFinder : public ofBaseDraws{
 	public:
 		
 		void setup(string haarFile, int resizeW, int resizeH, float numSecondsToSeeFace, float numSecondsToForget);
-		void update( unsigned char * pix, int incommingW, int incommingH );
+		void updatePixels( unsigned char * pix, int incommingW, int incommingH );
+		void update();
 		
 		bool firstSawFace();
 		void clearFirstSawFace();

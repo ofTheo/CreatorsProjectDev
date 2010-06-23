@@ -2,33 +2,41 @@
 #include "ofxVideoGrabberSDK.h"
 #include "ofxVideoGrabberFeature.h"
 
-ofxVideoGrabberSettings::ofxVideoGrabberSettings()
-{
-
+ofxVideoGrabberSettings::ofxVideoGrabberSettings(){
+	bGuiEvents = false;
 }
 
 ofxVideoGrabberSettings::~ofxVideoGrabberSettings(){
-    ofRemoveListener(ofEvents.mousePressed, this, &ofxVideoGrabberSettings::mousePressed);
-    ofRemoveListener(ofEvents.mouseDragged, this, &ofxVideoGrabberSettings::mouseDragged);
-    ofRemoveListener(ofEvents.mouseReleased, this, &ofxVideoGrabberSettings::mouseReleased);	
+	disableGuiEvents();
     //dtor
+}
+
+//--------------------------------------------------------------------
+void ofxVideoGrabberSettings::disableGuiEvents(){
+	if( bGuiEvents ){
+		ofRemoveListener(ofEvents.mousePressed, this, &ofxVideoGrabberSettings::mousePressed);
+		ofRemoveListener(ofEvents.mouseDragged, this, &ofxVideoGrabberSettings::mouseDragged);
+		ofRemoveListener(ofEvents.mouseReleased, this, &ofxVideoGrabberSettings::mouseReleased);	
+		bGuiEvents = false;
+	}
+}
+
+//--------------------------------------------------------------------
+void ofxVideoGrabberSettings::enableGuiEvents(){
+	if( !bGuiEvents ){
+		ofRemoveListener(ofEvents.mousePressed, this, &ofxVideoGrabberSettings::mousePressed);
+		ofRemoveListener(ofEvents.mouseDragged, this, &ofxVideoGrabberSettings::mouseDragged);
+		ofRemoveListener(ofEvents.mouseReleased, this, &ofxVideoGrabberSettings::mouseReleased);	
+		bGuiEvents = true;
+	}
 }
 
 //--------------------------------------------------------------------
 void ofxVideoGrabberSettings::setupVideoSettings(ofxVideoGrabberSDK* _videoGrabber)
 {
     videoGrabber = _videoGrabber;
-    setupGUIEvents();
+    enableGuiEvents();
     setupGUI();
-
-}
-
-//--------------------------------------------------------------------
-void ofxVideoGrabberSettings::setupGUIEvents()
-{
-    ofAddListener(ofEvents.mousePressed, this, &ofxVideoGrabberSettings::mousePressed);
-    ofAddListener(ofEvents.mouseDragged, this, &ofxVideoGrabberSettings::mouseDragged);
-    ofAddListener(ofEvents.mouseReleased, this, &ofxVideoGrabberSettings::mouseReleased);
 }
 
 //--------------------------------------------------------------------

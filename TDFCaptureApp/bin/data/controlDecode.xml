@@ -14,7 +14,7 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
-    <val_0>74.906364</val_0>
+    <val_0>86.666664</val_0>
 </jumpTo>
 <phasePersistence>
     <val_0>1.000000</val_0>
@@ -29,19 +29,19 @@
     <val_0>0.000000</val_0>
 </orientation>
 <rangeThreshold>
-    <val_0>14.166667</val_0>
+    <val_0>0.000000</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>188.888916</val_0>
+    <val_0>166.666687</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-12.222221</val_0>
+    <val_0>7.777779</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-102.400024</val_0>
+    <val_0>-45.511108</val_0>
 </filterMin>
 <filterMax>
-    <val_0>227.555542</val_0>
+    <val_0>420.977783</val_0>
 </filterMax>
 <exportFormat>
     <val_0>0.000000</val_0>
@@ -59,7 +59,7 @@
     <val_0>60.000000</val_0>
 </movieFramerate>
 <gamma>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </gamma>
 <hud>
     <val_0>0.000000</val_0>
@@ -77,7 +77,7 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <smooth_y_dist>
-    <val_0>6.172222</val_0>
+    <val_0>5.011111</val_0>
 </smooth_y_dist>
 <smooth_y_amnt>
     <val_0>1.000000</val_0>

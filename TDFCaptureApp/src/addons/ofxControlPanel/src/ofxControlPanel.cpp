@@ -86,7 +86,7 @@ void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY,
 }
 
 //-----------------------------
-void ofxControlPanel::loadFont( string fontName, int fontsize ){
+void ofxControlPanel::loadFont(string fontName, int fontsize ){
     guiTTFFont.loadFont(fontName, fontsize);
     bool okay = guiTTFFont.bLoadedOk;
 	guiBaseObject::setFont(&guiTTFFont);
@@ -919,10 +919,21 @@ void ofxControlPanel::toggleView(){
 
 
 //-------------------------------
-void ofxControlPanel::mousePressed(float x, float y, int button){
-    if( hidden ) return;
+bool ofxControlPanel::mousePressed(float x, float y, int button){
+    if( hidden ) return false;
 
+	bool hitSomething	  =	false;
     bool tabButtonPressed = false;
+	
+	ofRectangle checkRect = boundingBox;
+	if( minimize ){
+		checkRect.height = topBar.height;
+	}	
+
+	//we do this so people can check if mouse is interacting with panel
+	if( isInsideRect(x, y, checkRect) ){
+		hitSomething = true;
+	}
 
     if( isInsideRect(x, y, minimizeButton)){
         minimize = !minimize;
@@ -952,12 +963,27 @@ void ofxControlPanel::mousePressed(float x, float y, int button){
     }
 
     prevMouse.set(x, y);
+
+	return hitSomething;
 }
 
 
 //-------------------------------
-void ofxControlPanel::mouseDragged(float x, float y, int button){
-    if( hidden ) return;
+bool ofxControlPanel::mouseDragged(float x, float y, int button){
+    if( hidden ) return false;
+	
+	//we do this so people can check if mouse is interacting with panel
+	bool isDragging = dragging;
+		
+	if( !isDragging ){
+		ofRectangle checkRect = boundingBox;
+		if( minimize ){
+			checkRect.height = topBar.height;
+		}	
+		if( isInsideRect(x, y, checkRect) ){
+			isDragging = true;
+		}
+	}
 
     if(dragging)setPosition( MAX(0, x - mouseDownPoint.x), MAX(0, y -mouseDownPoint.y));
     else if(!minimize){
@@ -974,6 +1000,7 @@ void ofxControlPanel::mouseDragged(float x, float y, int button){
     }
 
     prevMouse.set(x, y);
+	return isDragging;
 }
 
 //-------------------------------

@@ -93,6 +93,8 @@ void captureApp::setup(){
 	settings			= NULL;
 	timeToEndCapture	= 0.0;
 	bNeedsToLeaveFrame	= false;
+	fadeInStartTime		= 0.0;
+	spotLightAlpha		= 1.0;
 
 	threePhase.setSize(1024, 768);
 	threePhase.setWavelength(64);
@@ -108,9 +110,11 @@ void captureApp::setup(){
 	
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
+	//panel.loadFont("resources/myFont.ttf", 9);
 	panel.addPanel("app settings", 1);
 	panel.addPanel("pattern settings", 1);
 	panel.addPanel("face trigger settings", 1);
+	panel.addPanel("spotlight settings", 1);
 
 	panel.setWhichPanel("app settings");
 	
@@ -125,6 +129,7 @@ void captureApp::setup(){
 	panel.addToggle("fullscreen", "fullscreen", false);
 	panel.addToggle("frame by frame", "frameByFrame", false);
 	panel.addToggle("large video", "largeVideo", false);
+	panel.addSlider("fade in time", "fadeInTime", 2.0, 0.0, 5.0, false);
 
 	vector<string> postCapModes;
 	postCapModes.push_back("save frames");
@@ -174,6 +179,10 @@ void captureApp::setup(){
 	panel.addSlider("confidence fade amnt", "confidence_fade", 0.95, 0.8, 0.995, false);
 	panel.addSlider("confidence gate start val", "confidence_gate_start", 0.65, 0.15, 1.0, false);
 	panel.addSlider("confidence gate stop val", "confidence_gate_stop", 0.4, 0.0, 1.0, false);
+	
+	panel.setWhichPanel("spotlight settings");
+	panel.addToggle("spot light image", "bSpotLight", true);
+	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
 
 	panel.loadSettings("controlCapture.xml");
 
@@ -206,6 +215,13 @@ void captureApp::setup(){
 
 	ofBackground(0, 0, 0);
 	
+	
+	scanningSound.loadSound("resources/scanningPlaceholder.mp3");
+	scanningSound.setLoop(true);
+	
+	spotLightImage.loadImage("resources/captureMask.jpg");
+	spotLightImage.setAnchorPercent(0.5, 0.5);
+	
 	face.setup("faceHaar/haarcascade_frontalface_alt.xml", 160, 120, 2.0, 2.0);
 	prevFaceCheckTimeF = ofGetElapsedTimef();
 }
@@ -214,23 +230,25 @@ void captureApp::setup(){
 void captureApp::update(){
 	panel.update();
 	
+	
+	//the capture part happens in the camera callbacks at the top.
+	//this just checks to make sure that the capture doesn't need to keep running.
 	if( state == CAP_STATE_CAPTURE ){
 		panel.hidden = true;
-		if( ofGetFrameNum() % 4 == 0 )
+		if( ofGetFrameNum() % 4 == 0 ){
 			printf("fps is %s\n", ofToString(camFps, 2).c_str());
+		}
+		if( ofGetElapsedTimef() >= timeToEndCapture ){
+			printf("time is %f - time to end is %f\n", ofGetElapsedTimef(), timeToEndCapture);
+			endCapture();		
+		}
 	}else if( debugState == CAP_DEBUG ){
 		panel.hidden = false;
 	}
-	
-	if( state == CAP_STATE_CAPTURE && ofGetElapsedTimef() >= timeToEndCapture ){
-		printf("time is %f - time to end is %f\n", ofGetElapsedTimef(), timeToEndCapture);
-		endCapture();		
-		if( panel.getValueB("B_FACE_TRIGGER") ){
-			bNeedsToLeaveFrame = true;
-		}else{
-			bNeedsToLeaveFrame = false;
-		}
-	}
+		
+	if( state == CAP_STATE_FADEIN && ofGetElapsedTimef() > fadeInStartTime + panel.getValueF("fadeInTime") ){
+		startCapture();
+	}	
 	
 	if( state == CAP_STATE_DECODING ){
 		handleDecode();
@@ -249,6 +267,16 @@ void captureApp::update(){
 	}
 	
 	panel.clearAllChanged();
+}
+
+//-----------------------------------------------
+void captureApp::startFadeIn(){
+	if( panel.getValueF("fadeInTime") > 0 ){
+		state		= CAP_STATE_FADEIN;
+		fadeInStartTime  = ofGetElapsedTimef();
+	}else{
+		startCapture();
+	}
 }
 
 //-----------------------------------------------
@@ -422,6 +450,8 @@ void captureApp::startCapture(){
 		imageSaver.clear();
 		cameraFrameNum = 0;
 		
+		scanningSound.play();
+		
 		ofxTimeStamp ts;
 		ts.setTimestampToCurrentTime();
 		currentTimestamp	= ts.getUnixTimeAsString();
@@ -446,7 +476,15 @@ void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
 		ofShowCursor();
-			
+		
+		if( panel.getValueB("B_FACE_TRIGGER") ){
+			bNeedsToLeaveFrame = true;
+		}else{
+			bNeedsToLeaveFrame = false;
+		}
+
+		scanningSound.stop();
+		
 		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
 			startDecode();
 		}else{
@@ -498,6 +536,12 @@ void captureApp::handleCamera(){
 	
 		if( camState == CAMERA_OPEN && do1394 ){
 			update1394Cam();
+			//we have to do this because ofxVideoGrabber uses events :(
+			if( settings != NULL && state <= CAP_STATE_CAPTURE && debugState == CAP_DEBUG ){
+				settings->panel.show();				
+			}else{
+				settings->panel.hide();
+			}
 		}
 
 		if( camState == CAMERA_OPEN && panel.getValueB("cameraSettings")) {
@@ -548,17 +592,28 @@ void captureApp::handleCamera(){
 					//sdk->set1394bMode(true);
 					//sdk->setROI(0,0,320,200);
 					//sdk->setDeviceID("b09d01008bc69e:0");
-					settings = new ofxIIDCSettings;
+					settings = new ofxIIDCSettings();
 					//camera1394.setVerbose(true);
-					camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_YUV422, VID_FORMAT_RGB, 60.0, false, sdk, settings );
-					settings->setXMLFilename("mySettingsFile.xml");
-					settings->panel.setPosition(318, 136);
+					if( camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_YUV422, VID_FORMAT_RGB, 60.0, false, sdk, settings ) ){
+						settings->setXMLFilename("mySettingsFile.xml");
+						settings->panel.setPosition(318, 136);
+						camState = CAMERA_OPEN;
+					}else{
+						printf("no camera to open\n");
+						delete settings;
+						delete sdk;
+						settings = NULL;
+						sdk		 = NULL;
+						do1394   = false;
+						camState = CAMERA_CLOSED;
+						panel.setValueI("camMode", 0);
+					}
 				}else{
 					camera.setup(cameraWidth, cameraHeight, this);
 					camera.setDesiredFrameRate(60);
+					camState = CAMERA_OPEN;					
 				}
 				
-				camState = CAMERA_OPEN;
 
 			}else if( camState == CAMERA_NEEDS_CLOSING ){
 				
@@ -566,9 +621,9 @@ void captureApp::handleCamera(){
 					printf("closing camera\n");
 					camera1394.close();
 					if( settings != NULL ){
+						printf("deleting settings and sdk\n");
 						delete settings;
 						delete sdk;
-						printf("deleting settings and sdk\n");
 						settings = NULL;
 						sdk		 = NULL;
 						do1394   = false;
@@ -585,19 +640,20 @@ void captureApp::handleCamera(){
 	
 		prevCamState = camState;	
 	}	
+
 }
 
 //-----------------------------------------------
 void captureApp::handleFaceTrigger(){
 	
-	if( camState != CAMERA_CLOSED && state < CAP_STATE_CAPTURE ){
+	if( camState != CAMERA_CLOSED && state < CAP_STATE_FADEIN ){
 	
 		float faceFps  = panel.getValueF("FACE_FPS");
 		float timeDiff = 1.0/ofClamp(faceFps, 4.0, 60.0);
 		
-		face.confidenceAddAmnt  = panel.getValueF("confidence_add");
-		face.confidenceFadeRate = panel.getValueF("confidence_fade");
-		face.confidenceGateValStart  = panel.getValueF("confidence_gate_start");
+		face.confidenceAddAmnt		= panel.getValueF("confidence_add");
+		face.confidenceFadeRate		= panel.getValueF("confidence_fade");
+		face.confidenceGateValStart = panel.getValueF("confidence_gate_start");
 		face.confidenceGateValStop  = panel.getValueF("confidence_gate_stop");
 		
 		if( ofGetElapsedTimef() - prevFaceCheckTimeF >= timeDiff ){
@@ -609,11 +665,14 @@ void captureApp::handleFaceTrigger(){
 				pix = camera.getPixels();
 			}
 			if(pix != NULL){
-				face.update(pix, cameraWidth, cameraHeight);
+				face.updatePixels(pix, cameraWidth, cameraHeight);
 			}
 			
 			prevFaceCheckTimeF = ofGetElapsedTimef();
 		}
+		
+		//update the trigger dispite the rate we update the pixels
+		face.update();
 		
 		if( panel.hasValueChanged("B_FACE_TRIGGER") && panel.getValueB("B_FACE_TRIGGER") ){
 				bNeedsToLeaveFrame = false;
@@ -628,7 +687,7 @@ void captureApp::handleFaceTrigger(){
 			//only trigger a capture if the flag is set!!!
 			if( panel.getValueB("B_FACE_TRIGGER") && face.firstSawFace() ){
 				face.clearFirstSawFace();
-				startCapture();
+				startFadeIn();
 			}
 		}
 	}
@@ -646,25 +705,79 @@ void captureApp::draw(){
 		glEnable(GL_DEPTH_TEST);
 			ofPushMatrix();
 				ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);		
+				ofRotate( ofMap(saveIndex, 0, imageSaver.getSize(), -30, 30), 0, 1, 0);
 				decoder.drawCloud();
 			ofPopMatrix();
 			glDisable(GL_DEPTH_TEST);			
 		camera3D.remove();	
-		decoder.drawCurrentFrame(0, 0, 320, 240);
+		//decoder.drawCurrentFrame(0, 0, 320, 240);
+
 		ofNoFill();
-		ofSetColor(255, 255, 255, 255);
-		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofGetWidth()/2, 60);	
+		ofSetColor(100, 100, 100, 255);
+		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofGetWidth()/2, 20);	
 		ofFill();
-		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofMap(saveIndex, 0, imageSaver.getSize(), 0.0, 1.0, true) * (float)(ofGetWidth()/2), 60);			
+		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofMap(saveIndex, 0, imageSaver.getSize(), 0.0, 1.0, true) * (float)(ofGetWidth()/2), 20);			
 		return;
 	}
 
 	if(!panel.getValueB("frameByFrame")){
 		patternFrame = ofGetFrameNum() / panel.getValueI("patternRate");
 	}
+
+	ofSetColor(255, 255, 255, 255);
 	curGenerator->get(patternFrame).draw(0, 0);
+	if( state == CAP_STATE_CAPTURE ){
+		return;
+	}
 	
-	if(state != CAP_STATE_CAPTURE && debugState == CAP_DEBUG) {
+	if( panel.getValueB("bSpotLight") ){
+		if( state < CAP_STATE_FADEIN ){
+			spotLightAlpha = 1.0;
+		}else if( state > CAP_STATE_END_DECODE ){
+			spotLightAlpha += 0.05;	
+			spotLightAlpha = ofClamp(spotLightAlpha, 0, 1);	
+		}
+	}else if(  !panel.getValueB("bSpotLight") || state == CAP_STATE_CAPTURE ){
+		spotLightAlpha = 0.0;
+	}
+		
+	if( state == CAP_STATE_FADEIN ){
+		float alpha = ofMap(ofGetElapsedTimef(), fadeInStartTime, fadeInStartTime + panel.getValueF("fadeInTime"), 255, 0.0);
+				
+		ofPushStyle();
+			ofEnableAlphaBlending();
+			ofSetColor(0, 0, 0, alpha);
+			ofRect(0, 0, ofGetWidth(), ofGetHeight());
+		ofPopStyle();
+	}
+	
+	if( state >= CAP_STATE_END_DECODE ){
+		ofPushStyle();
+			ofSetColor(0, 0, 0, 255);
+			ofRect(0, 0, ofGetWidth(), ofGetHeight());
+		ofPopStyle();
+	}
+	
+	if( spotLightAlpha <= 0.01 ){
+		spotLightAlpha = 0.0;
+	}else{
+		ofPushStyle();
+			ofEnableAlphaBlending();
+			float val = 255.0 * panel.getValueF("spotLightBrightness");
+			ofSetColor(val, val, val, spotLightAlpha*255.0);
+			spotLightImage.draw( ofGetWidth()/2, ofGetHeight()/2, ofGetWidth(), ofGetHeight() );		
+		ofPopStyle();
+		
+		if( state == CAP_STATE_FADEIN ){
+			spotLightAlpha *= 0.94;
+		}
+	}	
+	
+	if( state == CAP_STATE_CAPTURE || state == CAP_STATE_FADEIN ){
+		return;
+	}
+	
+	if(debugState == CAP_DEBUG) {
 		int cameraRate   = panel.getValueI("cameraRate");
 		int cameraOffset = panel.getValueI("cameraOffset");
 		ofPushStyle();
@@ -700,9 +813,12 @@ void captureApp::draw(){
 		
 		panel.draw();
 		
-		if( do1394 && camState == CAMERA_OPEN ){
-			settings->draw();
+		if( do1394 && settings != NULL ){
+			if( camState == CAMERA_OPEN ){
+				settings->draw();
+			}
 		}
+		
 		if( camState == CAMERA_OPEN  ){
 			ofSetColor(240, 10, 70);
 			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 600, 20);
@@ -714,17 +830,17 @@ void captureApp::draw(){
 
 //--------------------------------------------------------------
 void captureApp::mouseDragged(int x, int y, int button){
-	panel.mouseDragged(x, y, button);
+	if( debugState == CAP_DEBUG) panel.mouseDragged(x, y, button);
 }
 
 //--------------------------------------------------------------
 void captureApp::mousePressed(int x, int y, int button){
-	panel.mousePressed(x, y, button);
+	if( debugState == CAP_DEBUG) panel.mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------
 void captureApp::mouseReleased(int x, int y, int button){
-	panel.mouseReleased();
+	if( debugState == CAP_DEBUG) panel.mouseReleased();
 }
 
 //--------------------------------------------------------------
@@ -742,11 +858,21 @@ void captureApp::keyPressed(int key) {
 		}
 	}
 	
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_UP){
-		patternFrame--;
+	if( key == 'D' ){
+		if( debugState == CAP_DEBUG ){
+			debugState = CAP_NORMAL;
+		}else if( debugState == CAP_NORMAL ){
+			debugState = CAP_DEBUG;
+		}	
 	}
+	
+	if( debugState == CAP_DEBUG ){
+		if(panel.getValueB("frameByFrame") && key == OF_KEY_UP){
+			patternFrame--;
+		}
 
-	if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
-		patternFrame++;
+		if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
+			patternFrame++;
+		}
 	}
 }
