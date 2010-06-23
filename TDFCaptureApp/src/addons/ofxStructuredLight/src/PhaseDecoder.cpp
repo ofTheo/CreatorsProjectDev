@@ -230,42 +230,44 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt, bool useGaussian){
 	}
 	
 	// theo - wip - messy and prob slow for now. 
-	memcpy(depthCopy, depth, sizeof(float) * width * height);
-	int k = 0;
-	for(int y = 0; y < height; y++){
-	
-		int minY = -yDist;
-		if( y + minY < 0 ) minY = -y;
-		int maxY = yDist;
-		if( y + maxY >= height ) maxY = (height-1)-y;
+	if(yAmt > 0) {
+		memcpy(depthCopy, depth, sizeof(float) * width * height);
+		int k = 0;
+		for(int y = 0; y < height; y++){
 		
-		int num = maxY - minY;
-		if( num == 0 ){
-			k+= width;
-			continue;
-		}
-		
-		float averageAmnt = 1.0/(float)(1+num);
-		for(int x = 0; x < width; x++){
-		
-			depth[k] *= (1.0-yAmt);
-			float amnt = 0.0;
-			int numReal = 0;
-			for(int j = minY; j <= maxY; j++){
-				if( j+y < 0 || j + y == height ){
-					printf("FOOOOOOOOOOOOL\n");
-					assert(0);
-				}
-				if( !mask[k + j*width] ){
-					amnt +=  depthCopy[k + j*width];
-					numReal++;
-				}
+			int minY = -yDist;
+			if( y + minY < 0 ) minY = -y;
+			int maxY = yDist;
+			if( y + maxY >= height ) maxY = (height-1)-y;
+			
+			int num = maxY - minY;
+			if( num == 0 ){
+				k+= width;
+				continue;
 			}
 			
-			amnt /= (float)(numReal+1);
-			depth[k] += yAmt * amnt;
+			float averageAmnt = 1.0/(float)(1+num);
+			for(int x = 0; x < width; x++){
 			
-			k++;
+				depth[k] *= (1.0-yAmt);
+				float amnt = 0.0;
+				int numReal = 0;
+				for(int j = minY; j <= maxY; j++){
+					if( j+y < 0 || j + y == height ){
+						printf("FOOOOOOOOOOOOL\n");
+						assert(0);
+					}
+					if( !mask[k + j*width] ){
+						amnt +=  depthCopy[k + j*width];
+						numReal++;
+					}
+				}
+				
+				amnt /= (float)(numReal+1);
+				depth[k] += yAmt * amnt;
+				
+				k++;
+			}
 		}
 	}
 }
