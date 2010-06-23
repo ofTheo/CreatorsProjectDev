@@ -8,7 +8,7 @@
     <val_0>0.000000</val_0>
 </fullscreen>
 <frameByFrame>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </frameByFrame>
 <patternType>
     <val_0>0.000000</val_0>
@@ -29,7 +29,7 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-    <val_0>29.750000</val_0>
+    <val_0>43.916668</val_0>
 </minBrightness>
 <projectorLut>
     <val_0>1.000000</val_0>
@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>2.000000</val_0>
+    <val_0>0.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>

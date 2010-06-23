@@ -100,10 +100,6 @@ void captureApp::setup(){
 	bDoThreadedFrameSave	= false;
 	
 	camera3D.disableMouseEvents();
-
-	threePhase.setSize(1024, 768);
-	threePhase.setWavelength(64);
-	threePhase.generate();
 	
 	ofxXmlSettings xml;
 	xml.loadFile("locationSettings.xml");
@@ -222,8 +218,8 @@ void captureApp::setup(){
 	int captureTime = 15;
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
 
-	ofSetVerticalSync(true);
-	ofSetFrameRate(60.0);
+	ofSetVerticalSync(true); // vertical sync should be enough
+	// any extra calls to ofSetFramerate couldn't help...
 
 	ofBackground(0, 0, 0);
 	
@@ -235,6 +231,9 @@ void captureApp::setup(){
 	
 	face.setup("faceHaar/haarcascade_frontalface_alt.xml", 160, 120, 2.0, 2.0);
 	prevFaceCheckTimeF = ofGetElapsedTimef();
+	
+	threePhase.setSize(1024, 768);
+	updateGenerator();
 }
 
 //-----------------------------------------------
@@ -570,30 +569,14 @@ void captureApp::endCapture(){
 }
 
 //--------------------------------------------------------
-void captureApp::handleProjection(){
-		// this is where an event/callback-based
-	// control panel would be really helpful!
-		
-	if( panel.hasValueChanged("wavelength") ){
-		int curWavelength = panel.getValueI("wavelength");
-		threePhase.setWavelength(curWavelength);
-		threePhase.generate();
-	}
+void captureApp::handleProjection(){		
 
-	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") || 
-			panel.hasValueChanged("projectorLut")) {	
-		threePhase.setMinBrightness(panel.getValueI("minBrightness"));
-		threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
-		threePhase.generate();
-		if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
-				curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
-	}
-
-	if(panel.hasValueChanged("orientation") ) {
-		int curOrientation = panel.getValueI("orientation");
-		phaseOrientation orientation = curOrientation == 0 ? PHASE_VERTICAL : PHASE_HORIZONTAL;
-		threePhase.setOrientation(orientation);
-		threePhase.generate();
+	if (panel.hasValueChanged("wavelength") ||
+			panel.hasValueChanged("minBrightness") ||
+			panel.hasValueChanged("maxBrightness") || 
+			panel.hasValueChanged("projectorLut") ||
+			panel.hasValueChanged("orientation")) {	
+		updateGenerator();
 	}
 
 	threePhase.setReverse(panel.getValueB("reverse"));
@@ -601,8 +584,20 @@ void captureApp::handleProjection(){
 	if( panel.hasValueChanged("fullscreen") ) {
 		ofSetFullscreen(panel.getValueB("fullscreen"));
 	}
-	
 }
+
+void captureApp::updateGenerator() {
+	threePhase.setWavelength(panel.getValueI("wavelength"));
+	threePhase.setMinBrightness(panel.getValueI("minBrightness"));
+	threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
+	int curOrientation = panel.getValueI("orientation");
+	phaseOrientation orientation = curOrientation == 0 ? PHASE_VERTICAL : PHASE_HORIZONTAL;
+	threePhase.setOrientation(orientation);
+	threePhase.generate();
+	if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
+		curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
+}
+
 
 //--------------------------------------------------------
 void captureApp::handleCamera(){
