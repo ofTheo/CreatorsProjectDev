@@ -173,6 +173,7 @@
 		3BDAF99E11D1D6770094C25D /* Shared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shared.h; path = src/addons/ofxStructuredLight/src/Shared.h; sourceTree = SOURCE_ROOT; };
 		3BDAF99F11D1D6770094C25D /* ThreePhaseWrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseWrap.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.cpp; sourceTree = SOURCE_ROOT; };
 		3BDAF9A011D1D6770094C25D /* ThreePhaseWrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseWrap.h; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.h; sourceTree = SOURCE_ROOT; };
+		3BDAFAD611D2A82C0094C25D /* ofxNumericalDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxNumericalDirList.h; path = src/decodeApp/ofxNumericalDirList.h; sourceTree = SOURCE_ROOT; };
 		E42DA42E11D10298009ACAC2 /* ofxTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimeStamp.h; path = src/addons/ofxTimeStamp/ofxTimeStamp.h; sourceTree = SOURCE_ROOT; };
 		E43C87B511CEC34100973BFC /* decodeAndExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decodeAndExport.h; sourceTree = "<group>"; };
 		E43C87B611CEC34100973BFC /* decodeAndExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decodeAndExport.cpp; sourceTree = "<group>"; };
@@ -559,6 +560,7 @@
 		E441401B11C46F9B00F8D93E /* decodeApp */ = {
 			isa = PBXGroup;
 			children = (
+				3BDAFAD611D2A82C0094C25D /* ofxNumericalDirList.h */,
 				E441406511C46F9B00F8D93E /* decodeApp.cpp */,
 				E441406611C46F9B00F8D93E /* decodeApp.h */,
 			);

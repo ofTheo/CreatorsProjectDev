@@ -218,9 +218,9 @@ void captureApp::setup(){
 	int captureTime = 15;
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
 
-	ofSetVerticalSync(true); // vertical sync should be enough
-	// any extra calls to ofSetFramerate couldn't help...
-
+	ofSetVerticalSync(true);
+	ofSetFrameRate(60);
+	
 	ofBackground(0, 0, 0);
 	
 	scanningSound.loadSound("resources/scanningPlaceholder.mp3");
@@ -910,12 +910,10 @@ void captureApp::draw(){
 			}
 		}
 		
-		if( camState == CAMERA_OPEN  ){
-			ofSetColor(240, 10, 70);
-			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 600, 20);
-			ofSetColor(255, 255, 255, 255);
-		}
-	
+		ofSetColor(255, 0, 0);
+		ofDrawBitmapString("app fps: " + ofToString(ofGetFrameRate(), 2), 820, 20);
+		if(camState == CAMERA_OPEN)
+			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 820, 40);	
 	}
 }
 
