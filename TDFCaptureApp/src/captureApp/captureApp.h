@@ -81,6 +81,9 @@ public:
 	void mouseReleased(int x, int y, int button);
 	void keyPressed(int key);
 
+	void getClipping(ofImage& img, ofImage& clipping);
+
+
 	
 	ofxAutoControlPanel panel;
 
