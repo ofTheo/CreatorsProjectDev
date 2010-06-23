@@ -8,6 +8,7 @@
 
 void DepthExporter::exportDepth(string filename, int width, int height, const bool* mask, const float* depth, float min, float max) {
 	ofImage img;
+	img.setUseTexture(false);
 	img.allocate(width, height, OF_IMAGE_GRAYSCALE);
 	unsigned char* pixels = img.getPixels();
 	int n = width * height;
@@ -51,6 +52,7 @@ void DepthExporter::exportMesh(string filename, int width, int height, const boo
 
 void DepthExporter::exportTexture(string filename, int width, int height, const bool* mask, const unsigned char* color) {
 	ofImage img;
+	img.setUseTexture(false);
 	img.allocate(width, height, OF_IMAGE_COLOR);
 	unsigned char* pixels = img.getPixels();
 	int n = width * height;
@@ -76,6 +78,7 @@ void DepthExporter::exportTexture(string filename, int width, int height, const 
  */
 void DepthExporter::exportDepthAndTexture(string filename, int width, int height, const bool* mask, const float* depth, float min, float max, const unsigned char* color) {
 	ofImage img;
+	img.setUseTexture(false);
 	img.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
 	unsigned char* pixels = img.getPixels();
 	int n = width * height;

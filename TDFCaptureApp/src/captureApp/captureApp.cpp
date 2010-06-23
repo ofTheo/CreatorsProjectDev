@@ -37,7 +37,7 @@ void captureApp::frameReceived(ofVideoGrabber& grabber) {
 					camera.getThreadedPixels(recent[curFrame].getPixels());
 					needsUpdate[curFrame] = true;
 				} else {
-					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".tga";
 					imageSaver.setFilename(filename);
 					camera.getThreadedPixels(imageSaver.getPixels());
 					imageSaver.next();
@@ -68,7 +68,7 @@ void captureApp::update1394Cam(){
 					memcpy(recent[curFrame].getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					needsUpdate[curFrame] = true;
 				}else{
-					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".tga";
 					imageSaver.setFilename(filename);
 					memcpy(imageSaver.getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					imageSaver.next();
@@ -119,7 +119,7 @@ void captureApp::setup(){
 	panel.addPanel("app settings", 1);
 	panel.addPanel("pattern settings", 1);
 	panel.addPanel("face trigger settings", 1);
-	panel.addPanel("spotlight settings", 1);
+	panel.addPanel("visual settings", 1);
 
 	panel.setWhichPanel("app settings");
 	
@@ -187,10 +187,11 @@ void captureApp::setup(){
 	panel.addSlider("confidence gate start val", "confidence_gate_start", 0.65, 0.15, 1.0, false);
 	panel.addSlider("confidence gate stop val", "confidence_gate_stop", 0.4, 0.0, 1.0, false);
 	
-	panel.setWhichPanel("spotlight settings");
+	panel.setWhichPanel("visual settings");
 	panel.addToggle("spot light image", "bSpotLight", true);
 	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
-
+	panel.addToggle("reverse decode mode", "bReverseModel", false);
+	
 	panel.loadSettings("controlCapture.xml");
 	
 	if( panel.getValueB("use_osc") ){
@@ -325,7 +326,14 @@ void captureApp::startDecode(){
 		saveIndex = 0;
 		saveCount = 0;
 		decoder.setupDecoder(imageSaver.width, imageSaver.height);
-		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), dAppPtr->panel.getValueF("depthScale"), dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
+		
+		float scale = dAppPtr->panel.getValueF("depthScale");
+
+//		if( panel.getValueB("bReverseModel") ){
+//			scale *= -1.0;
+//		}
+		
+		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), scale, dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
 
 		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
 			ofxFileHelper::makeDirectory(currentDecodeFolder);
@@ -353,6 +361,14 @@ void captureApp::handleDecode(){
 		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
 		int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
 		
+		printf("filter min %f filter max %f - smooth %f dist %i \n", filterMin, filterMax, smoothAmnt, smoothDist);
+		
+//		float scale = dAppPtr->panel.getValueF("depthScale");
+//		if( panel.getValueB("bReverseModel") ){
+//			filterMin *= -1.0;
+//			filterMax *= -1.0;
+//		}		
+//		
 		int numMissed	= 1+ panel.getValueI("decodeSkipFrame");
 		
 		//you can changed this to a higher number to decode more frames per app frame. 
@@ -366,7 +382,7 @@ void captureApp::handleDecode(){
 				
 				if( saveIndex % ( numMissed ) == 0 && bSaveToDisk ){
 					float t1 = ofGetElapsedTimef();
-					decoder.exportFrameToTGA(currentDecodeFolder, 10000+saveIndex);
+					decoder.exportFrameToTGA(currentDecodeFolder, FRAME_START_INDEX+saveIndex, filterMin, filterMax);
 					timeToDecode += ofGetElapsedTimef()-t1;
 					saveCount++;
 				}
@@ -452,9 +468,10 @@ void captureApp::prepareExportFramesToDisk(){
 		ofxFileHelper::makeDirectory(currentCaptureFolder+"_settings");		
 
 		//save the current capture and decode settings to the settings folder
-		panel.saveSettings(currentCaptureFolder+"_settings/captureSettings.xml");
-		dAppPtr->panel.saveSettings(currentCaptureFolder+"_settings/decodeSettings.xml");
-	
+		//we pass in the false flag so that we don't change where the panel saves the settings to
+		panel.saveSettings(currentCaptureFolder+"_settings/captureSettings.xml", false);
+		dAppPtr->panel.saveSettings(currentCaptureFolder+"_settings/decodeSettings.xml", false);
+		
 		bDoThreadedFrameSave = true;
 	}else{
 		bDoThreadedFrameSave = false;
@@ -666,11 +683,12 @@ void captureApp::handleCamera(){
 					//sdk->setROI(0,0,320,200);
 					//sdk->setDeviceID("b09d01008bc69e:0");
 					settings = new ofxIIDCSettings();
+					settings->setXMLFilename("mySettingsFile.xml");
 					//camera1394.setVerbose(true);
-					if( camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_YUV422, VID_FORMAT_RGB, 60.0, false, sdk, settings ) ){
-						settings->setXMLFilename("mySettingsFile.xml");
+					if( camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_Y8, VID_FORMAT_RGB, 60.0, false, sdk, settings ) ){
 						settings->panel.setPosition(318, 136);
 						camState = CAMERA_OPEN;
+						//settings->panel.reloadSettings();
 					}else{
 						printf("no camera to open\n");
 						delete settings;
@@ -777,11 +795,11 @@ void captureApp::draw(){
 		ofBackground(0, 0, 0);
 		glEnable(GL_DEPTH_TEST);
 			ofPushMatrix();
-				ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);		
-				ofRotate( ofMap(saveIndex, 0, imageSaver.getSize(), -30, 30), 0, 1, 0);
+				ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, -200);		
+				ofRotate( ofMap(saveIndex, 0, imageSaver.getSize(), 180 -8, 180 + 8, true), 0, 1, 0);
 				decoder.drawCloud();
 			ofPopMatrix();
-			glDisable(GL_DEPTH_TEST);			
+		glDisable(GL_DEPTH_TEST);			
 		camera3D.remove();	
 		//decoder.drawCurrentFrame(0, 0, 320, 240);
 

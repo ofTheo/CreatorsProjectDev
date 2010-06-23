@@ -1,22 +1,18 @@
 <BRIGHTNESS>
-    <val_0>132.233322</val_0>
+    <val_0>122.355553</val_0>
 </BRIGHTNESS>
 <EXPOSURE>
-    <val_0>53.000000</val_0>
+    <val_0>7.000000</val_0>
 </EXPOSURE>
 <GAMMA>
     <val_0>0.000000</val_0>
 </GAMMA>
 <SHUTTER>
-    <val_0>327.000000</val_0>
+    <val_0>121.000000</val_0>
 </SHUTTER>
 <GAIN>
-    <val_0>60.000000</val_0>
+    <val_0>16.000000</val_0>
 </GAIN>
-<WHITE_BALANCE>
-    <val_0>618.915039</val_0>
-    <val_1>414.315002</val_1>
-</WHITE_BALANCE>
 <BRIGHTNESS_MODE>
     <val_0>0.000000</val_0>
 </BRIGHTNESS_MODE>
@@ -32,6 +28,3 @@
 <GAIN_MODE>
     <val_0>0.000000</val_0>
 </GAIN_MODE>
-<WHITE_BALANCE_MODE>
-    <val_0>0.000000</val_0>
-</WHITE_BALANCE_MODE>

@@ -220,7 +220,7 @@ byte * ThreePhaseDecoder::getColorAndDepth(float minDist, float maxDist){
 		if( mask[i] || depth[i] > maxDist || depth[i] < minDist ){
 			colorDepth[d+3] = 0;
 		}else{
-			colorDepth[d+3] = (byte)ofMap(depth[i], minDist, maxDist, 1, 255, true);
+			colorDepth[d+3] = (byte)ofClamp(ofMap(depth[i], minDist, maxDist, 1, 256), 1, 255);
 		}
 
 		j+=3;

@@ -86,8 +86,6 @@ public:
 	void keyPressed(int key);
 
 	void getClipping(ofImage& img, ofImage& clipping);
-
-
 	
 	ofxAutoControlPanel panel;
 

@@ -5,6 +5,7 @@
 #include "ofMain.h"
 #include "captureApp.h"
 #include "decodeApp.h"
+#include "appConstants.h"
 
 class testApp : public ofBaseApp{
 

@@ -145,7 +145,7 @@ class ofxControlPanel: public guiBaseObject{
         void disableIncrementSave();
         void loadSettings(string xmlFile);
         void reloadSettings();
-        void saveSettings(string xmlFile);
+        void saveSettings(string xmlFile, bool bUpdateXmlFile = true);
         void saveSettings();
         void setXMLFilename(string xmlFile);
 

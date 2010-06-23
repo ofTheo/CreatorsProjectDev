@@ -234,7 +234,6 @@ void PhaseDecoder::filterDepth(int yDist, float yAmt){
 			continue;
 		}
 		
-		float averageAmnt = 1.0/(float)(1+num);
 		for(int x = 0; x < width; x++){
 		
 			depth[k] *= (1.0-yAmt);

@@ -69,19 +69,24 @@ class decodeAndExport{
 
 				//TODO: optimize
 				if( smoothAmnt > 0.0 ){
+					printf("filtering depth! %f %i\n", smoothAmnt, smoothDist);
 					threePhase->filterDepth(smoothAmnt, smoothDist);
 				}
 				
-				img.setFromPixels(threePhase->getColorAndDepth(filterMin, filterMax), threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
+				//img.setFromPixels(threePhase->getColorAndDepth(filterMin, filterMax), threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
 			}
 		}
 
-		void exportFrameToTGA(string directoryPath, int frameNo){
-			img.saveImage(directoryPath+ofToString(frameNo)+".tga");
+		void exportFrameToTGA(string directoryPath,  int frameNo, float filterMin, float filterMax){
+			threePhase->exportDepthAndTexture(directoryPath+ofToString(frameNo)+".tga", filterMin, filterMax);
+			
+			//img.saveImage(directoryPath+ofToString(frameNo)+".tga");
 		}
 					
-		void exportFrameToPNG(string directoryPath, int frameNo){
-			img.saveImage(directoryPath+ofToString(frameNo)+".png");
+		void exportFrameToPNG(string directoryPath, int frameNo, float filterMin, float filterMax){
+			threePhase->exportDepthAndTexture(directoryPath+ofToString(frameNo)+".png", filterMin, filterMax);
+		
+			//img.saveImage(directoryPath+ofToString(frameNo)+".png");
 		}
 
 	//--------------------------------------------------------------
@@ -112,7 +117,7 @@ class decodeAndExport{
 		int srcHeight	= threePhase->getHeight();
 
 		glEnable(GL_POINT_SIZE);
-		glPointSize(3);
+		glPointSize(1.5);
 		glBegin(GL_POINTS);
 		int i = 0;
 		for (int y = 0; y < srcHeight; y++) {

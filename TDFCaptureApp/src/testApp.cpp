@@ -37,7 +37,7 @@ void testApp::keyPressed(int key){
 		
 		//update the folderList
 		if( bCapture ){
-			dApp.inputList.listDir("input");
+			dApp.inputList.listDir(CAPTURE_MAIN_FOLDER);
 			dApp.inputList.reverseOrder();
 		}
 		bCapture = false;

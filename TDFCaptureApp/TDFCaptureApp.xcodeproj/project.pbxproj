@@ -363,7 +363,7 @@
 		E4ACB59111D19072007B6252 /* ofxOscSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxOscSender.h; path = ../../../addons/ofxOsc/src/ofxOscSender.h; sourceTree = SOURCE_ROOT; };
 		E4ACB63111D1BD13007B6252 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxDirList.cpp; path = src/addons/ofxDirList/src/ofxDirList.cpp; sourceTree = SOURCE_ROOT; };
 		E4ACB63211D1BD13007B6252 /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDirList.h; path = src/addons/ofxDirList/src/ofxDirList.h; sourceTree = SOURCE_ROOT; };
-		E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExampleDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* emptyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthDecoder.cpp; path = src/addons/ofxStructuredLight/src/DepthDecoder.cpp; sourceTree = SOURCE_ROOT; };
 		E4B7A4B511CE6A710096261A /* DepthDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthDecoder.h; path = src/addons/ofxStructuredLight/src/DepthDecoder.h; sourceTree = SOURCE_ROOT; };
@@ -1249,7 +1249,7 @@
 			children = (
 				031CEA9C113955A000EC790C /* addons */,
 				E4413F9211C46F9B00F8D93E /* src */,
-				E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* emptyExample.app */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4C2422310CC54B6004149E2 /* openFrameworks */,
 				E45BE0360E8CC5DE009D7055 /* libs */,
@@ -1434,7 +1434,7 @@
 			);
 			name = emptyExample;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* emptyExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

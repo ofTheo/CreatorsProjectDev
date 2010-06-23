@@ -812,7 +812,7 @@ void ofxControlPanel::reloadSettings(){
 }
 
 //-------------------------------
-void ofxControlPanel::saveSettings(string xmlFile){
+void ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
     for(int i = 0; i < (int) guiObjects.size(); i++)guiObjects[i]->saveSettings(xmlFile);
 
     for(int i = 0; i < (int) xmlObjects.size(); i++){
@@ -834,8 +834,11 @@ void ofxControlPanel::saveSettings(string xmlFile){
 
         settings.saveFile(xmlName);
     }
+	printf("saving %s\n", xmlFile.c_str());
     settings.saveFile(xmlFile);
-    currentXmlFile = xmlFile;
+	if( bUpdateXmlFile ){
+		currentXmlFile = xmlFile;
+	}
     usingXml = true;
 }
 
@@ -869,6 +872,8 @@ void ofxControlPanel::saveSettings(){
     if(currentXmlFile == "") {
         currentXmlFile = "controlPanelSettings.xml";
     }
+	printf("saving %s\n", currentXmlFile.c_str());
+	
     settings.saveFile(currentXmlFile);
     usingXml = true;
 }
@@ -940,6 +945,7 @@ bool ofxControlPanel::mousePressed(float x, float y, int button){
     }else if( usingXml && isInsideRect(x, y, saveButton) ){
         saveSettings();
         saveDown = true;
+		printf("saving settings!\n");
     }else if( usingXml && isInsideRect(x, y, restoreButton) ){
         reloadSettings();
         restoreDown = true;

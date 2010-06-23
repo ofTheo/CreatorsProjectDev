@@ -22,7 +22,7 @@ void decodeApp::setup(){
 
 	panel.setWhichPanel("input");
 
-	inputList.listDir("input");
+	inputList.listDir(CAPTURE_MAIN_FOLDER);
 	inputList.reverseOrder();
 	panel.addFileLister("input", &inputList, 240, 500);
 
@@ -50,7 +50,7 @@ void decodeApp::setup(){
 
 	panel.addSlider("range threshold", "rangeThreshold", 40, 0, 255, true);
 	panel.addSlider("depth scale", "depthScale", 130, -500, 500, false);
-	panel.addSlider("depth skew", "depthSkew", -28, -50, 50, false);
+	panel.addSlider("depth skew", "depthSkew", 0, -20, 20, false);
 	panel.addSlider("filter min", "filterMin", -1024, -1024, 1024, false);
 	panel.addSlider("filter max", "filterMax", 1024, -1024, 1024, false);
 
@@ -187,7 +187,7 @@ void decodeApp::setupInput() {
 	
 	if(usingDirectory) {
 			
-		inputDir = "input/" + name + "/";
+		inputDir = string(CAPTURE_MAIN_FOLDER) + name + "/";
 		imageList.reset();
 		imageList.allowExt("jpg");
 		imageList.allowExt("JPG");
@@ -362,18 +362,18 @@ void decodeApp::handleExport(){
 			string curFormat = exportFormats[panel.getValueI("exportFormat")];
 			string name = inputList.getSelectedName();
 			
-			string exportPath = EXPORT_FOLDER+name+"/";
+			string exportPath = EXPORT_FOLDER+string("export-")+name+"/";
 			if( !ofxFileHelper::doesFileExist(exportPath) ){
 				ofxFileHelper::makeDirectory(exportPath);
 			}
 						
 			if (curRecord)
-				name += "-" + ofToString(sequenceFrame);
+				name += "-" + ofToString(FRAME_START_INDEX+sequenceFrame);
 			if (curFormat == ".png") {
 				threePhase->exportDepth(exportPath + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 				threePhase->exportTexture(exportPath + name + "-texture.png");
 			} else if(curFormat == "ARGB") {
-				threePhase->exportDepthAndTexture(exportPath + name + ".png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
+				threePhase->exportDepthAndTexture(exportPath + name + ".tga", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 			} else {
 				int curStyle = panel.getValueI("style");
 				string outputFile = exportPath + name + "-" + styles[curStyle] + curFormat;

@@ -1,5 +1,5 @@
 <cameraRate>
-    <val_0>2.333333</val_0>
+    <val_0>1.111111</val_0>
 </cameraRate>
 <cameraOffset>
     <val_0>0.000000</val_0>
@@ -14,7 +14,7 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
-    <val_0>37.606838</val_0>
+    <val_0>2.339181</val_0>
 </jumpTo>
 <phasePersistence>
     <val_0>1.000000</val_0>
@@ -23,28 +23,28 @@
     <val_0>0.000000</val_0>
 </resetView>
 <style>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </style>
 <orientation>
     <val_0>0.000000</val_0>
 </orientation>
 <rangeThreshold>
-    <val_0>7.083333</val_0>
+    <val_0>1.416667</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>166.666687</val_0>
+    <val_0>422.222168</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-19.999998</val_0>
+    <val_0>-7.777778</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-637.155518</val_0>
+    <val_0>-329.955566</val_0>
 </filterMin>
 <filterMax>
-    <val_0>420.977783</val_0>
+    <val_0>261.688843</val_0>
 </filterMax>
 <exportFormat>
-    <val_0>0.000000</val_0>
+    <val_0>3.000000</val_0>
 </exportFormat>
 <export>
     <val_0>0.000000</val_0>
@@ -77,7 +77,7 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <smooth_y_dist>
-    <val_0>5.011111</val_0>
+    <val_0>9.022223</val_0>
 </smooth_y_dist>
 <smooth_y_amnt>
     <val_0>1.000000</val_0>
