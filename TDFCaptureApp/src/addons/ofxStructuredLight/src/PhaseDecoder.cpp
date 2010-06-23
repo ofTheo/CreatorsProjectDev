@@ -216,10 +216,21 @@ void PhaseDecoder::makeDepth() {
 		depth[i] -= offset;
 }
 
-//theo - wip - messy and prob slow for now. 
-void PhaseDecoder::filterDepth(int yDist, float yAmt){
-	memcpy(depthCopy, depth, sizeof(float)*width*height);
+void PhaseDecoder::filterDepth(int yDist, float yAmt, bool useGaussian){
+	if(useGaussian) {
+		CvMat data = cvMat(height, width, CV_32F, depth);
+		cvSmooth(&data, &data, CV_GAUSSIAN, 5, 5);
+		
+		IplImage* dmask = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
+		dmask->origin = IPL_ORIGIN_TL;
+		dmask->widthStep = width;
+		dmask->imageData = (char*) mask;
+		cvDilate(dmask, dmask, NULL, 2);
+		cvReleaseImageHeader(&dmask);
+	}
 	
+	// theo - wip - messy and prob slow for now. 
+	memcpy(depthCopy, depth, sizeof(float) * width * height);
 	int k = 0;
 	for(int y = 0; y < height; y++){
 	
