@@ -12,6 +12,10 @@
 		031CEAFD1139577C00EC790C /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAF71139577C00EC790C /* tinyxmlerror.cpp */; };
 		031CEAFE1139577C00EC790C /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAF81139577C00EC790C /* tinyxmlparser.cpp */; };
 		031CEAFF1139577C00EC790C /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */; };
+		3BDAF9A111D1D6770094C25D /* FastThreePhase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BDAF99811D1D6770094C25D /* FastThreePhase.cpp */; };
+		3BDAF9A211D1D6770094C25D /* PartialQualityMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BDAF99A11D1D6770094C25D /* PartialQualityMap.cpp */; };
+		3BDAF9A311D1D6770094C25D /* ScanlineOffset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BDAF99C11D1D6770094C25D /* ScanlineOffset.cpp */; };
+		3BDAF9A411D1D6770094C25D /* ThreePhaseWrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BDAF99F11D1D6770094C25D /* ThreePhaseWrap.cpp */; };
 		E43C87B711CEC34100973BFC /* decodeAndExport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43C87B611CEC34100973BFC /* decodeAndExport.cpp */; };
 		E441408811C46F9C00F8D93E /* captureApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E441401511C46F9B00F8D93E /* captureApp.cpp */; };
 		E441409D11C46F9C00F8D93E /* decodeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E441406511C46F9B00F8D93E /* decodeApp.cpp */; };
@@ -85,16 +89,12 @@
 		E4B7A4D111CE6A710096261A /* DepthDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */; };
 		E4B7A4D211CE6A710096261A /* DepthExporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B611CE6A710096261A /* DepthExporter.cpp */; };
 		E4B7A4D311CE6A710096261A /* FloodFillDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */; };
-		E4B7A4D411CE6A710096261A /* GradientGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */; };
-		E4B7A4D511CE6A710096261A /* GrayCodeGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */; };
 		E4B7A4D611CE6A710096261A /* LutFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BF11CE6A710096261A /* LutFilter.cpp */; };
 		E4B7A4D711CE6A710096261A /* PatternGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C211CE6A710096261A /* PatternGenerator.cpp */; };
 		E4B7A4D811CE6A710096261A /* PhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C511CE6A710096261A /* PhaseDecoder.cpp */; };
 		E4B7A4D911CE6A710096261A /* PriorityDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C711CE6A710096261A /* PriorityDecoder.cpp */; };
 		E4B7A4DA11CE6A710096261A /* ThreePhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C911CE6A710096261A /* ThreePhaseDecoder.cpp */; };
 		E4B7A4DB11CE6A710096261A /* ThreePhaseGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */; };
-		E4B7A4DC11CE6A710096261A /* TwoPlusOneDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */; };
-		E4B7A4DD11CE6A710096261A /* TwoPlusOneGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */; };
 		E4B8790211AE4024009488DD /* ofxMatrix3x3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F511AE4024009488DD /* ofxMatrix3x3.cpp */; };
 		E4B8790311AE4024009488DD /* ofxMatrix4x4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F711AE4024009488DD /* ofxMatrix4x4.cpp */; };
 		E4B8790411AE4024009488DD /* ofxQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878FC11AE4024009488DD /* ofxQuaternion.cpp */; };
@@ -164,6 +164,15 @@
 		031CEAF81139577C00EC790C /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		031CEAFB1139577C00EC790C /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
+		3BDAF99811D1D6770094C25D /* FastThreePhase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FastThreePhase.cpp; path = src/addons/ofxStructuredLight/src/FastThreePhase.cpp; sourceTree = SOURCE_ROOT; };
+		3BDAF99911D1D6770094C25D /* FastThreePhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastThreePhase.h; path = src/addons/ofxStructuredLight/src/FastThreePhase.h; sourceTree = SOURCE_ROOT; };
+		3BDAF99A11D1D6770094C25D /* PartialQualityMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialQualityMap.cpp; path = src/addons/ofxStructuredLight/src/PartialQualityMap.cpp; sourceTree = SOURCE_ROOT; };
+		3BDAF99B11D1D6770094C25D /* PartialQualityMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialQualityMap.h; path = src/addons/ofxStructuredLight/src/PartialQualityMap.h; sourceTree = SOURCE_ROOT; };
+		3BDAF99C11D1D6770094C25D /* ScanlineOffset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScanlineOffset.cpp; path = src/addons/ofxStructuredLight/src/ScanlineOffset.cpp; sourceTree = SOURCE_ROOT; };
+		3BDAF99D11D1D6770094C25D /* ScanlineOffset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanlineOffset.h; path = src/addons/ofxStructuredLight/src/ScanlineOffset.h; sourceTree = SOURCE_ROOT; };
+		3BDAF99E11D1D6770094C25D /* Shared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shared.h; path = src/addons/ofxStructuredLight/src/Shared.h; sourceTree = SOURCE_ROOT; };
+		3BDAF99F11D1D6770094C25D /* ThreePhaseWrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseWrap.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.cpp; sourceTree = SOURCE_ROOT; };
+		3BDAF9A011D1D6770094C25D /* ThreePhaseWrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseWrap.h; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.h; sourceTree = SOURCE_ROOT; };
 		E42DA42E11D10298009ACAC2 /* ofxTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimeStamp.h; path = src/addons/ofxTimeStamp/ofxTimeStamp.h; sourceTree = SOURCE_ROOT; };
 		E43C87B511CEC34100973BFC /* decodeAndExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decodeAndExport.h; sourceTree = "<group>"; };
 		E43C87B611CEC34100973BFC /* decodeAndExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decodeAndExport.cpp; sourceTree = "<group>"; };
@@ -363,7 +372,7 @@
 		E4ACB59111D19072007B6252 /* ofxOscSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxOscSender.h; path = ../../../addons/ofxOsc/src/ofxOscSender.h; sourceTree = SOURCE_ROOT; };
 		E4ACB63111D1BD13007B6252 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxDirList.cpp; path = src/addons/ofxDirList/src/ofxDirList.cpp; sourceTree = SOURCE_ROOT; };
 		E4ACB63211D1BD13007B6252 /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDirList.h; path = src/addons/ofxDirList/src/ofxDirList.h; sourceTree = SOURCE_ROOT; };
-		E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExampleDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* emptyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthDecoder.cpp; path = src/addons/ofxStructuredLight/src/DepthDecoder.cpp; sourceTree = SOURCE_ROOT; };
 		E4B7A4B511CE6A710096261A /* DepthDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthDecoder.h; path = src/addons/ofxStructuredLight/src/DepthDecoder.h; sourceTree = SOURCE_ROOT; };
@@ -372,10 +381,6 @@
 		E4B7A4B811CE6A710096261A /* FastBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastBlur.h; path = src/addons/ofxStructuredLight/src/FastBlur.h; sourceTree = SOURCE_ROOT; };
 		E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FloodFillDecoder.cpp; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.cpp; sourceTree = SOURCE_ROOT; };
 		E4B7A4BA11CE6A710096261A /* FloodFillDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloodFillDecoder.h; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GradientGenerator.cpp; path = src/addons/ofxStructuredLight/src/GradientGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4BC11CE6A710096261A /* GradientGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientGenerator.h; path = src/addons/ofxStructuredLight/src/GradientGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GrayCodeGenerator.cpp; path = src/addons/ofxStructuredLight/src/GrayCodeGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4BE11CE6A710096261A /* GrayCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GrayCodeGenerator.h; path = src/addons/ofxStructuredLight/src/GrayCodeGenerator.h; sourceTree = SOURCE_ROOT; };
 		E4B7A4BF11CE6A710096261A /* LutFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LutFilter.cpp; path = src/addons/ofxStructuredLight/src/LutFilter.cpp; sourceTree = SOURCE_ROOT; };
 		E4B7A4C011CE6A710096261A /* LutFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LutFilter.h; path = src/addons/ofxStructuredLight/src/LutFilter.h; sourceTree = SOURCE_ROOT; };
 		E4B7A4C111CE6A710096261A /* ofxStructuredLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxStructuredLight.h; path = src/addons/ofxStructuredLight/src/ofxStructuredLight.h; sourceTree = SOURCE_ROOT; };
@@ -390,10 +395,6 @@
 		E4B7A4CA11CE6A710096261A /* ThreePhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseDecoder.h; path = src/addons/ofxStructuredLight/src/ThreePhaseDecoder.h; sourceTree = SOURCE_ROOT; };
 		E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseGenerator.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.cpp; sourceTree = SOURCE_ROOT; };
 		E4B7A4CC11CE6A710096261A /* ThreePhaseGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseGenerator.h; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TwoPlusOneDecoder.cpp; path = src/addons/ofxStructuredLight/src/TwoPlusOneDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4CE11CE6A710096261A /* TwoPlusOneDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwoPlusOneDecoder.h; path = src/addons/ofxStructuredLight/src/TwoPlusOneDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TwoPlusOneGenerator.cpp; path = src/addons/ofxStructuredLight/src/TwoPlusOneGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4D011CE6A710096261A /* TwoPlusOneGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwoPlusOneGenerator.h; path = src/addons/ofxStructuredLight/src/TwoPlusOneGenerator.h; sourceTree = SOURCE_ROOT; };
 		E4B878F511AE4024009488DD /* ofxMatrix3x3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxMatrix3x3.cpp; path = ../../../addons/ofxVectorMath/src/ofxMatrix3x3.cpp; sourceTree = SOURCE_ROOT; };
 		E4B878F611AE4024009488DD /* ofxMatrix3x3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMatrix3x3.h; path = ../../../addons/ofxVectorMath/src/ofxMatrix3x3.h; sourceTree = SOURCE_ROOT; };
 		E4B878F711AE4024009488DD /* ofxMatrix4x4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxMatrix4x4.cpp; path = ../../../addons/ofxVectorMath/src/ofxMatrix4x4.cpp; sourceTree = SOURCE_ROOT; };
@@ -1249,7 +1250,7 @@
 			children = (
 				031CEA9C113955A000EC790C /* addons */,
 				E4413F9211C46F9B00F8D93E /* src */,
-				E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* emptyExample.app */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4C2422310CC54B6004149E2 /* openFrameworks */,
 				E45BE0360E8CC5DE009D7055 /* libs */,
@@ -1267,6 +1268,15 @@
 		E4B7A4B311CE6A710096261A /* src */ = {
 			isa = PBXGroup;
 			children = (
+				3BDAF99811D1D6770094C25D /* FastThreePhase.cpp */,
+				3BDAF99911D1D6770094C25D /* FastThreePhase.h */,
+				3BDAF99A11D1D6770094C25D /* PartialQualityMap.cpp */,
+				3BDAF99B11D1D6770094C25D /* PartialQualityMap.h */,
+				3BDAF99C11D1D6770094C25D /* ScanlineOffset.cpp */,
+				3BDAF99D11D1D6770094C25D /* ScanlineOffset.h */,
+				3BDAF99E11D1D6770094C25D /* Shared.h */,
+				3BDAF99F11D1D6770094C25D /* ThreePhaseWrap.cpp */,
+				3BDAF9A011D1D6770094C25D /* ThreePhaseWrap.h */,
 				E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */,
 				E4B7A4B511CE6A710096261A /* DepthDecoder.h */,
 				E4B7A4B611CE6A710096261A /* DepthExporter.cpp */,
@@ -1274,10 +1284,6 @@
 				E4B7A4B811CE6A710096261A /* FastBlur.h */,
 				E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */,
 				E4B7A4BA11CE6A710096261A /* FloodFillDecoder.h */,
-				E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */,
-				E4B7A4BC11CE6A710096261A /* GradientGenerator.h */,
-				E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */,
-				E4B7A4BE11CE6A710096261A /* GrayCodeGenerator.h */,
 				E4B7A4BF11CE6A710096261A /* LutFilter.cpp */,
 				E4B7A4C011CE6A710096261A /* LutFilter.h */,
 				E4B7A4C111CE6A710096261A /* ofxStructuredLight.h */,
@@ -1292,10 +1298,6 @@
 				E4B7A4CA11CE6A710096261A /* ThreePhaseDecoder.h */,
 				E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */,
 				E4B7A4CC11CE6A710096261A /* ThreePhaseGenerator.h */,
-				E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */,
-				E4B7A4CE11CE6A710096261A /* TwoPlusOneDecoder.h */,
-				E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */,
-				E4B7A4D011CE6A710096261A /* TwoPlusOneGenerator.h */,
 			);
 			name = src;
 			path = src/addons/ofxStructuredLight/src;
@@ -1434,7 +1436,7 @@
 			);
 			name = emptyExample;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* emptyExampleDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* emptyExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1553,22 +1555,22 @@
 				E4B7A4D111CE6A710096261A /* DepthDecoder.cpp in Sources */,
 				E4B7A4D211CE6A710096261A /* DepthExporter.cpp in Sources */,
 				E4B7A4D311CE6A710096261A /* FloodFillDecoder.cpp in Sources */,
-				E4B7A4D411CE6A710096261A /* GradientGenerator.cpp in Sources */,
-				E4B7A4D511CE6A710096261A /* GrayCodeGenerator.cpp in Sources */,
 				E4B7A4D611CE6A710096261A /* LutFilter.cpp in Sources */,
 				E4B7A4D711CE6A710096261A /* PatternGenerator.cpp in Sources */,
 				E4B7A4D811CE6A710096261A /* PhaseDecoder.cpp in Sources */,
 				E4B7A4D911CE6A710096261A /* PriorityDecoder.cpp in Sources */,
 				E4B7A4DA11CE6A710096261A /* ThreePhaseDecoder.cpp in Sources */,
 				E4B7A4DB11CE6A710096261A /* ThreePhaseGenerator.cpp in Sources */,
-				E4B7A4DC11CE6A710096261A /* TwoPlusOneDecoder.cpp in Sources */,
-				E4B7A4DD11CE6A710096261A /* TwoPlusOneGenerator.cpp in Sources */,
 				E43C87B711CEC34100973BFC /* decodeAndExport.cpp in Sources */,
 				E4ACB59311D19072007B6252 /* ofxOscBundle.cpp in Sources */,
 				E4ACB59411D19072007B6252 /* ofxOscMessage.cpp in Sources */,
 				E4ACB59511D19072007B6252 /* ofxOscReceiver.cpp in Sources */,
 				E4ACB59611D19072007B6252 /* ofxOscSender.cpp in Sources */,
 				E4ACB63311D1BD13007B6252 /* ofxDirList.cpp in Sources */,
+				3BDAF9A111D1D6770094C25D /* FastThreePhase.cpp in Sources */,
+				3BDAF9A211D1D6770094C25D /* PartialQualityMap.cpp in Sources */,
+				3BDAF9A311D1D6770094C25D /* ScanlineOffset.cpp in Sources */,
+				3BDAF9A411D1D6770094C25D /* ThreePhaseWrap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -173,7 +173,7 @@ void decodeApp::initDecoder(int w, int h){
 	if (threePhase != NULL){
 		delete threePhase;
 	}
-	threePhase = new ThreePhaseDecoder();
+	threePhase = new FastThreePhase();
 	threePhase->setup(w, h);	
 }
 

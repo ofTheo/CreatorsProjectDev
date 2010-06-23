@@ -14,7 +14,7 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
-    <val_0>37.606838</val_0>
+    <val_0>6.666667</val_0>
 </jumpTo>
 <phasePersistence>
     <val_0>1.000000</val_0>
@@ -29,10 +29,10 @@
     <val_0>0.000000</val_0>
 </orientation>
 <rangeThreshold>
-    <val_0>7.083333</val_0>
+    <val_0>1.416667</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>166.666687</val_0>
+    <val_0>94.444458</val_0>
 </depthScale>
 <depthSkew>
     <val_0>-19.999998</val_0>

@@ -34,7 +34,7 @@ class decodeAndExport{
 				width	= w;
 				height  = h;
 				
-				threePhase = new ThreePhaseDecoder();
+				threePhase = new FastThreePhase();
 				threePhase->setup(width, height);
 				img.allocate(w, h, OF_IMAGE_COLOR_ALPHA);
 			}
