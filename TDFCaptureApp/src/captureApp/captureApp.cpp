@@ -353,6 +353,7 @@ void captureApp::handleDecode(){
 		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
 		int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
 		bool smoothGaussian = dAppPtr->panel.getValueB("smooth_gaussian");
+		int dilatePasses = dAppPtr->panel.getValueI("dilate_passes");
 		
 		int numMissed	= 1+ panel.getValueI("decodeSkipFrame");
 		
@@ -361,7 +362,7 @@ void captureApp::handleDecode(){
 			if( saveIndex < imageSaver.getSize() ){
 			
 				printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
-				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist, smoothGaussian);
+				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist, smoothGaussian, dilatePasses);
 				
 				bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
 				

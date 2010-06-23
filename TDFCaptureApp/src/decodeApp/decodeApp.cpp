@@ -85,6 +85,7 @@ void decodeApp::setup(){
 	panel.addSlider("smooth y dist", "smooth_y_dist", 1, 1, 20, true);
 	panel.addSlider("smooth y amnt", "smooth_y_amnt", 0, 0, 1.0, false);
 	panel.addToggle("smooth gaussian", "smooth_gaussian", false);
+	panel.addSlider("dilate passes", "dilate_passes", 2, 0, 6, true);
 	panel.addDrawableRect("debug", &rgbaTex, 160, 120);
 
 	panel.loadSettings("controlDecode.xml");
@@ -165,7 +166,7 @@ void decodeApp::processFrame(){
 	
 	//TODO: optimize
 	if( panel.getValueF("smooth_y_amnt") > 0.0 || panel.getValueB("smooth_gaussian") ){
-		threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"), panel.getValueB("smooth_gaussian"));
+		threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"), panel.getValueB("smooth_gaussian"), panel.getValueI("dilate_passes"));
 	}
 }
 
@@ -338,7 +339,7 @@ void decodeApp::handlePlayback(){
 			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("filterMin") 
 			|| panel.hasValueChanged("filterMax") || panel.hasValueChanged("depthScale") 
 			|| panel.hasValueChanged("depthSkew")  || panel.hasValueChanged("smooth_y_amnt") || panel.hasValueChanged("smooth_y_dist")
-			|| panel.hasValueChanged("smooth_gaussian")) {
+			|| panel.hasValueChanged("smooth_gaussian") || panel.hasValueChanged("dilate_passes")) {
 
 			processFrame();
 			redraw = true;

@@ -59,7 +59,7 @@ class decodeAndExport{
 			}
 		}
 
-		void decodeFrameAndFilter(unsigned char * pix, int index, int numChannels, float filterMin, float filterMax, float smoothAmnt, int smoothDist, bool smoothGaussian){
+		void decodeFrameAndFilter(unsigned char * pix, int index, int numChannels, float filterMin, float filterMax, float smoothAmnt, int smoothDist, bool smoothGaussian, int dilatePasses){
 			if( threePhase ){
 				threePhase->set(index%3, pix, numChannels == 3 ? 3 : 1);
 				threePhase->decode();
@@ -69,7 +69,7 @@ class decodeAndExport{
 
 				//TODO: optimize
 				if( smoothAmnt > 0.0 || smoothGaussian){
-					threePhase->filterDepth(smoothAmnt, smoothDist, smoothGaussian);
+					threePhase->filterDepth(smoothAmnt, smoothDist, smoothGaussian, dilatePasses);
 				}
 				
 				img.setFromPixels(threePhase->getColorAndDepth(filterMin, filterMax), threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
