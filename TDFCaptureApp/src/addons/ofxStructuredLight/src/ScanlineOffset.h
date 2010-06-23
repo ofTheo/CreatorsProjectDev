@@ -49,7 +49,8 @@ private:
 	char unwrapPhase(unsigned char source, unsigned char target);
 
 	static const int farthestNeighbor = 128;
-	vector<int> neighbors;
+	static vector<int> neighbors;
+	static int neighborsReady;
 };
 
 class DistanceIndex {

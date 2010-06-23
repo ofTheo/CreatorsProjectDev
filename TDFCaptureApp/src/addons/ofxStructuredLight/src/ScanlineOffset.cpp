@@ -1,5 +1,8 @@
 #include "ScanlineOffset.h"
 
+vector<int> ScanlineOffset::neighbors;
+int ScanlineOffset::neighborsReady = false;
+
 ScanlineOffset::ScanlineOffset() :
 	threshold(LABEL_BACKGROUND),
 	leftover(NULL),
@@ -17,21 +20,24 @@ void ScanlineOffset::setup(int width, int height) {
 	n = width * height;
 	leftover = new int[n];
 
-	// precompute nearest neighbors as offsets
-	vector<DistanceIndex> distanceIndices;
-	for(int y = 0; y < farthestNeighbor; y++) {
-		for(int x = 0; x < farthestNeighbor; x++) {
-			int yd = y - farthestNeighbor / 2;
-			int xd = x - farthestNeighbor / 2;
-			DistanceIndex cur;
-			cur.index = yd * width + xd;
-			cur.distance = sqrtf(xd * xd + yd * yd);
-			distanceIndices.push_back(cur);
+	if(!neighborsReady) {
+		// precompute nearest neighbors as offsets
+		vector<DistanceIndex> distanceIndices;
+		for(int y = 0; y < farthestNeighbor; y++) {
+			for(int x = 0; x < farthestNeighbor; x++) {
+				int yd = y - farthestNeighbor / 2;
+				int xd = x - farthestNeighbor / 2;
+				DistanceIndex cur;
+				cur.index = yd * width + xd;
+				cur.distance = sqrtf(xd * xd + yd * yd);
+				distanceIndices.push_back(cur);
+			}
 		}
+		sort(distanceIndices.begin(), distanceIndices.end());
+		for(int i = 0; i < distanceIndices.size(); i++)
+			neighbors.push_back(distanceIndices[i].index);
+		neighborsReady = true;
 	}
-	sort(distanceIndices.begin(), distanceIndices.end());
-	for(int i = 0; i < distanceIndices.size(); i++)
-		neighbors.push_back(distanceIndices[i].index);
 }
 
 void ScanlineOffset::setThreshold(unsigned char threshold) {

@@ -133,5 +133,5 @@ class decodeAndExport{
 
 	int width;
 	int height;
-	ThreePhaseDecoder * threePhase;
+	FastThreePhase* threePhase; // whoops, this is very important
 };
