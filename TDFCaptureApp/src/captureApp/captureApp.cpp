@@ -134,6 +134,8 @@ void captureApp::setup(){
 	panel.addToggle("fullscreen", "fullscreen", false);
 	panel.addToggle("frame by frame", "frameByFrame", false);
 	panel.addToggle("large video", "largeVideo", false);
+	panel.addToggle("brightness setting", "brightnessSetting", false);
+	panel.addSlider("check brigheness", "checkBrightness", 0, 0, 255, true);
 	panel.addSlider("fade in time", "fadeInTime", 2.0, 0.0, 5.0, false);
 
 	vector<string> postCapModes;
@@ -201,6 +203,7 @@ void captureApp::setup(){
 	panel.setValueI("cameraSettings", 0);
 	panel.setValueI("frameByFrame", 0);
 	panel.setValueI("largeVideo", 0);
+	panel.setValueI("brightnessSetting",0);
 	
 	cameraWidth  = 640;
 	cameraHeight = 480;
@@ -275,6 +278,16 @@ void captureApp::update(){
 	}else if( debugState == CAP_DEBUG ){
 		panel.hidden = false;
 	}
+
+	if( state == CAP_STATE_CAPTURE && ofGetElapsedTimef() >= timeToEndCapture ){
+		printf("time is %f - time to end is %f\n", ofGetElapsedTimef(), timeToEndCapture);
+		endCapture();		
+		if( panel.getValueB("B_FACE_TRIGGER") ){
+			bNeedsToLeaveFrame = true;
+		}else{
+			bNeedsToLeaveFrame = false;
+		}
+	}
 		
 	if( state == CAP_STATE_FADEIN && ofGetElapsedTimef() > fadeInStartTime + panel.getValueF("fadeInTime") ){
 		startCapture();
@@ -286,14 +299,6 @@ void captureApp::update(){
 		handleProjection();
 		handleCamera();
 		handleFaceTrigger();
-
-		if( panel.getValueB("projectorLut") ){
-			if(  ofxFileHelper::doesFileExist("projector-lut.tsv") ){
-				//TODO: note this is cumulative - it shouldn't be
-				curGenerator->applyLut(ofToDataPath("projector-lut.tsv"));
-			}
-			panel.setValueB("projectorLut", false);
-		}
 	}
 	
 	panel.clearAllChanged();
@@ -573,10 +578,13 @@ void captureApp::handleProjection(){
 		threePhase.generate();
 	}
 
-	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") ){	
+	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") || 
+			panel.hasValueChanged("projectorLut")) {	
 		threePhase.setMinBrightness(panel.getValueI("minBrightness"));
 		threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
 		threePhase.generate();
+		if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
+				curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
 	}
 
 	if(panel.hasValueChanged("orientation") ) {
@@ -789,6 +797,15 @@ void captureApp::draw(){
 		patternFrame = ofGetFrameNum() / panel.getValueI("patternRate");
 	}
 
+	if (!panel.getValueB("brightnessSetting")){
+		curGenerator->get(patternFrame).draw(0, 0);
+
+	} else {
+		int checkBrightness = panel.getValueI("checkBrightness");
+		ofSetColor(checkBrightness, checkBrightness, checkBrightness);
+		ofRect(0, 0, ofGetWidth(), ofGetHeight());
+	}
+
 	ofSetColor(255, 255, 255, 255);
 	curGenerator->get(patternFrame).draw(0, 0);
 	if( state == CAP_STATE_CAPTURE ){
@@ -871,6 +888,20 @@ void captureApp::draw(){
 			ofSetColor(255, 0, 0);
 			ofNoFill();
 			ofRect(0, 0, recentWidth, recentHeight);
+
+			// ito wrote..begin
+			
+			if (i == 0) {
+				ofImage clipping;
+				getClipping(recent[i], clipping);
+				ofEnableAlphaBlending();
+				clipping.update();
+				ofSetColor(255, 0, 0);
+				clipping.draw(0, 0, recentWidth, recentHeight);
+				ofDisableAlphaBlending();
+			}
+			
+			// it wrote..end
 			ofPopMatrix();
 		}
 		ofPopMatrix();
@@ -953,6 +984,32 @@ void captureApp::keyPressed(int key) {
 
 		if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
 			patternFrame++;
+		}
+	}
+}
+
+//--------------------------------------------------------------
+void captureApp::getClipping(ofImage& img, ofImage& clipping) {
+	int w = img.getWidth();
+	int h = img.getHeight();
+	clipping.allocate(w, h, OF_IMAGE_COLOR_ALPHA);
+	unsigned char* imgPixels = img.getPixels();
+	unsigned char* clippingPixels = clipping.getPixels();
+	int n = w * h;
+	for(int i = 0; i < n; i++) {
+		if(imgPixels[i*3] == 0 || imgPixels[i*3] == 255 ||
+		   imgPixels[i*3+1] == 0 || imgPixels[i*3+1] == 255 ||
+		   imgPixels[i*3+2] == 0 || imgPixels[i*3+2] == 255 ) {
+			clippingPixels[i * 4 + 0] = 255;
+			clippingPixels[i * 4 + 1] = 255;
+			clippingPixels[i * 4 + 2] = 255;
+			clippingPixels[i * 4 + 3] = 255;
+		} else {
+			clippingPixels[i * 4 + 0] = 0;
+			clippingPixels[i * 4 + 1] = 0;
+			clippingPixels[i * 4 + 2] = 0;
+			clippingPixels[i * 4 + 3] = 0;
+
 		}
 	}
 }
