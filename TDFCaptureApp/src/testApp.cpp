@@ -40,7 +40,6 @@ void testApp::keyPressed(int key){
 			dApp.inputList.listDir("input");
 			dApp.inputList.reverseOrder();
 		}
-
 		bCapture = false;
 	}
 	else if( key == OF_KEY_LEFT ){

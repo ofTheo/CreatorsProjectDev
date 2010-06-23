@@ -31,7 +31,6 @@ void decodeApp::setup(){
 	panel.addToggle("play sequence", "playSequence", false);
 	panel.addSlider("jump to", "jumpTo", 0, 0, 100, false);
 	panel.addToggle("phase persistence", "phasePersistence", false);
-
 	panel.addToggle("reset view ", "resetView", false);
 
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
@@ -111,7 +110,6 @@ void decodeApp::jumpTo(unsigned frame) {
 		nextFrame();
 }
 
-ofImage phase;
 //--------------------------------------------------------------
 void decodeApp::nextFrame() {
 	int cameraRate = panel.getValueI("cameraRate");
@@ -164,6 +162,7 @@ void decodeApp::processFrame(){
 		threePhase->filterRange(curFilterMin, curFilterMax);
 	}
 	
+	//TODO: optimize
 	if( panel.getValueF("smooth_y_amnt") > 0.0 ){
 		threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"));
 	}

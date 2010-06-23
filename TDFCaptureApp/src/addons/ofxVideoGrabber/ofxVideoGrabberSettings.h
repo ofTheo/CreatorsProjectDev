@@ -17,6 +17,10 @@ class ofxVideoGrabberSettings
         virtual void mousePressed(ofMouseEventArgs & args);
         virtual void mouseDragged(ofMouseEventArgs & args);
         virtual void mouseReleased(ofMouseEventArgs & args);
+		
+		virtual void mouseDragged(int x, int y, int button);
+		virtual void mousePressed(int x, int y, int button);	
+		virtual void mouseReleased(int x, int y, int button);		
 
         virtual void enableGuiEvents();
 		virtual void disableGuiEvents();

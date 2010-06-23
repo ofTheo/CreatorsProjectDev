@@ -37,7 +37,7 @@ void captureApp::frameReceived(ofVideoGrabber& grabber) {
 					camera.getThreadedPixels(recent[curFrame].getPixels());
 					needsUpdate[curFrame] = true;
 				} else {
-					string filename = currentCaptureFolder + ofToString(cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					camera.getThreadedPixels(imageSaver.getPixels());
 					imageSaver.next();
@@ -68,7 +68,7 @@ void captureApp::update1394Cam(){
 					memcpy(recent[curFrame].getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					needsUpdate[curFrame] = true;
 				}else{
-					string filename = currentCaptureFolder + ofToString(cameraFrameNum) + ".jpg";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					memcpy(imageSaver.getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					imageSaver.next();
@@ -93,8 +93,13 @@ void captureApp::setup(){
 	settings			= NULL;
 	timeToEndCapture	= 0.0;
 	bNeedsToLeaveFrame	= false;
+	bOscSetup			= false;
 	fadeInStartTime		= 0.0;
 	spotLightAlpha		= 1.0;
+	bDoThreadedRSync		= false;
+	bDoThreadedFrameSave	= false;
+	
+	camera3D.disableMouseEvents();
 
 	threePhase.setSize(1024, 768);
 	threePhase.setWavelength(64);
@@ -138,7 +143,7 @@ void captureApp::setup(){
 	postCapModes.push_back("all above + notify");
 	panel.addMultiToggle("post capture:", "postCapture", 2, postCapModes);
 
-	panel.addToggle("rysnc return immediately", "rsyncThreaded", true);
+	panel.addToggle("notify with osc", "use_osc", false);
 
 	panel.addSlider("decode skip frames", "decodeSkipFrame", 2, 0, 5, true);
 	
@@ -185,6 +190,10 @@ void captureApp::setup(){
 	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
 
 	panel.loadSettings("controlCapture.xml");
+	
+	if( panel.getValueB("use_osc") ){
+		setupOsc();
+	}
 
 	//overides 
 	panel.setValueI("camMode", 0);
@@ -215,7 +224,6 @@ void captureApp::setup(){
 
 	ofBackground(0, 0, 0);
 	
-	
 	scanningSound.loadSound("resources/scanningPlaceholder.mp3");
 	scanningSound.setLoop(true);
 	
@@ -227,9 +235,31 @@ void captureApp::setup(){
 }
 
 //-----------------------------------------------
+void captureApp::setupOsc(){
+	if( !bOscSetup ){
+		//TODO: do OSC!
+		
+		ofxXmlSettings xml;
+		if( xml.loadFile("notification.xml") ){
+			int remotePort		= xml.getValue("remote_osx_port", 70007);
+			string remoteIp     = xml.getValue("remote_ip", "127.0.0.1");
+			oscTx.setup(remoteIp, remotePort);
+			bOscSetup = true;
+		}
+		
+	}
+}
+
+//-----------------------------------------------
 void captureApp::update(){
 	panel.update();
-	
+
+	bEnableOsc = panel.getValueB("use_osc");
+	if( panel.hasValueChanged("use_osc") ){
+		if( bEnableOsc && !bOscSetup ){
+			setupOsc();
+		}
+	}
 	
 	//the capture part happens in the camera callbacks at the top.
 	//this just checks to make sure that the capture doesn't need to keep running.
@@ -363,43 +393,47 @@ void captureApp::endDecode(){
 		if( panel.getValueI("postCapture") == POST_CAPTURE_ALL_AND_NOTIFY ){
 
 			printf("postCapture == POST_CAPTURE_ALL_AND_NOTIFY \n");
-			
-			ofxXmlSettings xml;
-			xml.setVerbose(true);
-			if( xml.loadFile("notification.xml") ){
-				string command		= xml.getValue("command", "");
-				string remoteUser   = xml.getValue("remote_user", "");
-				string remoteip     = xml.getValue("remote_ip", "");
-
-				string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodeFolder));
-				
-				printf("command is %s\n", command.c_str());
-				
-				//TODO: put this in threadedFunction?
-				vector <string> explode = ofSplitString(command, "!");
-				if( explode.size() >=5 ){
-					string execute = explode[0] + localFolder + explode[1] + remoteUser + explode[2] + remoteip + explode[3] + remoteUser + explode[4];
-					
-					if( panel.getValueB("rsyncThreaded") ){
-						execute = execute + " &";
-					}
-					
-					printf("executing %s\n", execute.c_str());
-					system(execute.c_str());
-				}
-			}else{
-				printf("error loading notification.xml");
-			}
-			
-			exportFramesToDisk();
-		}else{
-			exportFramesToDisk();
+			prepareTransferFramesToVizApp();				
 		}
+		
+		//either way, we export the frames. 
+		prepareExportFramesToDisk();
+		startThread(true, false);
 	}
 }
 
+//TODO: clean this up? though current advantage is we can login and change it while the app is running. 
 //-----------------------------------------------
-void captureApp::exportFramesToDisk(){
+void captureApp::prepareTransferFramesToVizApp(){
+	ofxXmlSettings xml;
+	xml.setVerbose(true);
+	
+	if( xml.loadFile("notification.xml") ){
+		string command		= xml.getValue("command", "");
+		string remoteUser   = xml.getValue("remote_user", "");
+		string remoteip     = xml.getValue("remote_ip", "");
+
+		string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodeFolder));
+		
+		printf("command is %s\n", command.c_str());
+		
+		//TODO: put this in threadedFunction?
+		vector <string> explode = ofSplitString(command, "!");
+		if( explode.size() >=5 ){
+			executeStr = explode[0] + localFolder + explode[1] + remoteUser + explode[2] + remoteip + explode[3] + remoteUser + explode[4];
+			
+			bDoThreadedRSync = true;
+			prepareExportFramesToDisk();
+		}
+	}else{
+		bDoThreadedRSync = false;
+		printf("error loading notification.xml");
+	}
+	
+}
+
+//-----------------------------------------------
+void captureApp::prepareExportFramesToDisk(){
 	if( imageSaver.getSize() >  0){
 		state = CAP_STATE_SAVING;
 
@@ -416,20 +450,51 @@ void captureApp::exportFramesToDisk(){
 		panel.saveSettings(currentCaptureFolder+"_settings/captureSettings.xml");
 		dAppPtr->panel.saveSettings(currentCaptureFolder+"_settings/decodeSettings.xml");
 	
-		startThread(false, true); //now save jpegs in background ! - this calls threadedFunction ( below )
+		bDoThreadedFrameSave = true;
 	}else{
-		ofLog(OF_LOG_ERROR, "exportFramesToDisk no frames to export");
+		bDoThreadedFrameSave = false;
+		ofLog(OF_LOG_ERROR, "prepareExportFramesToDisk no frames to export");
 	}
 }
 
 //-----------------------------------------------
 void captureApp::threadedFunction(){
 	if( lock() ){
+		
+		if( bDoThreadedRSync && executeStr != "" ){
+			printf("executing rsync %s\n", executeStr.c_str());
+			
+			if( bEnableOsc ){
+				ofxOscMessage m;
+				m.addStringArg("TxStarted");
+				m.addStringArg(currentCaptureFolder); //folder transferred eg: decode-NYC-12939327117
+				m.addStringArg(currentTimestamp);	  //just the timestamp as a string eg: 12939327117
+				m.addIntArg(saveCount);				  //num images to be transfered
+				oscTx.sendMessage(m);
+			}
+			
+			system(executeStr.c_str());
+			
+			if( bEnableOsc ){
+				ofxOscMessage m;
+				m.addStringArg("TxEnded");
+				m.addStringArg(currentCaptureFolder);	
+				m.addStringArg(currentTimestamp);		
+				m.addIntArg(saveCount);		
+				oscTx.sendMessage(m);
+			}
+		}
 	
-		printf("threadedFunction - saving started! at %f since app start\n",ofGetElapsedTimef()); 
-		imageSaver.saveAll();
-		printf("threadedFunction - saving done! at %f since app start\n",ofGetElapsedTimef()); 		
-		state = CAP_STATE_WAITING;
+		if( bDoThreadedFrameSave ){
+			printf("threadedFunction - saving started! at %f since app start\n",ofGetElapsedTimef()); 
+			imageSaver.saveAll();
+			printf("threadedFunction - saving done! at %f since app start\n",ofGetElapsedTimef()); 		
+		}
+		
+		bDoThreadedFrameSave = false;
+		bDoThreadedRSync     = false;
+		state				 = CAP_STATE_WAITING;
+		
 		unlock();
 	}
 }
@@ -448,8 +513,7 @@ void captureApp::startCapture(){
 
 		//clear the image saver buffer
 		imageSaver.clear();
-		cameraFrameNum = 0;
-		
+		cameraFrameNum		 = 0;
 		scanningSound.play();
 		
 		ofxTimeStamp ts;
@@ -488,7 +552,8 @@ void captureApp::endCapture(){
 		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
 			startDecode();
 		}else{
-			exportFramesToDisk();
+			prepareExportFramesToDisk();
+			startThread(true, false);
 		}
 		
 	}else{
@@ -830,17 +895,32 @@ void captureApp::draw(){
 
 //--------------------------------------------------------------
 void captureApp::mouseDragged(int x, int y, int button){
-	if( debugState == CAP_DEBUG) panel.mouseDragged(x, y, button);
+	if( debugState == CAP_DEBUG){
+		panel.mouseDragged(x, y, button);
+		if( settings ){
+			settings->mouseDragged(x, y, button);
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void captureApp::mousePressed(int x, int y, int button){
-	if( debugState == CAP_DEBUG) panel.mousePressed(x, y, button);
+	if( debugState == CAP_DEBUG){
+		panel.mousePressed(x, y, button);
+		if( settings ){
+			settings->mousePressed(x, y, button);
+		}		
+	}
 }
 
 //--------------------------------------------------------------
 void captureApp::mouseReleased(int x, int y, int button){
-	if( debugState == CAP_DEBUG) panel.mouseReleased();
+	if( debugState == CAP_DEBUG){
+		panel.mouseReleased();
+		if( settings ){
+			settings->mouseReleased(x, y, button);
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -851,7 +931,7 @@ void captureApp::keyPressed(int key) {
 	
 	if(key == '\t') {
 		if( state < CAP_STATE_CAPTURE ){
-			startCapture();
+			startFadeIn();
 		}
 		else if( state == CAP_STATE_CAPTURE ){
 			endCapture(); //force override - normally capture is timed. 

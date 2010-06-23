@@ -8,7 +8,7 @@
     <val_0>0.000000</val_0>
 </fullscreen>
 <frameByFrame>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </frameByFrame>
 <patternType>
     <val_0>0.000000</val_0>
@@ -20,7 +20,7 @@
     <val_0>1.000000</val_0>
 </reverse>
 <patternRate>
-    <val_0>2.222222</val_0>
+    <val_0>1.000000</val_0>
 </patternRate>
 <cameraRate>
     <val_0>1.000000</val_0>
@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>2.000000</val_0>
+    <val_0>0.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>
@@ -91,3 +91,12 @@
 <decodeSkipFrame>
     <val_0>2.000000</val_0>
 </decodeSkipFrame>
+<fadeInTime>
+    <val_0>2.000000</val_0>
+</fadeInTime>
+<bSpotLight>
+    <val_0>0.000000</val_0>
+</bSpotLight>
+<spotLightBrightness>
+    <val_0>1.000000</val_0>
+</spotLightBrightness>

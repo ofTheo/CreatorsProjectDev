@@ -67,7 +67,7 @@ class decodeAndExport{
 				
 				//printf("decodeFrameAndFilter %i %i %f %f %f %i\n", index,  numChannels,  filterMin,  filterMax,  smoothAmnt,  smoothDist);
 
-				
+				//TODO: optimize
 				if( smoothAmnt > 0.0 ){
 					threePhase->filterDepth(smoothAmnt, smoothDist);
 				}

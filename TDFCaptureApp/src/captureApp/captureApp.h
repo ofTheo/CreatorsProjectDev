@@ -11,6 +11,7 @@
 #include "decodeAndExport.h"
 #include "ofxTimeStamp.h"
 #include "appConstants.h"
+#include "ofxOsc.h"
 
 typedef enum{
 	CAMERA_CLOSED,
@@ -57,6 +58,8 @@ public:
 	void update();
 	void draw();
 		
+	void setupOsc();
+	
 	void threadedFunction();
 
 	void startCapture();
@@ -65,7 +68,8 @@ public:
 	
 	void startFadeIn();
 	
-	void exportFramesToDisk();
+	void prepareTransferFramesToVizApp();
+	void prepareExportFramesToDisk();
 	
 	void startDecode();
 	void handleDecode();
@@ -115,6 +119,14 @@ public:
 	string currentDecodeFolder;
 	string currentCaptureFolder;
 	string currentCity;
+	
+	bool bDoThreadedRSync;
+	bool bDoThreadedFrameSave;
+	string executeStr;
+	
+	bool bEnableOsc;
+	bool bOscSetup;
+	ofxOscSender oscTx;
 	
 	ofxThreadedVideoGrabber camera;
 	ofxImageSaver imageSaver;

@@ -71,6 +71,8 @@ public:
 	bool usingDirectory;
 	unsigned totalImages;
 
+	ofImage phase;
+
 	ofxAutoControlPanel panel;
 	vector<string> styles, exportFormats;
 	bool hidden;
