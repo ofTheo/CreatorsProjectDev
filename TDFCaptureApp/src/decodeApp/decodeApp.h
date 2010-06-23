@@ -62,7 +62,7 @@ public:
 
 	LutFilter lut;
 
-	ThreePhaseDecoder* threePhase;
+	FastThreePhase* threePhase;
 	
 	string inputDir;
 

@@ -77,6 +77,7 @@ public:
 
 	void handleFaceTrigger();
 	void handleProjection();
+	void updateGenerator();
 	void handleCamera();
 	
 	//--------------------------------------------------------------

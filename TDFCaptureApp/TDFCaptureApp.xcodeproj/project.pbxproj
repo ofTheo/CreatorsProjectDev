@@ -82,22 +82,22 @@
 		E4ACB59511D19072007B6252 /* ofxOscReceiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4ACB58E11D19072007B6252 /* ofxOscReceiver.cpp */; };
 		E4ACB59611D19072007B6252 /* ofxOscSender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4ACB59011D19072007B6252 /* ofxOscSender.cpp */; };
 		E4ACB63311D1BD13007B6252 /* ofxDirList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4ACB63111D1BD13007B6252 /* ofxDirList.cpp */; };
-		E4B7A4D111CE6A710096261A /* DepthDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */; };
-		E4B7A4D211CE6A710096261A /* DepthExporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B611CE6A710096261A /* DepthExporter.cpp */; };
-		E4B7A4D311CE6A710096261A /* FloodFillDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */; };
-		E4B7A4D411CE6A710096261A /* GradientGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */; };
-		E4B7A4D511CE6A710096261A /* GrayCodeGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */; };
-		E4B7A4D611CE6A710096261A /* LutFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4BF11CE6A710096261A /* LutFilter.cpp */; };
-		E4B7A4D711CE6A710096261A /* PatternGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C211CE6A710096261A /* PatternGenerator.cpp */; };
-		E4B7A4D811CE6A710096261A /* PhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C511CE6A710096261A /* PhaseDecoder.cpp */; };
-		E4B7A4D911CE6A710096261A /* PriorityDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C711CE6A710096261A /* PriorityDecoder.cpp */; };
-		E4B7A4DA11CE6A710096261A /* ThreePhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4C911CE6A710096261A /* ThreePhaseDecoder.cpp */; };
-		E4B7A4DB11CE6A710096261A /* ThreePhaseGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */; };
-		E4B7A4DC11CE6A710096261A /* TwoPlusOneDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */; };
-		E4B7A4DD11CE6A710096261A /* TwoPlusOneGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */; };
 		E4B8790211AE4024009488DD /* ofxMatrix3x3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F511AE4024009488DD /* ofxMatrix3x3.cpp */; };
 		E4B8790311AE4024009488DD /* ofxMatrix4x4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878F711AE4024009488DD /* ofxMatrix4x4.cpp */; };
 		E4B8790411AE4024009488DD /* ofxQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B878FC11AE4024009488DD /* ofxQuaternion.cpp */; };
+		E4B95F2211D2C79C001A61C5 /* DepthDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0311D2C79C001A61C5 /* DepthDecoder.cpp */; };
+		E4B95F2311D2C79C001A61C5 /* DepthExporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0511D2C79C001A61C5 /* DepthExporter.cpp */; };
+		E4B95F2411D2C79C001A61C5 /* FastThreePhase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0811D2C79C001A61C5 /* FastThreePhase.cpp */; };
+		E4B95F2511D2C79C001A61C5 /* FloodFillDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0A11D2C79C001A61C5 /* FloodFillDecoder.cpp */; };
+		E4B95F2611D2C79C001A61C5 /* LutFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0C11D2C79C001A61C5 /* LutFilter.cpp */; };
+		E4B95F2711D2C79C001A61C5 /* PartialQualityMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F0F11D2C79C001A61C5 /* PartialQualityMap.cpp */; };
+		E4B95F2811D2C79C001A61C5 /* PatternGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1111D2C79C001A61C5 /* PatternGenerator.cpp */; };
+		E4B95F2911D2C79C001A61C5 /* PhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1411D2C79C001A61C5 /* PhaseDecoder.cpp */; };
+		E4B95F2A11D2C79C001A61C5 /* PriorityDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1711D2C79C001A61C5 /* PriorityDecoder.cpp */; };
+		E4B95F2B11D2C79C001A61C5 /* ScanlineOffset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1911D2C79C001A61C5 /* ScanlineOffset.cpp */; };
+		E4B95F2C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp */; };
+		E4B95F2D11D2C79C001A61C5 /* ThreePhaseGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1E11D2C79C001A61C5 /* ThreePhaseGenerator.cpp */; };
+		E4B95F2E11D2C79C001A61C5 /* ThreePhaseWrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F2011D2C79C001A61C5 /* ThreePhaseWrap.cpp */; };
 		E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
@@ -365,35 +365,6 @@
 		E4ACB63211D1BD13007B6252 /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDirList.h; path = src/addons/ofxDirList/src/ofxDirList.h; sourceTree = SOURCE_ROOT; };
 		E4B69B5B0A3A1756003C02F2 /* emptyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
-		E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthDecoder.cpp; path = src/addons/ofxStructuredLight/src/DepthDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4B511CE6A710096261A /* DepthDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthDecoder.h; path = src/addons/ofxStructuredLight/src/DepthDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4B611CE6A710096261A /* DepthExporter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthExporter.cpp; path = src/addons/ofxStructuredLight/src/DepthExporter.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4B711CE6A710096261A /* DepthExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthExporter.h; path = src/addons/ofxStructuredLight/src/DepthExporter.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4B811CE6A710096261A /* FastBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastBlur.h; path = src/addons/ofxStructuredLight/src/FastBlur.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FloodFillDecoder.cpp; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4BA11CE6A710096261A /* FloodFillDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloodFillDecoder.h; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GradientGenerator.cpp; path = src/addons/ofxStructuredLight/src/GradientGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4BC11CE6A710096261A /* GradientGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientGenerator.h; path = src/addons/ofxStructuredLight/src/GradientGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GrayCodeGenerator.cpp; path = src/addons/ofxStructuredLight/src/GrayCodeGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4BE11CE6A710096261A /* GrayCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GrayCodeGenerator.h; path = src/addons/ofxStructuredLight/src/GrayCodeGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4BF11CE6A710096261A /* LutFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LutFilter.cpp; path = src/addons/ofxStructuredLight/src/LutFilter.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4C011CE6A710096261A /* LutFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LutFilter.h; path = src/addons/ofxStructuredLight/src/LutFilter.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C111CE6A710096261A /* ofxStructuredLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxStructuredLight.h; path = src/addons/ofxStructuredLight/src/ofxStructuredLight.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C211CE6A710096261A /* PatternGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PatternGenerator.cpp; path = src/addons/ofxStructuredLight/src/PatternGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4C311CE6A710096261A /* PatternGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternGenerator.h; path = src/addons/ofxStructuredLight/src/PatternGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C411CE6A710096261A /* PhaseConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseConstants.h; path = src/addons/ofxStructuredLight/src/PhaseConstants.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C511CE6A710096261A /* PhaseDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhaseDecoder.cpp; path = src/addons/ofxStructuredLight/src/PhaseDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4C611CE6A710096261A /* PhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseDecoder.h; path = src/addons/ofxStructuredLight/src/PhaseDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C711CE6A710096261A /* PriorityDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PriorityDecoder.cpp; path = src/addons/ofxStructuredLight/src/PriorityDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4C811CE6A710096261A /* PriorityDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityDecoder.h; path = src/addons/ofxStructuredLight/src/PriorityDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4C911CE6A710096261A /* ThreePhaseDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseDecoder.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4CA11CE6A710096261A /* ThreePhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseDecoder.h; path = src/addons/ofxStructuredLight/src/ThreePhaseDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseGenerator.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4CC11CE6A710096261A /* ThreePhaseGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseGenerator.h; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TwoPlusOneDecoder.cpp; path = src/addons/ofxStructuredLight/src/TwoPlusOneDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4CE11CE6A710096261A /* TwoPlusOneDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwoPlusOneDecoder.h; path = src/addons/ofxStructuredLight/src/TwoPlusOneDecoder.h; sourceTree = SOURCE_ROOT; };
-		E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TwoPlusOneGenerator.cpp; path = src/addons/ofxStructuredLight/src/TwoPlusOneGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		E4B7A4D011CE6A710096261A /* TwoPlusOneGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwoPlusOneGenerator.h; path = src/addons/ofxStructuredLight/src/TwoPlusOneGenerator.h; sourceTree = SOURCE_ROOT; };
 		E4B878F511AE4024009488DD /* ofxMatrix3x3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxMatrix3x3.cpp; path = ../../../addons/ofxVectorMath/src/ofxMatrix3x3.cpp; sourceTree = SOURCE_ROOT; };
 		E4B878F611AE4024009488DD /* ofxMatrix3x3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMatrix3x3.h; path = ../../../addons/ofxVectorMath/src/ofxMatrix3x3.h; sourceTree = SOURCE_ROOT; };
 		E4B878F711AE4024009488DD /* ofxMatrix4x4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxMatrix4x4.cpp; path = ../../../addons/ofxVectorMath/src/ofxMatrix4x4.cpp; sourceTree = SOURCE_ROOT; };
@@ -407,6 +378,37 @@
 		E4B878FF11AE4024009488DD /* ofxVec3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVec3f.h; path = ../../../addons/ofxVectorMath/src/ofxVec3f.h; sourceTree = SOURCE_ROOT; };
 		E4B8790011AE4024009488DD /* ofxVec4f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVec4f.h; path = ../../../addons/ofxVectorMath/src/ofxVec4f.h; sourceTree = SOURCE_ROOT; };
 		E4B8790111AE4024009488DD /* ofxVectorMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVectorMath.h; path = ../../../addons/ofxVectorMath/src/ofxVectorMath.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0311D2C79C001A61C5 /* DepthDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthDecoder.cpp; path = src/addons/ofxStructuredLight/src/DepthDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F0411D2C79C001A61C5 /* DepthDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthDecoder.h; path = src/addons/ofxStructuredLight/src/DepthDecoder.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0511D2C79C001A61C5 /* DepthExporter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DepthExporter.cpp; path = src/addons/ofxStructuredLight/src/DepthExporter.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F0611D2C79C001A61C5 /* DepthExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DepthExporter.h; path = src/addons/ofxStructuredLight/src/DepthExporter.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0711D2C79C001A61C5 /* FastBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastBlur.h; path = src/addons/ofxStructuredLight/src/FastBlur.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0811D2C79C001A61C5 /* FastThreePhase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FastThreePhase.cpp; path = src/addons/ofxStructuredLight/src/FastThreePhase.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F0911D2C79C001A61C5 /* FastThreePhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FastThreePhase.h; path = src/addons/ofxStructuredLight/src/FastThreePhase.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0A11D2C79C001A61C5 /* FloodFillDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FloodFillDecoder.cpp; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F0B11D2C79C001A61C5 /* FloodFillDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloodFillDecoder.h; path = src/addons/ofxStructuredLight/src/FloodFillDecoder.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0C11D2C79C001A61C5 /* LutFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LutFilter.cpp; path = src/addons/ofxStructuredLight/src/LutFilter.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F0D11D2C79C001A61C5 /* LutFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LutFilter.h; path = src/addons/ofxStructuredLight/src/LutFilter.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0E11D2C79C001A61C5 /* ofxStructuredLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxStructuredLight.h; path = src/addons/ofxStructuredLight/src/ofxStructuredLight.h; sourceTree = SOURCE_ROOT; };
+		E4B95F0F11D2C79C001A61C5 /* PartialQualityMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialQualityMap.cpp; path = src/addons/ofxStructuredLight/src/PartialQualityMap.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1011D2C79C001A61C5 /* PartialQualityMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialQualityMap.h; path = src/addons/ofxStructuredLight/src/PartialQualityMap.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1111D2C79C001A61C5 /* PatternGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PatternGenerator.cpp; path = src/addons/ofxStructuredLight/src/PatternGenerator.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1211D2C79C001A61C5 /* PatternGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternGenerator.h; path = src/addons/ofxStructuredLight/src/PatternGenerator.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1311D2C79C001A61C5 /* PhaseConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseConstants.h; path = src/addons/ofxStructuredLight/src/PhaseConstants.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1411D2C79C001A61C5 /* PhaseDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhaseDecoder.cpp; path = src/addons/ofxStructuredLight/src/PhaseDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1511D2C79C001A61C5 /* PhaseDecoder.cpp.orig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PhaseDecoder.cpp.orig; path = src/addons/ofxStructuredLight/src/PhaseDecoder.cpp.orig; sourceTree = SOURCE_ROOT; };
+		E4B95F1611D2C79C001A61C5 /* PhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseDecoder.h; path = src/addons/ofxStructuredLight/src/PhaseDecoder.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1711D2C79C001A61C5 /* PriorityDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PriorityDecoder.cpp; path = src/addons/ofxStructuredLight/src/PriorityDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1811D2C79C001A61C5 /* PriorityDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityDecoder.h; path = src/addons/ofxStructuredLight/src/PriorityDecoder.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1911D2C79C001A61C5 /* ScanlineOffset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScanlineOffset.cpp; path = src/addons/ofxStructuredLight/src/ScanlineOffset.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1A11D2C79C001A61C5 /* ScanlineOffset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanlineOffset.h; path = src/addons/ofxStructuredLight/src/ScanlineOffset.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1B11D2C79C001A61C5 /* Shared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shared.h; path = src/addons/ofxStructuredLight/src/Shared.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseDecoder.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1D11D2C79C001A61C5 /* ThreePhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseDecoder.h; path = src/addons/ofxStructuredLight/src/ThreePhaseDecoder.h; sourceTree = SOURCE_ROOT; };
+		E4B95F1E11D2C79C001A61C5 /* ThreePhaseGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseGenerator.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F1F11D2C79C001A61C5 /* ThreePhaseGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseGenerator.h; path = src/addons/ofxStructuredLight/src/ThreePhaseGenerator.h; sourceTree = SOURCE_ROOT; };
+		E4B95F2011D2C79C001A61C5 /* ThreePhaseWrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreePhaseWrap.cpp; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.cpp; sourceTree = SOURCE_ROOT; };
+		E4B95F2111D2C79C001A61C5 /* ThreePhaseWrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreePhaseWrap.h; path = src/addons/ofxStructuredLight/src/ThreePhaseWrap.h; sourceTree = SOURCE_ROOT; };
 		E4C2421610CC549C004149E2 /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E4C2424510CC5A17004149E2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -570,7 +572,7 @@
 			children = (
 				E4ACB62C11D1BD13007B6252 /* ofxDirList */,
 				E42DA42D11D10298009ACAC2 /* ofxTimeStamp */,
-				E4B7A4B211CE6A710096261A /* ofxStructuredLight */,
+				E4B95F0111D2C79C001A61C5 /* ofxStructuredLight */,
 				E493E2BE11C70DCA00C270F2 /* ofxControlPanel */,
 				E44140A211C470C400F8D93E /* ofx3DUtils */,
 				E44140CE11C470C400F8D93E /* ofxFileHelper */,
@@ -1256,51 +1258,6 @@
 			);
 			sourceTree = "<group>";
 		};
-		E4B7A4B211CE6A710096261A /* ofxStructuredLight */ = {
-			isa = PBXGroup;
-			children = (
-				E4B7A4B311CE6A710096261A /* src */,
-			);
-			path = ofxStructuredLight;
-			sourceTree = "<group>";
-		};
-		E4B7A4B311CE6A710096261A /* src */ = {
-			isa = PBXGroup;
-			children = (
-				E4B7A4B411CE6A710096261A /* DepthDecoder.cpp */,
-				E4B7A4B511CE6A710096261A /* DepthDecoder.h */,
-				E4B7A4B611CE6A710096261A /* DepthExporter.cpp */,
-				E4B7A4B711CE6A710096261A /* DepthExporter.h */,
-				E4B7A4B811CE6A710096261A /* FastBlur.h */,
-				E4B7A4B911CE6A710096261A /* FloodFillDecoder.cpp */,
-				E4B7A4BA11CE6A710096261A /* FloodFillDecoder.h */,
-				E4B7A4BB11CE6A710096261A /* GradientGenerator.cpp */,
-				E4B7A4BC11CE6A710096261A /* GradientGenerator.h */,
-				E4B7A4BD11CE6A710096261A /* GrayCodeGenerator.cpp */,
-				E4B7A4BE11CE6A710096261A /* GrayCodeGenerator.h */,
-				E4B7A4BF11CE6A710096261A /* LutFilter.cpp */,
-				E4B7A4C011CE6A710096261A /* LutFilter.h */,
-				E4B7A4C111CE6A710096261A /* ofxStructuredLight.h */,
-				E4B7A4C211CE6A710096261A /* PatternGenerator.cpp */,
-				E4B7A4C311CE6A710096261A /* PatternGenerator.h */,
-				E4B7A4C411CE6A710096261A /* PhaseConstants.h */,
-				E4B7A4C511CE6A710096261A /* PhaseDecoder.cpp */,
-				E4B7A4C611CE6A710096261A /* PhaseDecoder.h */,
-				E4B7A4C711CE6A710096261A /* PriorityDecoder.cpp */,
-				E4B7A4C811CE6A710096261A /* PriorityDecoder.h */,
-				E4B7A4C911CE6A710096261A /* ThreePhaseDecoder.cpp */,
-				E4B7A4CA11CE6A710096261A /* ThreePhaseDecoder.h */,
-				E4B7A4CB11CE6A710096261A /* ThreePhaseGenerator.cpp */,
-				E4B7A4CC11CE6A710096261A /* ThreePhaseGenerator.h */,
-				E4B7A4CD11CE6A710096261A /* TwoPlusOneDecoder.cpp */,
-				E4B7A4CE11CE6A710096261A /* TwoPlusOneDecoder.h */,
-				E4B7A4CF11CE6A710096261A /* TwoPlusOneGenerator.cpp */,
-				E4B7A4D011CE6A710096261A /* TwoPlusOneGenerator.h */,
-			);
-			name = src;
-			path = src/addons/ofxStructuredLight/src;
-			sourceTree = SOURCE_ROOT;
-		};
 		E4B878F211AE4024009488DD /* ofxVectorMath */ = {
 			isa = PBXGroup;
 			children = (
@@ -1329,6 +1286,54 @@
 			);
 			name = src;
 			path = ../../../addons/ofxVectorMath/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		E4B95F0111D2C79C001A61C5 /* ofxStructuredLight */ = {
+			isa = PBXGroup;
+			children = (
+				E4B95F0211D2C79C001A61C5 /* src */,
+			);
+			name = ofxStructuredLight;
+			path = src/addons/ofxStructuredLight;
+			sourceTree = SOURCE_ROOT;
+		};
+		E4B95F0211D2C79C001A61C5 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E4B95F0311D2C79C001A61C5 /* DepthDecoder.cpp */,
+				E4B95F0411D2C79C001A61C5 /* DepthDecoder.h */,
+				E4B95F0511D2C79C001A61C5 /* DepthExporter.cpp */,
+				E4B95F0611D2C79C001A61C5 /* DepthExporter.h */,
+				E4B95F0711D2C79C001A61C5 /* FastBlur.h */,
+				E4B95F0811D2C79C001A61C5 /* FastThreePhase.cpp */,
+				E4B95F0911D2C79C001A61C5 /* FastThreePhase.h */,
+				E4B95F0A11D2C79C001A61C5 /* FloodFillDecoder.cpp */,
+				E4B95F0B11D2C79C001A61C5 /* FloodFillDecoder.h */,
+				E4B95F0C11D2C79C001A61C5 /* LutFilter.cpp */,
+				E4B95F0D11D2C79C001A61C5 /* LutFilter.h */,
+				E4B95F0E11D2C79C001A61C5 /* ofxStructuredLight.h */,
+				E4B95F0F11D2C79C001A61C5 /* PartialQualityMap.cpp */,
+				E4B95F1011D2C79C001A61C5 /* PartialQualityMap.h */,
+				E4B95F1111D2C79C001A61C5 /* PatternGenerator.cpp */,
+				E4B95F1211D2C79C001A61C5 /* PatternGenerator.h */,
+				E4B95F1311D2C79C001A61C5 /* PhaseConstants.h */,
+				E4B95F1411D2C79C001A61C5 /* PhaseDecoder.cpp */,
+				E4B95F1511D2C79C001A61C5 /* PhaseDecoder.cpp.orig */,
+				E4B95F1611D2C79C001A61C5 /* PhaseDecoder.h */,
+				E4B95F1711D2C79C001A61C5 /* PriorityDecoder.cpp */,
+				E4B95F1811D2C79C001A61C5 /* PriorityDecoder.h */,
+				E4B95F1911D2C79C001A61C5 /* ScanlineOffset.cpp */,
+				E4B95F1A11D2C79C001A61C5 /* ScanlineOffset.h */,
+				E4B95F1B11D2C79C001A61C5 /* Shared.h */,
+				E4B95F1C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp */,
+				E4B95F1D11D2C79C001A61C5 /* ThreePhaseDecoder.h */,
+				E4B95F1E11D2C79C001A61C5 /* ThreePhaseGenerator.cpp */,
+				E4B95F1F11D2C79C001A61C5 /* ThreePhaseGenerator.h */,
+				E4B95F2011D2C79C001A61C5 /* ThreePhaseWrap.cpp */,
+				E4B95F2111D2C79C001A61C5 /* ThreePhaseWrap.h */,
+			);
+			name = src;
+			path = src/addons/ofxStructuredLight/src;
 			sourceTree = SOURCE_ROOT;
 		};
 		E4C2421710CC549C004149E2 /* Products */ = {
@@ -1550,25 +1555,25 @@
 				E44708EB11CD16B9003B3250 /* ofxCvGrayscaleImage.cpp in Sources */,
 				E44708EC11CD16B9003B3250 /* ofxCvImage.cpp in Sources */,
 				E44708ED11CD16B9003B3250 /* ofxCvShortImage.cpp in Sources */,
-				E4B7A4D111CE6A710096261A /* DepthDecoder.cpp in Sources */,
-				E4B7A4D211CE6A710096261A /* DepthExporter.cpp in Sources */,
-				E4B7A4D311CE6A710096261A /* FloodFillDecoder.cpp in Sources */,
-				E4B7A4D411CE6A710096261A /* GradientGenerator.cpp in Sources */,
-				E4B7A4D511CE6A710096261A /* GrayCodeGenerator.cpp in Sources */,
-				E4B7A4D611CE6A710096261A /* LutFilter.cpp in Sources */,
-				E4B7A4D711CE6A710096261A /* PatternGenerator.cpp in Sources */,
-				E4B7A4D811CE6A710096261A /* PhaseDecoder.cpp in Sources */,
-				E4B7A4D911CE6A710096261A /* PriorityDecoder.cpp in Sources */,
-				E4B7A4DA11CE6A710096261A /* ThreePhaseDecoder.cpp in Sources */,
-				E4B7A4DB11CE6A710096261A /* ThreePhaseGenerator.cpp in Sources */,
-				E4B7A4DC11CE6A710096261A /* TwoPlusOneDecoder.cpp in Sources */,
-				E4B7A4DD11CE6A710096261A /* TwoPlusOneGenerator.cpp in Sources */,
 				E43C87B711CEC34100973BFC /* decodeAndExport.cpp in Sources */,
 				E4ACB59311D19072007B6252 /* ofxOscBundle.cpp in Sources */,
 				E4ACB59411D19072007B6252 /* ofxOscMessage.cpp in Sources */,
 				E4ACB59511D19072007B6252 /* ofxOscReceiver.cpp in Sources */,
 				E4ACB59611D19072007B6252 /* ofxOscSender.cpp in Sources */,
 				E4ACB63311D1BD13007B6252 /* ofxDirList.cpp in Sources */,
+				E4B95F2211D2C79C001A61C5 /* DepthDecoder.cpp in Sources */,
+				E4B95F2311D2C79C001A61C5 /* DepthExporter.cpp in Sources */,
+				E4B95F2411D2C79C001A61C5 /* FastThreePhase.cpp in Sources */,
+				E4B95F2511D2C79C001A61C5 /* FloodFillDecoder.cpp in Sources */,
+				E4B95F2611D2C79C001A61C5 /* LutFilter.cpp in Sources */,
+				E4B95F2711D2C79C001A61C5 /* PartialQualityMap.cpp in Sources */,
+				E4B95F2811D2C79C001A61C5 /* PatternGenerator.cpp in Sources */,
+				E4B95F2911D2C79C001A61C5 /* PhaseDecoder.cpp in Sources */,
+				E4B95F2A11D2C79C001A61C5 /* PriorityDecoder.cpp in Sources */,
+				E4B95F2B11D2C79C001A61C5 /* ScanlineOffset.cpp in Sources */,
+				E4B95F2C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp in Sources */,
+				E4B95F2D11D2C79C001A61C5 /* ThreePhaseGenerator.cpp in Sources */,
+				E4B95F2E11D2C79C001A61C5 /* ThreePhaseWrap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

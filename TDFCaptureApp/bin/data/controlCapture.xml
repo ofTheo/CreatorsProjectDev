@@ -29,13 +29,17 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
+<<<<<<< HEAD
     <val_0>51.000000</val_0>
+=======
+    <val_0>29.750000</val_0>
+>>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </minBrightness>
 <projectorLut>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </projectorLut>
 <wavelength>
-    <val_0>64.000000</val_0>
+    <val_0>55.600002</val_0>
 </wavelength>
 <subdivisions>
     <val_0>10.000000</val_0>
@@ -89,7 +93,7 @@
     <val_0>1.000000</val_0>
 </rsyncThreaded>
 <decodeSkipFrame>
-    <val_0>2.000000</val_0>
+    <val_0>2.388889</val_0>
 </decodeSkipFrame>
 <fadeInTime>
     <val_0>2.000000</val_0>
@@ -104,11 +108,18 @@
     <val_0>0.000000</val_0>
 </brightnessSetting>
 <checkBrightness>
+<<<<<<< HEAD
     <val_0>131.750000</val_0>
+=======
+    <val_0>0.000000</val_0>
+>>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </checkBrightness>
 <use_osc>
     <val_0>0.000000</val_0>
 </use_osc>
+<<<<<<< HEAD
 <bReverseModel>
     <val_0>0.000000</val_0>
 </bReverseModel>
+=======
+>>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e

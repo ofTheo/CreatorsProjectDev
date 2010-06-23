@@ -3,6 +3,7 @@
 #include "DepthDecoder.h"
 #include "FastBlur.h"
 #include "PhaseConstants.h"
+#include "ofxOpenCv.h"
 
 //#define LINEARIZE_GAMMA
 
@@ -21,7 +22,7 @@ public:
 	void set(int i, byte* image, int channels = 3);
 	void makeDepth();
 	void decode();
-	void filterDepth(int yDist, float yAmt);
+	void filterDepth(int yDist, float yAmt, bool useGaussian = false, int dilatePasses = 2);
 		
 	float* getPhase();
 	float* getWrappedPhase();

@@ -14,7 +14,11 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
+<<<<<<< HEAD
     <val_0>2.339181</val_0>
+=======
+    <val_0>6.666667</val_0>
+>>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </jumpTo>
 <phasePersistence>
     <val_0>1.000000</val_0>
@@ -32,7 +36,11 @@
     <val_0>1.416667</val_0>
 </rangeThreshold>
 <depthScale>
+<<<<<<< HEAD
     <val_0>422.222168</val_0>
+=======
+    <val_0>94.444458</val_0>
+>>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </depthScale>
 <depthSkew>
     <val_0>-7.777778</val_0>

@@ -100,10 +100,6 @@ void captureApp::setup(){
 	bDoThreadedFrameSave	= false;
 	
 	camera3D.disableMouseEvents();
-
-	threePhase.setSize(1024, 768);
-	threePhase.setWavelength(64);
-	threePhase.generate();
 	
 	ofxXmlSettings xml;
 	xml.loadFile("locationSettings.xml");
@@ -224,8 +220,8 @@ void captureApp::setup(){
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
 
 	ofSetVerticalSync(true);
-	ofSetFrameRate(60.0);
-
+	ofSetFrameRate(60);
+	
 	ofBackground(0, 0, 0);
 	
 	scanningSound.loadSound("resources/scanningPlaceholder.mp3");
@@ -236,6 +232,9 @@ void captureApp::setup(){
 	
 	face.setup("faceHaar/haarcascade_frontalface_alt.xml", 160, 120, 2.0, 2.0);
 	prevFaceCheckTimeF = ofGetElapsedTimef();
+	
+	threePhase.setSize(1024, 768);
+	updateGenerator();
 }
 
 //-----------------------------------------------
@@ -360,6 +359,8 @@ void captureApp::handleDecode(){
 		float filterMax =  dAppPtr->panel.getValueF("filterMax");
 		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
 		int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
+		bool smoothGaussian = dAppPtr->panel.getValueB("smooth_gaussian");
+		int dilatePasses = dAppPtr->panel.getValueI("dilate_passes");
 		
 		printf("filter min %f filter max %f - smooth %f dist %i \n", filterMin, filterMax, smoothAmnt, smoothDist);
 		
@@ -376,7 +377,7 @@ void captureApp::handleDecode(){
 			if( saveIndex < imageSaver.getSize() ){
 			
 				printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
-				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist);
+				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist, smoothGaussian, dilatePasses);
 				
 				bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
 				
@@ -585,30 +586,14 @@ void captureApp::endCapture(){
 }
 
 //--------------------------------------------------------
-void captureApp::handleProjection(){
-		// this is where an event/callback-based
-	// control panel would be really helpful!
-		
-	if( panel.hasValueChanged("wavelength") ){
-		int curWavelength = panel.getValueI("wavelength");
-		threePhase.setWavelength(curWavelength);
-		threePhase.generate();
-	}
+void captureApp::handleProjection(){		
 
-	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") || 
-			panel.hasValueChanged("projectorLut")) {	
-		threePhase.setMinBrightness(panel.getValueI("minBrightness"));
-		threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
-		threePhase.generate();
-		if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
-				curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
-	}
-
-	if(panel.hasValueChanged("orientation") ) {
-		int curOrientation = panel.getValueI("orientation");
-		phaseOrientation orientation = curOrientation == 0 ? PHASE_VERTICAL : PHASE_HORIZONTAL;
-		threePhase.setOrientation(orientation);
-		threePhase.generate();
+	if (panel.hasValueChanged("wavelength") ||
+			panel.hasValueChanged("minBrightness") ||
+			panel.hasValueChanged("maxBrightness") || 
+			panel.hasValueChanged("projectorLut") ||
+			panel.hasValueChanged("orientation")) {	
+		updateGenerator();
 	}
 
 	threePhase.setReverse(panel.getValueB("reverse"));
@@ -616,8 +601,20 @@ void captureApp::handleProjection(){
 	if( panel.hasValueChanged("fullscreen") ) {
 		ofSetFullscreen(panel.getValueB("fullscreen"));
 	}
-	
 }
+
+void captureApp::updateGenerator() {
+	threePhase.setWavelength(panel.getValueI("wavelength"));
+	threePhase.setMinBrightness(panel.getValueI("minBrightness"));
+	threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
+	int curOrientation = panel.getValueI("orientation");
+	phaseOrientation orientation = curOrientation == 0 ? PHASE_VERTICAL : PHASE_HORIZONTAL;
+	threePhase.setOrientation(orientation);
+	threePhase.generate();
+	if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
+		curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
+}
+
 
 //--------------------------------------------------------
 void captureApp::handleCamera(){
@@ -931,12 +928,10 @@ void captureApp::draw(){
 			}
 		}
 		
-		if( camState == CAMERA_OPEN  ){
-			ofSetColor(240, 10, 70);
-			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 600, 20);
-			ofSetColor(255, 255, 255, 255);
-		}
-	
+		ofSetColor(255, 0, 0);
+		ofDrawBitmapString("app fps: " + ofToString(ofGetFrameRate(), 2), 820, 20);
+		if(camState == CAMERA_OPEN)
+			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 820, 40);	
 	}
 }
 
