@@ -164,6 +164,7 @@
 		031CEAF81139577C00EC790C /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		031CEAFA1139577C00EC790C /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		031CEAFB1139577C00EC790C /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
+		3B1EAA3611D2CF6A003FD9BB /* ofxNumericalDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxNumericalDirList.h; path = src/decodeApp/ofxNumericalDirList.h; sourceTree = SOURCE_ROOT; };
 		E42DA42E11D10298009ACAC2 /* ofxTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimeStamp.h; path = src/addons/ofxTimeStamp/ofxTimeStamp.h; sourceTree = SOURCE_ROOT; };
 		E43C87B511CEC34100973BFC /* decodeAndExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decodeAndExport.h; sourceTree = "<group>"; };
 		E43C87B611CEC34100973BFC /* decodeAndExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decodeAndExport.cpp; sourceTree = "<group>"; };
@@ -560,6 +561,7 @@
 		E441401B11C46F9B00F8D93E /* decodeApp */ = {
 			isa = PBXGroup;
 			children = (
+				3B1EAA3611D2CF6A003FD9BB /* ofxNumericalDirList.h */,
 				E441406511C46F9B00F8D93E /* decodeApp.cpp */,
 				E441406611C46F9B00F8D93E /* decodeApp.h */,
 			);
