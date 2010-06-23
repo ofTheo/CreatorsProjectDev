@@ -269,14 +269,6 @@ void captureApp::update(){
 		handleProjection();
 		handleCamera();
 		handleFaceTrigger();
-
-		if( panel.getValueB("projectorLut") ){
-			if(  ofxFileHelper::doesFileExist("projector-lut.csv") ){
-				//TODO: note this is cumulative - it shouldn't be
-				curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
-			}
-			panel.setValueB("projectorLut", false);
-		}
 	}
 	
 	panel.clearAllChanged();
@@ -521,10 +513,13 @@ void captureApp::handleProjection(){
 		threePhase.generate();
 	}
 
-	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") ){	
+	if ( panel.hasValueChanged("minBrightness") || panel.hasValueChanged("maxBrightness") || 
+			panel.hasValueChanged("projectorLut")) {	
 		threePhase.setMinBrightness(panel.getValueI("minBrightness"));
 		threePhase.setMaxBrightness(panel.getValueI("maxBrightness"));
 		threePhase.generate();
+		if(panel.getValueB("projectorLut") && ofxFileHelper::doesFileExist("projector-lut.csv"))
+				curGenerator->applyLut(ofToDataPath("projector-lut.csv"));
 	}
 
 	if(panel.hasValueChanged("orientation") ) {
