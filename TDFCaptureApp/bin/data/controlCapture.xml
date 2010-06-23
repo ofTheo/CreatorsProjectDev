@@ -29,11 +29,7 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-<<<<<<< HEAD
-    <val_0>51.000000</val_0>
-=======
     <val_0>29.750000</val_0>
->>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </minBrightness>
 <projectorLut>
     <val_0>1.000000</val_0>
@@ -108,18 +104,11 @@
     <val_0>0.000000</val_0>
 </brightnessSetting>
 <checkBrightness>
-<<<<<<< HEAD
     <val_0>131.750000</val_0>
-=======
-    <val_0>0.000000</val_0>
->>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
 </checkBrightness>
 <use_osc>
     <val_0>0.000000</val_0>
 </use_osc>
-<<<<<<< HEAD
 <bReverseModel>
     <val_0>0.000000</val_0>
 </bReverseModel>
-=======
->>>>>>> 28c124dfd15ae76fbbbe18527a5731bc4c1f530e
