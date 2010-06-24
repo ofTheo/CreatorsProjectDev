@@ -14,7 +14,11 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
+<<<<<<< HEAD
     <val_0>48.598133</val_0>
+=======
+    <val_0>60.000004</val_0>
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 </jumpTo>
 <phasePersistence>
     <val_0>0.000000</val_0>
@@ -32,6 +36,7 @@
     <val_0>4.250000</val_0>
 </rangeThreshold>
 <depthScale>
+<<<<<<< HEAD
     <val_0>122.222229</val_0>
 </depthScale>
 <depthSkew>
@@ -39,6 +44,15 @@
 </depthSkew>
 <filterMin>
     <val_0>-284.444458</val_0>
+=======
+    <val_0>-422.222229</val_0>
+</depthScale>
+<depthSkew>
+    <val_0>4.000000</val_0>
+</depthSkew>
+<filterMin>
+    <val_0>-614.400024</val_0>
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 </filterMin>
 <filterMax>
     <val_0>182.044434</val_0>
@@ -77,17 +91,24 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <smooth_y_dist>
-    <val_0>9.022223</val_0>
+    <val_0>5.433333</val_0>
 </smooth_y_dist>
 <smooth_y_amnt>
-    <val_0>1.000000</val_0>
+    <val_0>0.488889</val_0>
 </smooth_y_amnt>
 <useCameraLut>
     <val_0>0.000000</val_0>
 </useCameraLut>
 <smooth_gaussian>
+<<<<<<< HEAD
     <val_0>0.000000</val_0>
 </smooth_gaussian>
 <dilate_passes>
     <val_0>2.933333</val_0>
+=======
+    <val_0>1.000000</val_0>
+</smooth_gaussian>
+<dilate_passes>
+    <val_0>2.233333</val_0>
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 </dilate_passes>

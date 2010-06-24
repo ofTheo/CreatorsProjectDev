@@ -86,7 +86,8 @@ void decodeApp::setup(){
 	panel.addSlider("smooth y amnt", "smooth_y_amnt", 0, 0, 1.0, false);
 	panel.addToggle("smooth gaussian", "smooth_gaussian", false);
 	panel.addSlider("dilate passes", "dilate_passes", 2, 0, 6, true);
-	panel.addDrawableRect("debug", &rgbaTex, 160, 120);
+	panel.addDrawableRect("rgbaTex", &rgbaTex, 160, 120);
+	panel.addDrawableRect("wrappedPhase", &wrappedPhaseTex, 160, 120);
 
 	panel.loadSettings("controlDecode.xml");
 	
@@ -97,6 +98,7 @@ void decodeApp::setup(){
 	panel.setValueI("playSequence", 0);	
 	
 	rgbaTex.allocate(640, 480, GL_RGBA);
+	wrappedPhaseTex.allocate(640, 480, GL_LUMINANCE);
 
 }
 
@@ -352,6 +354,7 @@ void decodeApp::handlePlayback(){
 		if( redraw ){
 			//theo added - for debugging		
 			rgbaTex.loadData(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 640, 480, GL_RGBA);
+			wrappedPhaseTex.loadData(threePhase->phasePixels, 640, 480, GL_LUMINANCE);
 		}
 
 	}

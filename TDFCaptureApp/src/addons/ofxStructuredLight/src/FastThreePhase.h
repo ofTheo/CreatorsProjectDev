@@ -10,11 +10,12 @@ public:
 	FastThreePhase();
 	void setup(int width, int height);
 	void decode();
-private:
+	
+	ofImage phaseImage, qualityImage, offsetImage;
+	
 	ThreePhaseWrap threePhaseWrap;
 	PartialQualityMap partialQualityMap;
 	ScanlineOffset scanlineOffset;
 
-	ofImage phaseImage, qualityImage, offsetImage;
 	unsigned char *qualityPixels, *offsetPixels, *phasePixels;
 };

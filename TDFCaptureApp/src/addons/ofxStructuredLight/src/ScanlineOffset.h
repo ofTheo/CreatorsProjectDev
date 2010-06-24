@@ -15,6 +15,7 @@
 #define LEVEL_COUNT 6
 
 #include "Shared.h"
+#include "ofMain.h"
 
 class ScanlineOffset {
 public:
@@ -26,6 +27,10 @@ public:
 		unsigned char* phase,
 		unsigned char* quality,
 		char* offset,
+<<<<<<< HEAD
+=======
+		int start,
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 		bool phasePersistence = false);
 	int* getQualityHistogram();
 	int* getLevelCutoff();

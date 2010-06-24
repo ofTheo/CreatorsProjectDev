@@ -35,7 +35,7 @@
     <val_0>1.000000</val_0>
 </projectorLut>
 <wavelength>
-    <val_0>55.600002</val_0>
+    <val_0>64.000000</val_0>
 </wavelength>
 <subdivisions>
     <val_0>10.000000</val_0>
@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>2.000000</val_0>
+    <val_0>0.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>
@@ -104,7 +104,7 @@
     <val_0>0.000000</val_0>
 </brightnessSetting>
 <checkBrightness>
-    <val_0>131.750000</val_0>
+    <val_0>130.333344</val_0>
 </checkBrightness>
 <use_osc>
     <val_0>0.000000</val_0>

@@ -1,16 +1,23 @@
 #include "ThreePhaseDecoder.h"
 
 ThreePhaseDecoder::ThreePhaseDecoder() :
-	brightness(.8),
-	rangeThreshold(20) {
+		brightness(.8),
+		rangeThreshold(20) {
 	#ifdef LINEARIZE_PHASE
 	linearize = false;
 	#endif
 }
 
 ThreePhaseDecoder::~ThreePhaseDecoder() {
+<<<<<<< HEAD
 	delete [] range;
 	delete [] unwrapOrder;
+=======
+	if(range != NULL)
+		delete [] range;
+	if(unwrapOrder != NULL)
+		delete [] unwrapOrder;
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 }
 
 void ThreePhaseDecoder::setup(int width, int height) {

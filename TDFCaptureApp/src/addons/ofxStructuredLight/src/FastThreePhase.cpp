@@ -5,11 +5,15 @@ FastThreePhase::FastThreePhase() {
 
 void FastThreePhase::setup(int width, int height) {
 	ThreePhaseDecoder::setup(width, height);
-
+	
 	threePhaseWrap.setup(width, height);
 	partialQualityMap.setup(width, height);
 	scanlineOffset.setup(width, height);
 
+	phaseImage.setUseTexture(false);
+	qualityImage.setUseTexture(false);
+	offsetImage.setUseTexture(false);
+	
 	phaseImage.allocate(width, height, OF_IMAGE_GRAYSCALE);
 	qualityImage.allocate(width, height, OF_IMAGE_GRAYSCALE);
 	offsetImage.allocate(width, height, OF_IMAGE_GRAYSCALE);
@@ -21,14 +25,26 @@ void FastThreePhase::setup(int width, int height) {
 
 void FastThreePhase::decode() {
 	makeColor();
+	
+	int n = width * height;
 
 	threePhaseWrap.setThreshold((unsigned char) rangeThreshold);
 	threePhaseWrap.makeWrappedPhase(phasePixels, qualityPixels,
 		graySequence[0], graySequence[1], graySequence[2]);
+	
+	// this is used by getStart() to determine the center
+	for(int i = 0; i < n; i++)
+		ready[i] = qualityPixels[i] != LABEL_BACKGROUND;
+	
 	partialQualityMap.makeQualityMap(phasePixels, qualityPixels);
+<<<<<<< HEAD
 	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels, phasePersistence);
 
 	int n = width * height;
+=======
+	
+	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels, getStart(), phasePersistence);
+>>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 
 	for(int i = 0; i < n; i++)
 		mask[i] = qualityPixels[i] != LABEL_UNWRAPPED;
