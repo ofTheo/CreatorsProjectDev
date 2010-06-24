@@ -70,7 +70,7 @@ class decodeAndExport{
 				//TODO: optimize
 
 				if( smoothAmnt > 0.0 || smoothGaussian){
-					threePhase->filterDepth(smoothAmnt, smoothDist, smoothGaussian, dilatePasses);
+					threePhase->filterDepth(smoothDist, smoothAmnt, smoothGaussian, dilatePasses); // <3
 				}
 				
 				//img.setFromPixels(threePhase->getColorAndDepth(filterMin, filterMax), threePhase->getWidth(), threePhase->getHeight(), OF_IMAGE_COLOR_ALPHA);
