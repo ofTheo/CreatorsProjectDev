@@ -2,9 +2,7 @@
 
 ThreePhaseDecoder::ThreePhaseDecoder() :
 		brightness(.8),
-		rangeThreshold(20),
-		range(NULL),
-		unwrapOrder(NULL) {
+		rangeThreshold(20) {
 	#ifdef LINEARIZE_PHASE
 	linearize = false;
 	#endif
