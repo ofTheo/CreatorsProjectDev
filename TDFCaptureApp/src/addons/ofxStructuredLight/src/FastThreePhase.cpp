@@ -26,7 +26,7 @@ void FastThreePhase::decode() {
 	threePhaseWrap.makeWrappedPhase(phasePixels, qualityPixels,
 		graySequence[0], graySequence[1], graySequence[2]);
 	partialQualityMap.makeQualityMap(phasePixels, qualityPixels);
-	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels);
+	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels, phasePersistence);
 
 	int n = width * height;
 
@@ -36,7 +36,7 @@ void FastThreePhase::decode() {
 	for(int i = 0; i < n; i++) {
 		int cur = ((char*) offsetPixels)[i];
 		phase[i] = (cur * 256) + phasePixels[i];
-		phase[i] *= .01f; // this should be handled by skew/scale instead
+		phase[i] *= .002f; // this should be handled by skew/scale instead
 	}
 
 	makeDepth();
