@@ -31,13 +31,14 @@ void scanPlayer::setup(){
 	nVertices		= srcWidth*srcHeight;
 	nFaces			= (srcWidth-1)*(srcHeight-1)*2;
 	vertices		= new ofxVec3f[numTotal];
-	faces			= new face[(srcWidth-1)*(srcHeight-1)*2];
+	faces			= new face[(srcWidth)*(srcHeight)*2];
 	normals			= new ofxVec3f[numTotal];
 	normalsSmoothed = new ofxVec3f[numTotal];
-	
+		
+	int k = 0;
 	for (int i = 0; i < srcWidth-1; i++){
 		for (int j = 0; j < srcHeight-1; j++){
-			
+						
 			int nw = j*srcWidth+i;
 			int ne = j*srcWidth+(i+1);
 			int sw = (j+1)*srcWidth+i;
