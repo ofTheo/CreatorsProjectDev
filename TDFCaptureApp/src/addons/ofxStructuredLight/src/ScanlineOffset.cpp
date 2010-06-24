@@ -53,6 +53,7 @@ void ScanlineOffset::makeOffset(
 		unsigned char* phase,
 		unsigned char* quality,
 		char* offset,
+		int start,
 		bool phasePersistence) {
 	this->phase = phase;
 	this->quality = quality;
@@ -74,25 +75,25 @@ void ScanlineOffset::makeOffset(
 			quality[i] = LABEL_BACKGROUND;
 		}
 	}
-
-	// pick starting point
-	int startX = width / 2;
-	int startY = height / 2;
-	int start = startY * width + startX;
-
+	
+	/*
+	 this seems to break things
+	 check that the getStart() code is legitimately finding a good start point
+	 */
+	
+	// if the starting point isn't valid, look for the nearest point that is
 	if(quality[start] != 0) {
-		// if the starting point isn't look for the nearest point that is
 		int i = 0;
 		while(i < neighbors.size() && quality[start + neighbors[i]] != 0)
 			i++;
 		if(i == neighbors.size()) {
-			cout << "Couldn't find a valid pixel to unwrap." << endl;
+			ofLog(OF_LOG_ERROR, "Couldn't find a valid pixel to unwrap.");
 			return;
 		}
 		start += neighbors[i];
-		startX = start % width;
-		startY = start / width;
 	}
+	int startX = start % width;
+	int startY = start / width;
 
 	quality[start] = LABEL_UNWRAPPED;
 	if(phasePersistence && lastOffsetReady)

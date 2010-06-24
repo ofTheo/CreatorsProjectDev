@@ -14,7 +14,7 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
-    <val_0>33.333336</val_0>
+    <val_0>60.000004</val_0>
 </jumpTo>
 <phasePersistence>
     <val_0>1.000000</val_0>
@@ -32,13 +32,13 @@
     <val_0>1.416667</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>166.666687</val_0>
+    <val_0>-422.222229</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-8.666667</val_0>
+    <val_0>4.000000</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-329.955566</val_0>
+    <val_0>-614.400024</val_0>
 </filterMin>
 <filterMax>
     <val_0>261.688843</val_0>
