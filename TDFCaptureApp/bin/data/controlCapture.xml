@@ -29,7 +29,7 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-    <val_0>29.750000</val_0>
+    <val_0>25.500000</val_0>
 </minBrightness>
 <projectorLut>
     <val_0>1.000000</val_0>
@@ -77,7 +77,7 @@
     <val_0>0.400000</val_0>
 </confidence_gate_stop>
 <maxBrightness>
-    <val_0>147.333344</val_0>
+    <val_0>99.166672</val_0>
 </maxBrightness>
 <largeVideo>
     <val_0>0.000000</val_0>
@@ -95,10 +95,10 @@
     <val_0>2.000000</val_0>
 </fadeInTime>
 <bSpotLight>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </bSpotLight>
 <spotLightBrightness>
-    <val_0>0.494444</val_0>
+    <val_0>0.377778</val_0>
 </spotLightBrightness>
 <brightnessSetting>
     <val_0>0.000000</val_0>

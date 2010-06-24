@@ -14,34 +14,34 @@
     <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
-    <val_0>2.339181</val_0>
+    <val_0>48.598133</val_0>
 </jumpTo>
 <phasePersistence>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </phasePersistence>
 <resetView>
     <val_0>0.000000</val_0>
 </resetView>
 <style>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </style>
 <orientation>
     <val_0>0.000000</val_0>
 </orientation>
 <rangeThreshold>
-    <val_0>1.416667</val_0>
+    <val_0>4.250000</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>422.222168</val_0>
+    <val_0>122.222229</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-7.777778</val_0>
+    <val_0>-19.777779</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-329.955566</val_0>
+    <val_0>-284.444458</val_0>
 </filterMin>
 <filterMax>
-    <val_0>261.688843</val_0>
+    <val_0>182.044434</val_0>
 </filterMax>
 <exportFormat>
     <val_0>3.000000</val_0>
@@ -85,3 +85,9 @@
 <useCameraLut>
     <val_0>0.000000</val_0>
 </useCameraLut>
+<smooth_gaussian>
+    <val_0>0.000000</val_0>
+</smooth_gaussian>
+<dilate_passes>
+    <val_0>2.933333</val_0>
+</dilate_passes>
