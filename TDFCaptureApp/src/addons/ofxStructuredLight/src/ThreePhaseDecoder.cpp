@@ -9,15 +9,10 @@ ThreePhaseDecoder::ThreePhaseDecoder() :
 }
 
 ThreePhaseDecoder::~ThreePhaseDecoder() {
-<<<<<<< HEAD
-	delete [] range;
-	delete [] unwrapOrder;
-=======
 	if(range != NULL)
 		delete [] range;
 	if(unwrapOrder != NULL)
 		delete [] unwrapOrder;
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 }
 
 void ThreePhaseDecoder::setup(int width, int height) {

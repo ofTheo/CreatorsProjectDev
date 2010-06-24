@@ -53,10 +53,7 @@ void ScanlineOffset::makeOffset(
 		unsigned char* phase,
 		unsigned char* quality,
 		char* offset,
-<<<<<<< HEAD
-=======
 		int start,
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 		bool phasePersistence) {
 	this->phase = phase;
 	this->quality = quality;

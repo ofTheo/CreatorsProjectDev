@@ -37,14 +37,8 @@ void FastThreePhase::decode() {
 		ready[i] = qualityPixels[i] != LABEL_BACKGROUND;
 	
 	partialQualityMap.makeQualityMap(phasePixels, qualityPixels);
-<<<<<<< HEAD
-	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels, phasePersistence);
-
-	int n = width * height;
-=======
 	
 	scanlineOffset.makeOffset(phasePixels, qualityPixels, (char*) offsetPixels, getStart(), phasePersistence);
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
 
 	for(int i = 0; i < n; i++)
 		mask[i] = qualityPixels[i] != LABEL_UNWRAPPED;
