@@ -9,11 +9,13 @@ ThreePhaseDecoder::ThreePhaseDecoder() :
 }
 
 ThreePhaseDecoder::~ThreePhaseDecoder() {
+	delete [] range;
+	delete [] unwrapOrder;
 }
 
 void ThreePhaseDecoder::setup(int width, int height) {
 	PhaseDecoder::setup(width, height, 3);
-	range = new float[width * height];
+	range = new float[width * height]; // this is deleted in phase decoder for some reason
 	unwrapOrder = new float[width * height];
 }
 

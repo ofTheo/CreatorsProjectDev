@@ -63,7 +63,7 @@ PhaseDecoder::~PhaseDecoder() {
 		delete [] color;
 		delete [] colorDepth;
 		delete [] lastPhase;
-		delete [] range;
+		delete [] wrappedPhase;
 	}
 }
 
