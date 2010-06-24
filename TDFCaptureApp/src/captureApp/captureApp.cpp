@@ -15,7 +15,7 @@ extern decodeApp  * dAppPtr;
 void measureCamFps(){
 	float timeDiff = ofGetElapsedTimef()-lastTime;
 	lastTime = ofGetElapsedTimef();
-		
+	
 	float fps = 1.0/ofClamp(timeDiff, 0.01, 1000.0);
 	camFps *= 0.95;
 	camFps += 0.05 * fps;
@@ -51,7 +51,7 @@ void captureApp::frameReceived(ofVideoGrabber& grabber) {
 
 //--------------------------------------------------------
 void captureApp::update1394Cam(){
-
+	
 	camera1394.update();
 	if( camera1394.isFrameNew() ){
 		int cameraRate = panel.getValueI("cameraRate");
@@ -86,7 +86,7 @@ void captureApp::setup(){
 	debugState		= CAP_DEBUG;
 	camState		= CAMERA_CLOSED;
 	prevCamState	= CAMERA_CLOSED;
-
+	
 	preCamMode			= 0;
 	cameraFrameNum		= 0;
 	sdk					= NULL;
@@ -112,12 +112,13 @@ void captureApp::setup(){
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
 	//panel.loadFont("resources/myFont.ttf", 9);
+	panel.addPanel("app/capture settings", 1);
 	panel.addPanel("app settings", 1);
-	panel.addPanel("pattern settings", 1);
 	panel.addPanel("face trigger settings", 1);
-	panel.addPanel("visual settings", 1);
-
-	panel.setWhichPanel("app settings");
+	panel.addPanel("pattern settings", 1);
+	panel.addPanel("misc settings", 1);
+	
+	panel.setWhichPanel("app/capture settings");
 	
 	vector <string> camModes;
 	camModes.push_back("camera off");
@@ -127,44 +128,56 @@ void captureApp::setup(){
 	panel.addMultiToggle("camera mode", "camMode", 0, camModes);
 	
 	panel.addToggle("camera settings", "cameraSettings", false);
+	
 	panel.addToggle("fullscreen", "fullscreen", false);
+	
+	panel.addToggle("spot light image", "bSpotLight", true);
+	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
+	panel.addToggle("reverse decode mode", "bReverseModel", false);
+	
 	panel.addToggle("frame by frame", "frameByFrame", false);
 	panel.addToggle("large video", "largeVideo", false);
-	panel.addToggle("brightness setting", "brightnessSetting", false);
-	panel.addSlider("check brigheness", "checkBrightness", 0, 0, 255, true);
-	panel.addSlider("fade in time", "fadeInTime", 2.0, 0.0, 5.0, false);
 
+	
+	panel.addSlider("min brightness", "minBrightness", 0, 0, 255, true);
+	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);	
+	panel.addSlider("3 phase - wavelength", "wavelength", 64, 8, 512, true);
+	panel.addToggle("use projector lut", "projectorLut", false);
+	
+	
+	
+	
+	panel.setWhichPanel("app settings");
+	
+	panel.addSlider("fade in time", "fadeInTime", 2.0, 0.0, 5.0, false);
+	
 	vector<string> postCapModes;
 	postCapModes.push_back("save frames");
 	postCapModes.push_back("decode and frames");
 	postCapModes.push_back("decode, export and frames");
 	postCapModes.push_back("all above + notify");
 	panel.addMultiToggle("post capture:", "postCapture", 2, postCapModes);
-
+	
 	panel.addToggle("notify with osc", "use_osc", false);
-
+	
 	panel.addSlider("decode skip frames", "decodeSkipFrame", 2, 0, 5, true);
 	
 	panel.addSlider("capture time f", "CAPTURE_TIME_F", 4.0, 2.0, 15.0, false);
-
+	
 	panel.setWhichPanel("pattern settings");
-
+	
 	panel.addSlider("pattern rate", "patternRate", 1, 1, 6, true);
 	panel.addSlider("camera rate", "cameraRate", 1, 1, 6, true);
 	panel.addSlider("camera offset", "cameraOffset", 0, 0, 5, true);
-
+	
 	panel.addToggle("reverse", "reverse", false);
-
+	
 	vector<string> orientations;
 	orientations.push_back("vertical");
 	orientations.push_back("horizonal");
 	panel.addMultiToggle("orientation", "orientation", 0, orientations);
-
-	panel.addSlider("min brightness", "minBrightness", 0, 0, 255, true);
-	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);	
-	panel.addSlider("3 phase - wavelength", "wavelength", 64, 8, 512, true);
-	panel.addToggle("use projector lut", "projectorLut", false);
-
+	
+	
 	panel.setWhichPanel("face trigger settings");
 	panel.addToggle("use face trigger", "B_FACE_TRIGGER", false);
 	panel.addSlider("face trigger fps", "FACE_FPS", 10, 3, 30, false);
@@ -175,25 +188,26 @@ void captureApp::setup(){
 	varPtr.setup("num faces", &face.numFaces, GUI_VAR_INT, true);
 	panel.addChartPlotter("num faces", varPtr, 240, 60, 240, -1, 3);
 	panel.addChartPlotter("face confidence", guiStatVarPointer("confidence", &face.confidence, GUI_VAR_FLOAT, true, 2), 240, 70, 240, -0.2, 1.2);
-
+	
 	panel.addDrawableRect("state", &face, 240, 40);
-		
+	
 	panel.addSlider("confidence add amnt", "confidence_add", 0.1, 0.05, 1.0, false);
 	panel.addSlider("confidence fade amnt", "confidence_fade", 0.95, 0.8, 0.995, false);
 	panel.addSlider("confidence gate start val", "confidence_gate_start", 0.65, 0.15, 1.0, false);
 	panel.addSlider("confidence gate stop val", "confidence_gate_stop", 0.4, 0.0, 1.0, false);
 	
-	panel.setWhichPanel("visual settings");
-	panel.addToggle("spot light image", "bSpotLight", true);
-	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
-	panel.addToggle("reverse decode mode", "bReverseModel", false);
+	panel.setWhichPanel("misc settings");
+	
+	panel.addToggle("brightness setting", "brightnessSetting", false);
+	panel.addSlider("check brigheness", "checkBrightness", 0, 0, 255, true);
+	
 	
 	panel.loadSettings("controlCapture.xml");
 	
 	if( panel.getValueB("use_osc") ){
 		setupOsc();
 	}
-
+	
 	//overides 
 	panel.setValueI("camMode", 0);
 	panel.setValueI("fullscreen", 0);
@@ -209,16 +223,16 @@ void captureApp::setup(){
 	for(int i = 0; i < n; i++) {
 		recent.push_back(ofImage());
 		recent.back().allocate(
-			cameraWidth,
-			cameraHeight,
-			OF_IMAGE_COLOR);
+							   cameraWidth,
+							   cameraHeight,
+							   OF_IMAGE_COLOR);
 		needsUpdate.push_back(false);
 	}
 	curGenerator = &threePhase;
-
+	
 	int captureTime = 15;
 	imageSaver.setup(cameraWidth, cameraHeight, captureTime * 60);
-
+	
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
 	
@@ -256,7 +270,7 @@ void captureApp::setupOsc(){
 //-----------------------------------------------
 void captureApp::update(){
 	panel.update();
-
+	
 	bEnableOsc = panel.getValueB("use_osc");
 	if( panel.hasValueChanged("use_osc") ){
 		if( bEnableOsc && !bOscSetup ){
@@ -278,7 +292,7 @@ void captureApp::update(){
 	}else if( debugState == CAP_DEBUG ){
 		panel.hidden = false;
 	}
-
+	
 	if( state == CAP_STATE_CAPTURE && ofGetElapsedTimef() >= timeToEndCapture ){
 		printf("time is %f - time to end is %f\n", ofGetElapsedTimef(), timeToEndCapture);
 		endCapture();		
@@ -288,7 +302,7 @@ void captureApp::update(){
 			bNeedsToLeaveFrame = false;
 		}
 	}
-		
+	
 	if( state == CAP_STATE_FADEIN && ofGetElapsedTimef() > fadeInStartTime + panel.getValueF("fadeInTime") ){
 		startCapture();
 	}	
@@ -320,20 +334,20 @@ void captureApp::startDecode(){
 	
 	if( imageSaver.getSize() ){
 		state = CAP_STATE_DECODING;
-	
+		
 		timeToDecode = 0.0;
 		saveIndex = 0;
 		saveCount = 0;
 		decoder.setupDecoder(imageSaver.width, imageSaver.height);
 		
 		float scale = dAppPtr->panel.getValueF("depthScale");
-
-//		if( panel.getValueB("bReverseModel") ){
-//			scale *= -1.0;
-//		}
+		
+		//		if( panel.getValueB("bReverseModel") ){
+		//			scale *= -1.0;
+		//		}
 		
 		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), scale, dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
-
+		
 		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
 			ofxFileHelper::makeDirectory(currentDecodeFolder);
 		}else if( !ofxFileHelper::isDirectoryEmpty(currentDecodeFolder) ){
@@ -350,11 +364,11 @@ void captureApp::startDecode(){
 //-----------------------------------------------
 void captureApp::handleDecode(){
 	if( state == CAP_STATE_DECODING ){
-	
+		
 		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
 			ofLog(OF_LOG_ERROR, "handleDecode - decode folder not found - can't save files!\n");
 		}
-
+		
 		float filterMin =  dAppPtr->panel.getValueF("filterMin");
 		float filterMax =  dAppPtr->panel.getValueF("filterMax");
 		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
@@ -364,18 +378,18 @@ void captureApp::handleDecode(){
 		
 		printf("filter min %f filter max %f - smooth %f dist %i \n", filterMin, filterMax, smoothAmnt, smoothDist);
 		
-//		float scale = dAppPtr->panel.getValueF("depthScale");
-//		if( panel.getValueB("bReverseModel") ){
-//			filterMin *= -1.0;
-//			filterMax *= -1.0;
-//		}		
-//		
+		//		float scale = dAppPtr->panel.getValueF("depthScale");
+		//		if( panel.getValueB("bReverseModel") ){
+		//			filterMin *= -1.0;
+		//			filterMax *= -1.0;
+		//		}		
+		//		
 		int numMissed	= 1+ panel.getValueI("decodeSkipFrame");
 		
 		//you can changed this to a higher number to decode more frames per app frame. 
 		for(int k = 0; k < numMissed; k++){
 			if( saveIndex < imageSaver.getSize() ){
-			
+				
 				printf("decoding %i of %i\n", saveIndex, imageSaver.getSize());
 				decoder.decodeFrameAndFilter(imageSaver.images[saveIndex], saveIndex, 3, filterMin, filterMax, smoothAmnt, smoothDist, smoothGaussian, dilatePasses);
 				
@@ -394,7 +408,7 @@ void captureApp::handleDecode(){
 				break;
 			}
 		}
-
+		
 	}
 }
 
@@ -413,7 +427,7 @@ void captureApp::endDecode(){
 		
 		//in this case we want to copy decoded files and notify viz app first then export frames last. 
 		if( panel.getValueI("postCapture") == POST_CAPTURE_ALL_AND_NOTIFY ){
-
+			
 			printf("postCapture == POST_CAPTURE_ALL_AND_NOTIFY \n");
 			prepareTransferFramesToVizApp();				
 		}
@@ -434,7 +448,7 @@ void captureApp::prepareTransferFramesToVizApp(){
 		string command		= xml.getValue("command", "");
 		string remoteUser   = xml.getValue("remote_user", "");
 		string remoteip     = xml.getValue("remote_ip", "");
-
+		
 		string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodeFolder));
 		
 		printf("command is %s\n", command.c_str());
@@ -458,7 +472,7 @@ void captureApp::prepareTransferFramesToVizApp(){
 void captureApp::prepareExportFramesToDisk(){
 	if( imageSaver.getSize() >  0){
 		state = CAP_STATE_SAVING;
-
+		
 		//backup the current capture folder
 		if( ofxFileHelper::doesFileExist(currentCaptureFolder) ){
 			ofxFileHelper::moveFromTo(ofxFileHelper::removeTrailingSlash(currentCaptureFolder), capturePrefix+"savedFolder"+currentTimestamp);
@@ -467,7 +481,7 @@ void captureApp::prepareExportFramesToDisk(){
 		//make a new folder with a settings folder inside
 		ofxFileHelper::makeDirectory(currentCaptureFolder);
 		ofxFileHelper::makeDirectory(currentCaptureFolder+"_settings");		
-
+		
 		//save the current capture and decode settings to the settings folder
 		//we pass in the false flag so that we don't change where the panel saves the settings to
 		panel.saveSettings(currentCaptureFolder+"_settings/captureSettings.xml", false);
@@ -507,7 +521,7 @@ void captureApp::threadedFunction(){
 				oscTx.sendMessage(m);
 			}
 		}
-	
+		
 		if( bDoThreadedFrameSave ){
 			printf("threadedFunction - saving started! at %f since app start\n",ofGetElapsedTimef()); 
 			imageSaver.saveAll();
@@ -525,15 +539,15 @@ void captureApp::threadedFunction(){
 //-----------------------------------------------
 void captureApp::startCapture(){
 	printf("startCapture\n");
-
+	
 	if( camState == CAMERA_CLOSED ){
 		printf("ERROR - OPEN CAMERA STUPID!\n");
 		return;
 	}
-
+	
 	if( state <= CAP_STATE_CAPTURE ){
 		state = CAP_STATE_CAPTURE;
-
+		
 		//clear the image saver buffer
 		imageSaver.clear();
 		cameraFrameNum		 = 0;
@@ -545,7 +559,7 @@ void captureApp::startCapture(){
 		currentDecodeFolder = EXPORT_FOLDER + string("decoded-") + currentCity + "-" + currentTimestamp + "/";
 		currentCaptureFolder   = CAPTURE_MAIN_FOLDER + string("capture-") + currentCity + "-" + currentTimestamp + "/";
 		printf("decoding to %s\n frames saved to %s\n", currentDecodeFolder.c_str(), currentCaptureFolder.c_str());			
-
+		
 		ofHideCursor();
 		printf("time is %f time to end is %f\n",ofGetElapsedTimef(), panel.getValueF("CAPTURE_TIME_F"));
 		timeToEndCapture = ofGetElapsedTimef() + panel.getValueF("CAPTURE_TIME_F");
@@ -569,7 +583,7 @@ void captureApp::endCapture(){
 		}else{
 			bNeedsToLeaveFrame = false;
 		}
-
+		
 		scanningSound.stop();
 		
 		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
@@ -587,17 +601,17 @@ void captureApp::endCapture(){
 
 //--------------------------------------------------------
 void captureApp::handleProjection(){		
-
+	
 	if (panel.hasValueChanged("wavelength") ||
-			panel.hasValueChanged("minBrightness") ||
-			panel.hasValueChanged("maxBrightness") || 
-			panel.hasValueChanged("projectorLut") ||
-			panel.hasValueChanged("orientation")) {	
+		panel.hasValueChanged("minBrightness") ||
+		panel.hasValueChanged("maxBrightness") || 
+		panel.hasValueChanged("projectorLut") ||
+		panel.hasValueChanged("orientation")) {	
 		updateGenerator();
 	}
-
+	
 	threePhase.setReverse(panel.getValueB("reverse"));
-
+	
 	if( panel.hasValueChanged("fullscreen") ) {
 		ofSetFullscreen(panel.getValueB("fullscreen"));
 	}
@@ -620,7 +634,7 @@ void captureApp::updateGenerator() {
 void captureApp::handleCamera(){
 	
 	if( ofGetElapsedTimef() > waitTillTime ){
-	
+		
 		if( camState == CAMERA_OPEN && do1394 ){
 			update1394Cam();
 			//we have to do this because ofxVideoGrabber uses events :(
@@ -630,12 +644,12 @@ void captureApp::handleCamera(){
 				settings->panel.hide();
 			}
 		}
-
+		
 		if( camState == CAMERA_OPEN && panel.getValueB("cameraSettings")) {
 			if( !do1394 )camera.videoSettings();
 			panel.setValueB("cameraSettings", false);
 		}
-
+		
 		//-- allow switching between QT and firewire
 		int requestedMode = panel.getValueI("camMode");
 		
@@ -665,7 +679,7 @@ void captureApp::handleCamera(){
 		}
 		
 		//-- end that shit
-			
+		
 		if(camState != prevCamState) {
 			
 			if(camState == CAMERA_NEEDS_OPENING) {
@@ -702,7 +716,7 @@ void captureApp::handleCamera(){
 					camState = CAMERA_OPEN;					
 				}
 				
-
+				
 			}else if( camState == CAMERA_NEEDS_CLOSING ){
 				
 				if( do1394 ){
@@ -725,17 +739,17 @@ void captureApp::handleCamera(){
 				waitTillTime = ofGetElapsedTimef() + 5.0; //wait 5 seconds before allowing next camera change. 
 			}
 		}
-	
+		
 		prevCamState = camState;	
 	}	
-
+	
 }
 
 //-----------------------------------------------
 void captureApp::handleFaceTrigger(){
 	
 	if( camState != CAMERA_CLOSED && state < CAP_STATE_FADEIN ){
-	
+		
 		float faceFps  = panel.getValueF("FACE_FPS");
 		float timeDiff = 1.0/ofClamp(faceFps, 4.0, 60.0);
 		
@@ -745,7 +759,7 @@ void captureApp::handleFaceTrigger(){
 		face.confidenceGateValStop  = panel.getValueF("confidence_gate_stop");
 		
 		if( ofGetElapsedTimef() - prevFaceCheckTimeF >= timeDiff ){
-	
+			
 			unsigned char * pix = NULL;
 			if( do1394 ){
 				pix = camera1394.getPixels();
@@ -763,8 +777,8 @@ void captureApp::handleFaceTrigger(){
 		face.update();
 		
 		if( panel.hasValueChanged("B_FACE_TRIGGER") && panel.getValueB("B_FACE_TRIGGER") ){
-				bNeedsToLeaveFrame = false;
-				face.resetCounters();
+			bNeedsToLeaveFrame = false;
+			face.resetCounters();
 		}
 		
 		if( bNeedsToLeaveFrame ){
@@ -779,27 +793,27 @@ void captureApp::handleFaceTrigger(){
 			}
 		}
 	}
-
+	
 }
 
 
 
 //-------------------------------------------------------------
 void captureApp::draw(){
-
+	
 	if( state == CAP_STATE_DECODING ){
 		camera3D.place();
 		ofBackground(0, 0, 0);
 		glEnable(GL_DEPTH_TEST);
-			ofPushMatrix();
-				ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, -200);		
-				ofRotate( ofMap(saveIndex, 0, imageSaver.getSize(), 180 -8, 180 + 8, true), 0, 1, 0);
-				decoder.drawCloud();
-			ofPopMatrix();
+		ofPushMatrix();
+		ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, -200);		
+		ofRotate( ofMap(saveIndex, 0, imageSaver.getSize(), 180 -8, 180 + 8, true), 0, 1, 0);
+		decoder.drawCloud();
+		ofPopMatrix();
 		glDisable(GL_DEPTH_TEST);			
 		camera3D.remove();	
 		//decoder.drawCurrentFrame(0, 0, 320, 240);
-
+		
 		ofNoFill();
 		ofSetColor(100, 100, 100, 255);
 		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofGetWidth()/2, 20);	
@@ -807,11 +821,11 @@ void captureApp::draw(){
 		ofRect( ofGetWidth()/4, ofGetHeight()-150, ofMap(saveIndex, 0, imageSaver.getSize(), 0.0, 1.0, true) * (float)(ofGetWidth()/2), 20);			
 		return;
 	}
-
+	
 	if(!panel.getValueB("frameByFrame")){
 		patternFrame = ofGetFrameNum() / panel.getValueI("patternRate");
 	}
-
+	
 	if (!panel.getValueB("brightnessSetting")){
 		ofSetColor(255, 255, 255, 255);
 		curGenerator->get(patternFrame).draw(0, 0);
@@ -820,7 +834,7 @@ void captureApp::draw(){
 		ofSetColor(checkBrightness, checkBrightness, checkBrightness);
 		ofRect(0, 0, ofGetWidth(), ofGetHeight());
 	}
-
+	
 	if( state == CAP_STATE_CAPTURE ){
 		return;
 	}
@@ -835,21 +849,21 @@ void captureApp::draw(){
 	}else if(  !panel.getValueB("bSpotLight") || state == CAP_STATE_CAPTURE ){
 		spotLightAlpha = 0.0;
 	}
-		
+	
 	if( state == CAP_STATE_FADEIN ){
 		float alpha = ofMap(ofGetElapsedTimef(), fadeInStartTime, fadeInStartTime + panel.getValueF("fadeInTime"), 255, 0.0);
-				
+		
 		ofPushStyle();
-			ofEnableAlphaBlending();
-			ofSetColor(0, 0, 0, alpha);
-			ofRect(0, 0, ofGetWidth(), ofGetHeight());
+		ofEnableAlphaBlending();
+		ofSetColor(0, 0, 0, alpha);
+		ofRect(0, 0, ofGetWidth(), ofGetHeight());
 		ofPopStyle();
 	}
 	
 	if( state >= CAP_STATE_END_DECODE ){
 		ofPushStyle();
-			ofSetColor(0, 0, 0, 255);
-			ofRect(0, 0, ofGetWidth(), ofGetHeight());
+		ofSetColor(0, 0, 0, 255);
+		ofRect(0, 0, ofGetWidth(), ofGetHeight());
 		ofPopStyle();
 	}
 	
@@ -857,10 +871,10 @@ void captureApp::draw(){
 		spotLightAlpha = 0.0;
 	}else{
 		ofPushStyle();
-			ofEnableAlphaBlending();
-			float val = 255.0 * panel.getValueF("spotLightBrightness");
-			ofSetColor(val, val, val, spotLightAlpha*255.0);
-			spotLightImage.draw( ofGetWidth()/2, ofGetHeight()/2, ofGetWidth(), ofGetHeight() );		
+		ofEnableAlphaBlending();
+		float val = 255.0 * panel.getValueF("spotLightBrightness");
+		ofSetColor(val, val, val, spotLightAlpha*255.0);
+		spotLightImage.draw( ofGetWidth()/2, ofGetHeight()/2, ofGetWidth(), ofGetHeight() );		
 		ofPopStyle();
 		
 		if( state == CAP_STATE_FADEIN ){
@@ -890,8 +904,8 @@ void captureApp::draw(){
 		for(int i = 0; i < curGenerator->size(); i++) {
 			ofPushMatrix();
 			ofTranslate(
-				(i % 3) * (recentWidth + padding),
-				(i / 3) * (recentHeight + padding));
+						(i % 3) * (recentWidth + padding),
+						(i / 3) * (recentHeight + padding));
 			ofSetColor(255, 255, 255);
 			if(needsUpdate[i]) {
 				recent[i].update();
@@ -901,7 +915,7 @@ void captureApp::draw(){
 			ofSetColor(255, 0, 0);
 			ofNoFill();
 			ofRect(0, 0, recentWidth, recentHeight);
-
+			
 			// ito wrote..begin
 			
 			if (i == 0) {
@@ -992,7 +1006,7 @@ void captureApp::keyPressed(int key) {
 		if(panel.getValueB("frameByFrame") && key == OF_KEY_UP){
 			patternFrame--;
 		}
-
+		
 		if(panel.getValueB("frameByFrame") && key == OF_KEY_DOWN){
 			patternFrame++;
 		}
@@ -1020,7 +1034,7 @@ void captureApp::getClipping(ofImage& img, ofImage& clipping) {
 			clippingPixels[i * 4 + 1] = 0;
 			clippingPixels[i * 4 + 2] = 0;
 			clippingPixels[i * 4 + 3] = 0;
-
+			
 		}
 	}
 }
