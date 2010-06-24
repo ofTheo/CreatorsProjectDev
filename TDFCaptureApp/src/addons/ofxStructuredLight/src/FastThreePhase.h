@@ -13,7 +13,6 @@ public:
 	
 	ofImage phaseImage, qualityImage, offsetImage;
 	
-private:
 	ThreePhaseWrap threePhaseWrap;
 	PartialQualityMap partialQualityMap;
 	ScanlineOffset scanlineOffset;

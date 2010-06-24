@@ -92,7 +92,7 @@ public:
 
 	ofxQtVideoSaver movieOutput;
 	ofxQtVideoSaver expPngMovieSaver;
-	ofTexture rgbaTex;
+	ofTexture rgbaTex, wrappedPhaseTex;
 	string currentName;
 	ofImage screenCapture;
 	
