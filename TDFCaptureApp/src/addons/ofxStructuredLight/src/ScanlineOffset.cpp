@@ -6,12 +6,16 @@ int ScanlineOffset::neighborsReady = false;
 ScanlineOffset::ScanlineOffset() :
 	threshold(LABEL_BACKGROUND),
 	leftover(NULL),
+	lastOffset(NULL),
+	lastOffsetReady(false),
 	n(0) {
 }
 
 ScanlineOffset::~ScanlineOffset() {
-	if(n != 0)
+	if(n != 0) {
 		delete [] leftover;
+		delete [] lastOffset;
+	}
 }
 
 void ScanlineOffset::setup(int width, int height) {
@@ -19,6 +23,7 @@ void ScanlineOffset::setup(int width, int height) {
 	this->height = height;
 	n = width * height;
 	leftover = new int[n];
+	lastOffset = new char[n];
 
 	if(!neighborsReady) {
 		// precompute nearest neighbors as offsets
@@ -47,7 +52,8 @@ void ScanlineOffset::setThreshold(unsigned char threshold) {
 void ScanlineOffset::makeOffset(
 		unsigned char* phase,
 		unsigned char* quality,
-		char* offset) {
+		char* offset,
+		bool phasePersistence) {
 	this->phase = phase;
 	this->quality = quality;
 	this->offset = offset;
@@ -89,13 +95,20 @@ void ScanlineOffset::makeOffset(
 	}
 
 	quality[start] = LABEL_UNWRAPPED;
-	offset[start] = 0; // center start offset
+	if(phasePersistence && lastOffsetReady)
+		offset[start] = lastOffset[start];
+	else
+		offset[start] = 0;
 	for(unsigned char curLevel = 0; curLevel < LEVEL_COUNT; curLevel++) {
 		unwrapPatch(start, curLevel, startX - 1, startY - 1, +1, +width); // nw
 		unwrapPatch(start, curLevel, width - startX - 1, startY - 1, -1, +width); // ne
 		unwrapPatch(start, curLevel, startX - 1, height - startY - 1, +1, -width); // sw
 		unwrapPatch(start, curLevel, width - startX - 1, height - startY - 1, -1, -width); // se
 	}
+	
+	if(phasePersistence)
+		memcpy(lastOffset, offset, n);
+	lastOffsetReady = phasePersistence;
 }
 
 int* ScanlineOffset::getQualityHistogram() {

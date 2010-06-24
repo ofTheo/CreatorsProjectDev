@@ -25,7 +25,8 @@ public:
 	void makeOffset(
 		unsigned char* phase,
 		unsigned char* quality,
-		char* offset);
+		char* offset,
+		bool phasePersistence = false);
 	int* getQualityHistogram();
 	int* getLevelCutoff();
 private:
@@ -35,6 +36,8 @@ private:
 	unsigned char threshold;
 
 	unsigned char *phase, *quality;
+	char *lastOffset;
+	bool lastOffsetReady;
 	char *offset;
 
 	int levelCutoff[LEVEL_COUNT];

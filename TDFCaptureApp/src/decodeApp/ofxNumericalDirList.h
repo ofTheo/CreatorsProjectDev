@@ -12,6 +12,7 @@ public:
 	}
 	// doesn't let you mix extensions
 	int listDir(string directory) {
+		numericalNameArray.clear();
 		int size = ofxDirList::listDir(directory);
 		vector<int> ints;
 		int intNum;

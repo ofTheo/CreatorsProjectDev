@@ -119,6 +119,7 @@ public:
 	
 	string currentTimestamp;
 	string currentDecodeFolder;
+	string currentDecodePath;
 	string currentCaptureFolder;
 	string currentCity;
 	

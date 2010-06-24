@@ -59,7 +59,7 @@ void decodeApp::setup(){
 	exportFormats.push_back(".obj");
 	exportFormats.push_back(".ply");
 	exportFormats.push_back(".png");
-	exportFormats.push_back("ARGB");
+	exportFormats.push_back("RGBA");
 	panel.addMultiToggle("export format", "exportFormat", 0, exportFormats);
 
 	panel.addToggle("export", "export", false);
@@ -166,7 +166,11 @@ void decodeApp::processFrame(){
 	
 	//TODO: optimize
 	if( panel.getValueF("smooth_y_amnt") > 0.0 || panel.getValueB("smooth_gaussian") ){
-		threePhase->filterDepth(panel.getValueF("smooth_y_dist"), panel.getValueF("smooth_y_amnt"), panel.getValueB("smooth_gaussian"), panel.getValueI("dilate_passes"));
+		float smoothDist = panel.getValueF("smooth_y_dist");
+		float smoothAmnt = panel.getValueF("smooth_y_amnt");
+		bool smoothGaussian = panel.getValueB("smooth_gaussian");
+		int dilatePasses = panel.getValueI("dilate_passes");
+		threePhase->filterDepth(smoothDist, smoothAmnt, smoothGaussian, dilatePasses); // <3
 	}
 }
 
@@ -375,8 +379,11 @@ void decodeApp::handleExport(){
 			if (curFormat == ".png") {
 				threePhase->exportDepth(exportPath + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
 				threePhase->exportTexture(exportPath + name + "-texture.png");
-			} else if(curFormat == "ARGB") {
-				threePhase->exportDepthAndTexture(exportPath + name + ".tga", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
+			} else if(curFormat == "RGBA") {
+				float filterMin = panel.getValueI("filterMin");
+				float filterMax = panel.getValueI("filterMax");
+				cout << "exporting frames using " << filterMin << " to " << filterMax << endl;
+				threePhase->exportDepthAndTexture(exportPath + name + ".tga", filterMin, filterMax);
 			} else {
 				int curStyle = panel.getValueI("style");
 				string outputFile = exportPath + name + "-" + styles[curStyle] + curFormat;

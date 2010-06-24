@@ -9,6 +9,8 @@ ThreePhaseDecoder::ThreePhaseDecoder() :
 }
 
 ThreePhaseDecoder::~ThreePhaseDecoder() {
+	delete [] range;
+	delete [] unwrapOrder;
 }
 
 void ThreePhaseDecoder::setup(int width, int height) {

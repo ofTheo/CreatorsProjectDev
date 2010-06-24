@@ -98,7 +98,7 @@
 		E4B95F2C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1C11D2C79C001A61C5 /* ThreePhaseDecoder.cpp */; };
 		E4B95F2D11D2C79C001A61C5 /* ThreePhaseGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F1E11D2C79C001A61C5 /* ThreePhaseGenerator.cpp */; };
 		E4B95F2E11D2C79C001A61C5 /* ThreePhaseWrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B95F2011D2C79C001A61C5 /* ThreePhaseWrap.cpp */; };
-		E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */; };
+		E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworks.a */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
 		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
@@ -396,7 +396,6 @@
 		E4B95F1211D2C79C001A61C5 /* PatternGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternGenerator.h; path = src/addons/ofxStructuredLight/src/PatternGenerator.h; sourceTree = SOURCE_ROOT; };
 		E4B95F1311D2C79C001A61C5 /* PhaseConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseConstants.h; path = src/addons/ofxStructuredLight/src/PhaseConstants.h; sourceTree = SOURCE_ROOT; };
 		E4B95F1411D2C79C001A61C5 /* PhaseDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhaseDecoder.cpp; path = src/addons/ofxStructuredLight/src/PhaseDecoder.cpp; sourceTree = SOURCE_ROOT; };
-		E4B95F1511D2C79C001A61C5 /* PhaseDecoder.cpp.orig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PhaseDecoder.cpp.orig; path = src/addons/ofxStructuredLight/src/PhaseDecoder.cpp.orig; sourceTree = SOURCE_ROOT; };
 		E4B95F1611D2C79C001A61C5 /* PhaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseDecoder.h; path = src/addons/ofxStructuredLight/src/PhaseDecoder.h; sourceTree = SOURCE_ROOT; };
 		E4B95F1711D2C79C001A61C5 /* PriorityDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PriorityDecoder.cpp; path = src/addons/ofxStructuredLight/src/PriorityDecoder.cpp; sourceTree = SOURCE_ROOT; };
 		E4B95F1811D2C79C001A61C5 /* PriorityDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityDecoder.h; path = src/addons/ofxStructuredLight/src/PriorityDecoder.h; sourceTree = SOURCE_ROOT; };
@@ -430,7 +429,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */,
+				E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */,
 				E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */,
 				E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
@@ -1318,7 +1317,6 @@
 				E4B95F1211D2C79C001A61C5 /* PatternGenerator.h */,
 				E4B95F1311D2C79C001A61C5 /* PhaseConstants.h */,
 				E4B95F1411D2C79C001A61C5 /* PhaseDecoder.cpp */,
-				E4B95F1511D2C79C001A61C5 /* PhaseDecoder.cpp.orig */,
 				E4B95F1611D2C79C001A61C5 /* PhaseDecoder.h */,
 				E4B95F1711D2C79C001A61C5 /* PriorityDecoder.cpp */,
 				E4B95F1811D2C79C001A61C5 /* PriorityDecoder.h */,
@@ -1339,7 +1337,7 @@
 		E4C2421710CC549C004149E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */,
+				E4C2421E10CC549C004149E2 /* openFrameworks.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1467,10 +1465,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */ = {
+		E4C2421E10CC549C004149E2 /* openFrameworks.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworksDebug.a;
+			path = openFrameworks.a;
 			remoteRef = E4C2421D10CC549C004149E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

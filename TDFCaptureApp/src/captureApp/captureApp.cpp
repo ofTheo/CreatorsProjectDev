@@ -105,7 +105,7 @@ void captureApp::setup(){
 	xml.loadFile("locationSettings.xml");
 	currentCity			= xml.getValue("city_name", "NYC");
 	transformSpaces(currentCity); //remove space and add underscores
-	currentDecodeFolder = DECODE_FOLDER;
+	currentDecodePath = DECODE_FOLDER;
 	currentCaptureFolder   = string(CAPTURE_MAIN_FOLDER) + CAPTURE_MAIN_FOLDER;
 	currentTimestamp    = (ofxTimeStamp()).getUnixTimeAsString();
 	
@@ -230,7 +230,7 @@ void captureApp::setup(){
 	spotLightImage.loadImage("resources/captureMask.jpg");
 	spotLightImage.setAnchorPercent(0.5, 0.5);
 	
-	face.setup("faceHaar/haarcascade_frontalface_alt.xml", 160, 120, 2.0, 2.0);
+	face.setup("faceHaar/haarcascade_frontalface_alt.xml", 320, 240, 2.0, 2.0);
 	prevFaceCheckTimeF = ofGetElapsedTimef();
 	
 	threePhase.setSize(1024, 768);
@@ -248,6 +248,7 @@ void captureApp::setupOsc(){
 			string remoteIp     = xml.getValue("remote_ip", "127.0.0.1");
 			oscTx.setup(remoteIp, remotePort);
 			bOscSetup = true;
+			printf("setting up osc for %s and %i\n", remoteIp.c_str(), remotePort);
 		}
 		
 	}
@@ -261,6 +262,7 @@ void captureApp::update(){
 	if( panel.hasValueChanged("use_osc") ){
 		if( bEnableOsc && !bOscSetup ){
 			setupOsc();
+			printf("------------- setting up osc\n");
 		}
 	}
 	
@@ -334,11 +336,11 @@ void captureApp::startDecode(){
 		
 		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), scale, dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
 
-		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
-			ofxFileHelper::makeDirectory(currentDecodeFolder);
-		}else if( !ofxFileHelper::isDirectoryEmpty(currentDecodeFolder) ){
-			ofxFileHelper::moveFromTo( ofxFileHelper::removeTrailingSlash(currentDecodeFolder), string(EXPORT_FOLDER) + "savedDecode"+currentTimestamp );
-			ofxFileHelper::makeDirectory(currentDecodeFolder);			
+		if( !ofxFileHelper::doesFileExist(currentDecodePath) ){
+			ofxFileHelper::makeDirectory(currentDecodePath);
+		}else if( !ofxFileHelper::isDirectoryEmpty(currentDecodePath) ){
+			ofxFileHelper::moveFromTo( ofxFileHelper::removeTrailingSlash(currentDecodePath), string(EXPORT_FOLDER) + "savedDecode"+currentTimestamp );
+			ofxFileHelper::makeDirectory(currentDecodePath);			
 		}
 		
 	}else{
@@ -351,7 +353,7 @@ void captureApp::startDecode(){
 void captureApp::handleDecode(){
 	if( state == CAP_STATE_DECODING ){
 	
-		if( !ofxFileHelper::doesFileExist(currentDecodeFolder) ){
+		if( !ofxFileHelper::doesFileExist(currentDecodePath) ){
 			ofLog(OF_LOG_ERROR, "handleDecode - decode folder not found - can't save files!\n");
 		}
 
@@ -383,7 +385,7 @@ void captureApp::handleDecode(){
 				
 				if( saveIndex % ( numMissed ) == 0 && bSaveToDisk ){
 					float t1 = ofGetElapsedTimef();
-					decoder.exportFrameToTGA(currentDecodeFolder, FRAME_START_INDEX+saveIndex, filterMin, filterMax);
+					decoder.exportFrameToTGA(currentDecodePath, FRAME_START_INDEX+saveIndex, filterMin, filterMax);
 					timeToDecode += ofGetElapsedTimef()-t1;
 					saveCount++;
 				}
@@ -435,7 +437,7 @@ void captureApp::prepareTransferFramesToVizApp(){
 		string remoteUser   = xml.getValue("remote_user", "");
 		string remoteip     = xml.getValue("remote_ip", "");
 
-		string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodeFolder));
+		string localFolder	= ofxFileHelper::removeTrailingSlash(ofToDataPath(currentDecodePath));
 		
 		printf("command is %s\n", command.c_str());
 		
@@ -485,12 +487,13 @@ void captureApp::threadedFunction(){
 	if( lock() ){
 		
 		if( bDoThreadedRSync && executeStr != "" ){
-			printf("executing rsync %s\n", executeStr.c_str());
+			printf("executing %s\n", executeStr.c_str());
 			
 			if( bEnableOsc ){
+				printf("----------sending osc message 1\n");
 				ofxOscMessage m;
 				m.addStringArg("TxStarted");
-				m.addStringArg(currentCaptureFolder); //folder transferred eg: decode-NYC-12939327117
+				m.addStringArg(currentDecodeFolder); //folder transferred eg: decode-NYC-12939327117
 				m.addStringArg(currentTimestamp);	  //just the timestamp as a string eg: 12939327117
 				m.addIntArg(saveCount);				  //num images to be transfered
 				oscTx.sendMessage(m);
@@ -499,9 +502,10 @@ void captureApp::threadedFunction(){
 			system(executeStr.c_str());
 			
 			if( bEnableOsc ){
+				printf("----------sending osc message 2\n");				
 				ofxOscMessage m;
 				m.addStringArg("TxEnded");
-				m.addStringArg(currentCaptureFolder);	
+				m.addStringArg(currentDecodeFolder);	
 				m.addStringArg(currentTimestamp);		
 				m.addIntArg(saveCount);		
 				oscTx.sendMessage(m);
@@ -542,9 +546,10 @@ void captureApp::startCapture(){
 		ofxTimeStamp ts;
 		ts.setTimestampToCurrentTime();
 		currentTimestamp	= ts.getUnixTimeAsString();
-		currentDecodeFolder = EXPORT_FOLDER + string("decoded-") + currentCity + "-" + currentTimestamp + "/";
-		currentCaptureFolder   = CAPTURE_MAIN_FOLDER + string("capture-") + currentCity + "-" + currentTimestamp + "/";
-		printf("decoding to %s\n frames saved to %s\n", currentDecodeFolder.c_str(), currentCaptureFolder.c_str());			
+		currentDecodeFolder = string("decoded-") + currentCity + "-" + currentTimestamp + "/";
+		currentDecodePath   = DECODE_FOLDER + currentDecodeFolder;
+		currentCaptureFolder= CAPTURE_MAIN_FOLDER + string("capture-") + currentCity + "-" + currentTimestamp + "/";
+		printf("decoding to %s\n frames saved to %s\n", currentDecodePath.c_str(), currentCaptureFolder.c_str());			
 
 		ofHideCursor();
 		printf("time is %f time to end is %f\n",ofGetElapsedTimef(), panel.getValueF("CAPTURE_TIME_F"));
