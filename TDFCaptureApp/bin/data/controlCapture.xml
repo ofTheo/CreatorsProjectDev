@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>2.000000</val_0>
+    <val_0>1.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>
@@ -59,16 +59,16 @@
     <val_0>3.000000</val_0>
 </FACE_FPS>
 <FACE_DETECT_TIME>
-    <val_0>2.000000</val_0>
+    <val_0>1.695000</val_0>
 </FACE_DETECT_TIME>
 <FACE_FORGET_TIME>
-    <val_0>2.000000</val_0>
+    <val_0>1.365000</val_0>
 </FACE_FORGET_TIME>
 <confidence_add>
     <val_0>0.100000</val_0>
 </confidence_add>
 <confidence_fade>
-    <val_0>0.928917</val_0>
+    <val_0>0.889917</val_0>
 </confidence_fade>
 <confidence_gate_start>
     <val_0>0.650000</val_0>
@@ -113,5 +113,5 @@
     <val_0>0.000000</val_0>
 </bReverseModel>
 <bOverideLight>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </bOverideLight>

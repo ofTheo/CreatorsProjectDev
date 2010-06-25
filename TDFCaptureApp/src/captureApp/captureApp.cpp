@@ -111,6 +111,9 @@ void captureApp::setup(){
 	
 	// setup panel
 	panel.setup("control", 0, 0, 300, 768);
+
+	panel.setBackgroundColor(simpleColor(10, 10, 10, 0));
+		
 	//panel.loadFont("resources/myFont.ttf", 9);
 	panel.addPanel("app/capture settings", 1);
 	panel.addPanel("app settings", 1);
@@ -119,6 +122,8 @@ void captureApp::setup(){
 	panel.addPanel("misc settings", 1);
 	
 	panel.setWhichPanel("app/capture settings");
+
+	panel.addToggle("use face trigger", "B_FACE_TRIGGER", false);
 	
 	vector <string> camModes;
 	camModes.push_back("camera off");
@@ -135,20 +140,15 @@ void captureApp::setup(){
 	
 	panel.addToggle("spot light image", "bSpotLight", true);
 	panel.addSlider("spotlight %", "spotLightBrightness", 1.0, 0.0, 1.0, false);
-	panel.addToggle("reverse decode mode", "bReverseModel", false);
 	
 	panel.addToggle("frame by frame", "frameByFrame", false);
 	panel.addToggle("large video", "largeVideo", false);
 
-	
 	panel.addSlider("min brightness", "minBrightness", 0, 0, 255, true);
 	panel.addSlider("max brightness", "maxBrightness", 255, 0, 255, true);	
 	panel.addSlider("3 phase - wavelength", "wavelength", 64, 8, 512, true);
 	panel.addToggle("use projector lut", "projectorLut", false);
-	
-	
-	
-	
+		
 	panel.setWhichPanel("app settings");
 	
 	panel.addSlider("fade in time", "fadeInTime", 2.0, 0.0, 5.0, false);
@@ -181,7 +181,6 @@ void captureApp::setup(){
 	
 	
 	panel.setWhichPanel("face trigger settings");
-	panel.addToggle("use face trigger", "B_FACE_TRIGGER", false);
 	panel.addSlider("face trigger fps", "FACE_FPS", 10, 3, 30, false);
 	panel.addSlider("face detected time", "FACE_DETECT_TIME", 2.0, 0.1, 10.0, false);
 	panel.addSlider("face forget time", "FACE_FORGET_TIME", 2.0, 0.1, 10.0, false);
@@ -212,12 +211,13 @@ void captureApp::setup(){
 	
 	//overides 
 	panel.setValueI("camMode", 0);
-	panel.setValueI("fullscreen", 0);
+	panel.setValueI("fullscreen", 1);
 	panel.setValueI("cameraSettings", 0);
 	panel.setValueI("frameByFrame", 0);
 	panel.setValueI("largeVideo", 0);
 	panel.setValueI("brightnessSetting",0);
 	panel.setValueI("bOverideLight",0);
+	panel.setValueI("bSpotLight", 1);
 	
 	cameraWidth  = 640;
 	cameraHeight = 480;
@@ -291,6 +291,11 @@ void captureApp::update(){
 			setupOsc();
 			printf("------------- setting up osc\n");
 		}
+	}
+	
+	if( state == CAP_STATE_FADEIN || state == CAP_STATE_CAPTURE ){
+		panel.setValueB("frameByFrame", false);
+		panel.setValueB("bSpotLight", true);
 	}
 	
 	//the capture part happens in the camera callbacks at the top.
@@ -412,13 +417,15 @@ void captureApp::handleDecode(){
 				
 				bool bSaveToDisk = ( panel.getValueI("postCapture") >= POST_CAPTURE_DECODE_EXPORT );
 				
-				if( saveIndex % ( numMissed ) == 0 && bSaveToDisk ){
+				//TODO: theo added saveIndex > 3 - to ignore this crazy boogy frame 
+				//also lets the system get a good decode before export
+				//TODO: really figure out why we get a frame from the previous capture
+				if( saveIndex % ( numMissed ) == 0 && bSaveToDisk && saveIndex > 3 ){
 					float t1 = ofGetElapsedTimef();
 					decoder.exportFrameToTGA(currentDecodePath, FRAME_START_INDEX+saveIndex, filterMin, filterMax);
 					timeToDecode += ofGetElapsedTimef()-t1;
 					saveCount++;
 				}
-				
 				saveIndex++;
 			}else{
 				endDecode();
@@ -430,8 +437,13 @@ void captureApp::handleDecode(){
 }
 
 //-----------------------------------------------
-void captureApp::endDecode(){
+void captureApp::endDecode(bool bCancelSave){
 	printf("endDecode\n");
+	if( bCancelSave ){
+		state = CAP_STATE_WAITING;
+		return;
+	}
+	
 	if( state == CAP_STATE_DECODING ){
 		state = CAP_STATE_END_DECODE;
 	}
@@ -569,14 +581,14 @@ void captureApp::startCapture(){
 		
 		//clear the image saver buffer
 		imageSaver.clear();
-		cameraFrameNum		 = 0;
+		cameraFrameNum = 0;
 		scanningSound.play();
 		
 		ofxTimeStamp ts;
 		ts.setTimestampToCurrentTime();
 		currentTimestamp	= ts.getUnixTimeAsString();
 		currentDecodeFolder = string("decoded-") + currentCity + "-" + currentTimestamp + "/";
-		currentDecodePath   = DECODE_FOLDER + currentDecodeFolder;
+		currentDecodePath   = EXPORT_FOLDER + currentDecodeFolder;
 		currentCaptureFolder= CAPTURE_MAIN_FOLDER + string("capture-") + currentCity + "-" + currentTimestamp + "/";
 		printf("decoding to %s\n frames saved to %s\n", currentDecodePath.c_str(), currentCaptureFolder.c_str());			
 
@@ -593,7 +605,7 @@ void captureApp::startCapture(){
 }
 
 //-----------------------------------------------
-void captureApp::endCapture(){
+void captureApp::endCapture(bool cancelSave){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
 		ofShowCursor();
@@ -607,11 +619,16 @@ void captureApp::endCapture(){
 		
 		scanningSound.stop();
 		
-		if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
-			startDecode();
+		if( !cancelSave ){
+			if( panel.getValueI("postCapture") > POST_CAPTURE_SAVE ){
+				startDecode();
+			}else{
+				prepareExportFramesToDisk();
+				startThread(true, false);
+			}
 		}else{
-			prepareExportFramesToDisk();
-			startThread(true, false);
+			state = CAP_STATE_WAITING;
+			printf("save cancelled\n");
 		}
 		
 	}else{
@@ -964,9 +981,14 @@ void captureApp::draw(){
 		}
 		
 		ofSetColor(255, 0, 0);
-		ofDrawBitmapString("app fps: " + ofToString(ofGetFrameRate(), 2), 820, 20);
+		ofDrawBitmapString("app fps: " + ofToString(ofGetFrameRate(), 2), 810, 20);
 		if(camState == CAMERA_OPEN)
-			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 820, 40);	
+			ofDrawBitmapString("cam fps: "+ofToString(camFps, 2), 810, 40);	
+		if( panel.getValueB("B_FACE_TRIGGER") ){
+			face.draw(800, 54, 50, 30);
+		}else{
+			ofDrawBitmapString("face trigger is off\n", 810, 50+18);
+		}
 	}
 }
 
@@ -1007,11 +1029,22 @@ void captureApp::keyPressed(int key) {
 	}
 	
 	if(key == '\t') {
-		if( state < CAP_STATE_CAPTURE ){
+		if( state < CAP_STATE_FADEIN ){
 			startFadeIn();
 		}
+		else if( state == CAP_STATE_FADEIN ){
+			bNeedsToLeaveFrame = false;
+			face.resetCounters();		
+			state = CAP_STATE_WAITING;	
+		}
 		else if( state == CAP_STATE_CAPTURE ){
-			endCapture(); //force override - normally capture is timed. 
+			endCapture(true); //force override and cancel - normally capture is timed. 
+			bNeedsToLeaveFrame = false;
+			face.resetCounters();				
+		}else if( state == CAP_STATE_DECODING ){
+			endDecode(true);
+			bNeedsToLeaveFrame = false;
+			face.resetCounters();				
 		}
 	}
 	

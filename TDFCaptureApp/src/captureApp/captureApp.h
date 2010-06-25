@@ -65,7 +65,7 @@ public:
 
 	void startCapture();
 	void handleCapture();
-	void endCapture();
+	void endCapture(bool cancelSave = false);
 	
 	void startFadeIn();
 	
@@ -74,7 +74,7 @@ public:
 	
 	void startDecode();
 	void handleDecode();
-	void endDecode();
+	void endDecode(bool bCancelSave = false);
 
 	void handleFaceTrigger();
 	void handleProjection();
