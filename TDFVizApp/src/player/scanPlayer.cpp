@@ -34,7 +34,11 @@ void scanPlayer::setup(){
 	faces			= new face[(srcWidth)*(srcHeight)*2];
 	normals			= new ofxVec3f[numTotal];
 	normalsSmoothed = new ofxVec3f[numTotal];
-		
+
+	mask.assign(srcWidth*srcHeight, 0);
+	depth.assign(srcWidth*srcHeight, 0.0);
+	depthReal.assign(srcWidth*srcHeight, 0.0);
+
 	int k = 0;
 	for (int i = 0; i < srcWidth-1; i++){
 		for (int j = 0; j < srcHeight-1; j++){
@@ -86,6 +90,11 @@ void scanPlayer::update(){
 		currentFrame %= totalNumFrames;
 	}
 	
+	if( TSL.state != TH_STATE_LOADING ){
+		histogram.setPixels(&depthReal[0], srcWidth, srcHeight);
+		histogramAfter.setPixels(&depth[0], srcWidth, srcHeight);
+	}
+	
 }
 
 //---------------------------------------------------------------------------------
@@ -129,9 +138,6 @@ void scanPlayer::drawMesh() {
 	
 	unsigned char * pixelsColorDepth = TSL.depthImageFrames[currentFrame].getPixels();
 	//unsigned char * pixelsDepth = TSL.depthFrames[currentFrame].getPixels();
-	
-	bool mask[srcWidth*srcHeight];
-	float depth[srcWidth*srcHeight];
 	//unsigned char * color = pixelsColor;
 	
 	glEnable(GL_NORMALIZE);
@@ -150,14 +156,17 @@ void scanPlayer::drawMesh() {
 			int k = 0;
 			for (int i = 0; i < srcWidth*srcHeight*4; i+=4){
 				
+				depthReal[k] = pixelsColorDepth[i+3];
+				
 				if( x >= srcWidth ){
 					y++;
 					x = 0;
 				}
 
-				depth[k] = ofMap(pixelsColorDepth[i+3], panelPtr->getValueF("minZ"),  panelPtr->getValueF("maxZ"), 1.0, panelPtr->getValueI("topZ"), true);
-
-				if( pixelsColorDepth[i+3] > panelPtr->getValueI("minZCutoff") ){
+				depth[k] = ofMap(pixelsColorDepth[i+3], panelPtr->getValueF("minZ"),  panelPtr->getValueF("maxZ"), 1.0, 255.0, true);
+				depth[k] -= panelPtr->getValueI("minZCutoff");
+				
+				if( depth[k] > 0 ){
 					mask[k] = false;
 					ofSetColor(pixelsColorDepth[i], pixelsColorDepth[i+1], pixelsColorDepth[i+2], 255);
 					glVertex3f(-srcWidth/2+x, -srcHeight/2+y, depth[k]);
@@ -175,11 +184,13 @@ void scanPlayer::drawMesh() {
 	
 	glPopMatrix();
 		
+	float scaleZAmnt = (1.0/255.0) * panelPtr->getValueI("topZ");
+	
 	for(int i = 0; i < nVertices; i++){
 		normals[i].set(0,0,0);
 		vertices[i].x = i%srcWidth * 1;
 		vertices[i].y = (int)(i/(float)srcWidth) * 1;
-		vertices[i].z = depth[i];
+		vertices[i].z = depth[i]*scaleZAmnt;
 	}
 	
 	for(int i = 0; i < nFaces; i++){

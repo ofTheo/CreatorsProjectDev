@@ -7,6 +7,7 @@
 #include "threadedScanLoader.h"
 #include "ofxVectorMath.h"
 #include "ofxControlPanel.h"
+#include "histogramGuiElement.h"
 
 class face {
 public: 
@@ -36,6 +37,8 @@ public:
 	ofTexture	imageData;
 	
 	threadedScanLoader TSL;
+	histogramGuiElement histogram;
+	histogramGuiElement histogramAfter;
 	
 	void		update();
 	void		draw();
@@ -43,6 +46,10 @@ public:
 	
 	float		dx;
 	
+	vector <bool> mask;
+	vector <float> depth;
+	vector <unsigned char> depthReal;
+
 	ofxVec3f	* vertices;
 	face		* faces;
 	ofxVec3f	* normals;

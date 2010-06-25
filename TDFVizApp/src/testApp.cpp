@@ -12,17 +12,20 @@ void testApp::setup(){
 	panel.addPanel("misc", 1);
 	panel.setWhichPanel("input");
 	inputList.listDir("input");
-	panel.addFileLister("input", &inputList, 240, 150);
+	panel.addFileLister("input", &inputList, 240, 100);
 
 	panel.addToggle("do shader", "doShader", 0);
 
 	panel.addSlider("map pix to min z", "minZ", 0, 0, 255, false);
-	panel.addSlider("map pix to max z", "maxZ", 255.0, 0, 255, false);
+	panel.addSlider("map pix to max z", "maxZ", 200.0, 0, 255, false);
 	panel.addSlider("z top amount", "topZ", 100, 0, 400, true);
 
 	panel.addSlider("min z cutoff", "minZCutoff", 0, 0, 255, false);
 
-	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 1, false);
+	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 0.988, false);
+	
+	panel.addDrawableRect("histogram", &SP.histogram, 255, 60);
+	panel.addDrawableRect("histogram", &SP.histogramAfter, 255, 60);
 	
 	panel.setWhichPanel("decode");
 	panel.addToggle("stop motion", "stopMotion", false);
