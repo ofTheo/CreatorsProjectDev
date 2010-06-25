@@ -86,6 +86,7 @@ void decodeApp::setup(){
 	panel.addSlider("smooth y amnt", "smooth_y_amnt", 0, 0, 1.0, false);
 	panel.addToggle("smooth gaussian", "smooth_gaussian", false);
 	panel.addSlider("dilate passes", "dilate_passes", 2, 0, 6, true);
+	panel.addSlider("max hole size", "max_hole_size", 0, 0, 32, true);
 	panel.addDrawableRect("rgbaTex", &rgbaTex, 160, 120);
 	panel.addDrawableRect("wrappedPhase", &wrappedPhaseTex, 160, 120);
 
@@ -269,6 +270,7 @@ void decodeApp::updateDecoderSettings(){
 		float curDepthSkew			= panel.getValueF("depthSkew");
 		int curOrientation			= panel.getValueI("orientation");
 		bool curPhasePersistence	= panel.getValueB("phasePersistence");
+		int maxHoleSize = panel.getValueI("max_hole_size");
 		
 		threePhase->setGamma(gamma);
 		threePhase->setDepthScale(curDepthScale);
@@ -276,6 +278,7 @@ void decodeApp::updateDecoderSettings(){
 		threePhase->setRangeThreshold(curRangeThreshold);
 		threePhase->setOrientation(curOrientation == 0 ? PHASE_HORIZONTAL : PHASE_VERTICAL);
 		threePhase->setPhasePersistence(curPhasePersistence);
+		threePhase->setMaxHoleSize(maxHoleSize);
 
 		if (panel.hasValueChanged("phasePersistence")){
 			threePhase->clearLastPhase();
@@ -345,7 +348,8 @@ void decodeApp::handlePlayback(){
 			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("filterMin") 
 			|| panel.hasValueChanged("filterMax") || panel.hasValueChanged("depthScale") 
 			|| panel.hasValueChanged("depthSkew")  || panel.hasValueChanged("smooth_y_amnt") || panel.hasValueChanged("smooth_y_dist")
-			|| panel.hasValueChanged("smooth_gaussian") || panel.hasValueChanged("dilate_passes")) {
+			|| panel.hasValueChanged("smooth_gaussian") || panel.hasValueChanged("dilate_passes")
+			|| panel.hasValueChanged("max_hole_size")) {
 
 			processFrame();
 			redraw = true;

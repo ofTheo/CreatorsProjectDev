@@ -40,13 +40,14 @@ class decodeAndExport{
 			}
 		}
 		
-		void setSettings(float gamma, float curDepthScale, float curDepthSkew, float curRangeThreshold, int curOrientation, bool curPhasePersistence){
+		void setSettings(float gamma, float curDepthScale, float curDepthSkew, float curRangeThreshold, int curOrientation, bool curPhasePersistence, int curMaxHoleSize){
 			if( threePhase ){
 				threePhase->setGamma(gamma);
 				threePhase->setDepthScale(curDepthScale);
 				threePhase->setDepthSkew(curDepthSkew);
 				threePhase->setRangeThreshold(curRangeThreshold);
 				threePhase->setOrientation(curOrientation == 0 ? PHASE_HORIZONTAL : PHASE_VERTICAL);
+				threePhase->setMaxHoleSize(curMaxHoleSize);
 				
 				//printf("set %f %f %f %f %i %i\n", gamma, curDepthScale, curDepthSkew, curRangeThreshold, curOrientation, curPhasePersistence);
 				

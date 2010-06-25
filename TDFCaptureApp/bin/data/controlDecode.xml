@@ -11,15 +11,15 @@
     <val_0>0.000000</val_0>
 </stopMotion>
 <playSequence>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </playSequence>
 <jumpTo>
     <<<<<<< HEAD
     <val_0>48.598133
-    <val_0>0.000000</val_0>
+    <val_0>6.666667</val_0>
 </jumpTo>
 <phasePersistence>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </phasePersistence>
 <resetView>
     <val_0>0.000000</val_0>
@@ -28,16 +28,16 @@
     <val_0>1.000000</val_0>
 </useCameraLut>
 <style>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </style>
 <rangeThreshold>
     <val_0>5.666667</val_0>
 </rangeThreshold>
 <depthScale>
-    <val_0>327.777832</val_0>
+    <val_0>-433.333313</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-6.444445</val_0>
+    <val_0>4.000000</val_0>
 </depthSkew>
 <filterMin>
     <val_0>-182.044434</val_0>
@@ -82,14 +82,17 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <smooth_y_dist>
-    <val_0>10.394444</val_0>
+    <val_0>1.000000</val_0>
 </smooth_y_dist>
 <smooth_y_amnt>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </smooth_y_amnt>
 <smooth_gaussian>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </smooth_gaussian>
 <dilate_passes>
-    <val_0>2.000000</val_0>
+    <val_0>2.400000</val_0>
 </dilate_passes>
+<max_hole_size>
+    <val_0>14.666667</val_0>
+</max_hole_size>

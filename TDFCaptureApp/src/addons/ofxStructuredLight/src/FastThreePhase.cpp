@@ -50,4 +50,73 @@ void FastThreePhase::decode() {
 	}
 
 	makeDepth();
+	
+	if(maxHoleSize > 0)
+		fillHoles();
+}
+
+void FastThreePhase::setMaxHoleSize(int maxHoleSize) {
+	this->maxHoleSize = maxHoleSize;
+}
+
+void FastThreePhase::fillHoles() {
+	// horizontal pass
+	int i = 0;
+	for(int y = 0; y < height; y++) {
+		bool hasStart = false;
+		bool integrating = false;
+		int start;
+		for(int x = 0; x < width; x++) {
+			if(mask[i]) {
+				if(hasStart)
+					integrating = true;
+			} else {
+				if(integrating) {
+					if(i - start < maxHoleSize) {
+						unsigned char startValue = depth[start];
+						int outputRange = depth[i] - startValue;
+						int inputRange = i - start;
+						for(int j = start + 1; j < i; j++) {
+							depth[j] = ((j - start) * outputRange) / inputRange + startValue;
+							mask[j] = false;
+						}
+					}
+					integrating = false;
+				}
+				hasStart = true;
+				start = i;
+			}
+			i++;
+		}
+	}
+	// vertical pass
+	int yMaxHoleSize = maxHoleSize * width;
+	for(int x = 0; x < width; x++) {
+		bool hasStart = false;
+		bool integrating = false;
+		int start;
+		i = x;
+		for(int y = 0; y < height; y++) {
+			if(mask[i]) {
+				if(hasStart)
+					integrating = true;
+			} else {
+				if(integrating) {
+					if(i - start < yMaxHoleSize) {
+						unsigned char startValue = depth[start];
+						int outputRange = depth[i] - startValue;
+						int inputRange = i - start;
+						for(int j = start + width; j < i; j += width) {
+							depth[j] = ((j - start) * outputRange) / inputRange + startValue;
+							mask[j] = false;
+						}
+					}
+					integrating = false;
+				}
+				hasStart = true;
+				start = i;
+			}
+			i += width;
+		}
+	}
 }
