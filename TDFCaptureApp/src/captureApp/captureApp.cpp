@@ -363,7 +363,13 @@ void captureApp::startDecode(){
 		//			scale *= -1.0;
 		//		}
 		
-		decoder.setSettings(dAppPtr->panel.getValueF("gamma"), scale, dAppPtr->panel.getValueF("depthSkew"), dAppPtr->panel.getValueF("rangeThreshold"), dAppPtr->panel.getValueI("orientation"), dAppPtr->panel.getValueB("phasePersistence"));
+		decoder.setSettings(dAppPtr->panel.getValueF("gamma"),
+												scale,
+												dAppPtr->panel.getValueF("depthSkew"),
+												dAppPtr->panel.getValueF("rangeThreshold"),
+												dAppPtr->panel.getValueI("orientation"),
+												dAppPtr->panel.getValueB("phasePersistence"),
+												dAppPtr->panel.getValueI("max_hole_size"));
 
 		if( !ofxFileHelper::doesFileExist(currentDecodePath) ){
 			ofxFileHelper::makeDirectory(currentDecodePath);
