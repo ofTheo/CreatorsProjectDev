@@ -80,20 +80,26 @@
     <val_0>55.250000</val_0>
 </minZ>
 <maxZ>
-    <val_0>198.333344</val_0>
+    <val_0>168.583328</val_0>
 </maxZ>
 <blackThresh>
     <val_0>8.888889</val_0>
 </blackThresh>
 <topZ>
-    <val_0>73.333336</val_0>
+    <val_0>44.444447</val_0>
 </topZ>
 <doShader>
     <val_0>1.000000</val_0>
 </doShader>
 <normalSmooth>
-    <val_0>0.653178</val_0>
+    <val_0>0.790400</val_0>
 </normalSmooth>
 <minZCutoff>
-    <val_0>51.000000</val_0>
+    <val_0>72.250000</val_0>
 </minZCutoff>
+<showFaceOnBall>
+    <val_0>1.000000</val_0>
+</showFaceOnBall>
+<zPercent>
+    <val_0>0.722222</val_0>
+</zPercent>

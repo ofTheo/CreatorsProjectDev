@@ -45,6 +45,8 @@ public:
 	void		update();
 	void		draw();
 	void		drawMesh();
+	void		drawBall();
+	void		calcDepth();
 	
 	float		dx;
 	

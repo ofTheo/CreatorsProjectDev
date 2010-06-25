@@ -14,6 +14,7 @@ void testApp::setup(){
 	inputList.listDir("input");
 	panel.addFileLister("input", &inputList, 200, 100);
 
+	panel.addToggle("show face on ball", "showFaceOnBall", true);
 	panel.addToggle("do shader", "doShader", 0);
 
 	panel.addSlider("map pix to min z", "minZ", 0, 0, 255, false);
@@ -22,6 +23,8 @@ void testApp::setup(){
 
 	panel.addSlider("min z cutoff", "minZCutoff", 0, 0, 255, false);
 
+	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);
+	
 	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 0.988, false);
 	
 	panel.addDrawableRect("histogram", &SP.histogram, 200, 60);
@@ -116,6 +119,17 @@ void testApp::mouseDragged(int x, int y, int button){
 void testApp::mouseReleased(){
 	panel.mouseReleased();
 }
+
+
+
+
+
+
+
+
+
+
+
 
 //void testApp::drawCloud() {
 //	bool* mask = threePhase->getMask();
