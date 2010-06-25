@@ -1,21 +1,19 @@
 <BRIGHTNESS>
-    <val_0>1.000000</val_0>
+    <val_0>136.000000</val_0>
 </BRIGHTNESS>
 <EXPOSURE>
-    <val_0>7.000000</val_0>
+    <val_0>9.000000</val_0>
 </EXPOSURE>
 <GAMMA>
     <val_0>0.000000</val_0>
 </GAMMA>
 <SHUTTER>
-<<<<<<< HEAD
-    <val_0>124.666664</val_0>
-=======
-    <val_0>50.833336</val_0>
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
+    <<<<<<< HEAD
+    <val_0>124.666664
+    <val_0>204.000000</val_0>
 </SHUTTER>
 <GAIN>
-    <val_0>16.266666</val_0>
+    <val_0>16.000000</val_0>
 </GAIN>
 <BRIGHTNESS_MODE>
     <val_0>0.000000</val_0>

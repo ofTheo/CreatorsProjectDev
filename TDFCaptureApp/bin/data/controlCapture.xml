@@ -5,7 +5,7 @@
     <val_0>0.000000</val_0>
 </cameraSettings>
 <fullscreen>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </fullscreen>
 <frameByFrame>
     <val_0>0.000000</val_0>
@@ -29,7 +29,7 @@
     <val_0>0.083333</val_0>
 </cameraOffset>
 <minBrightness>
-    <val_0>25.500000</val_0>
+    <val_0>0.000000</val_0>
 </minBrightness>
 <projectorLut>
     <val_0>1.000000</val_0>
@@ -47,7 +47,7 @@
     <val_0>0.000000</val_0>
 </enableCameraDc>
 <camMode>
-    <val_0>0.000000</val_0>
+    <val_0>2.000000</val_0>
 </camMode>
 <CAPTURE_TIME_F>
     <val_0>3.911111</val_0>
@@ -77,13 +77,13 @@
     <val_0>0.400000</val_0>
 </confidence_gate_stop>
 <maxBrightness>
-    <val_0>99.166672</val_0>
+    <val_0>90.666672</val_0>
 </maxBrightness>
 <largeVideo>
     <val_0>0.000000</val_0>
 </largeVideo>
 <postCapture>
-    <val_0>2.000000</val_0>
+    <val_0>3.000000</val_0>
 </postCapture>
 <rsyncThreaded>
     <val_0>1.000000</val_0>
@@ -95,7 +95,7 @@
     <val_0>2.000000</val_0>
 </fadeInTime>
 <bSpotLight>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </bSpotLight>
 <spotLightBrightness>
     <val_0>0.377778</val_0>
@@ -107,8 +107,11 @@
     <val_0>130.333344</val_0>
 </checkBrightness>
 <use_osc>
-    <val_0>0.000000</val_0>
+    <val_0>1.000000</val_0>
 </use_osc>
 <bReverseModel>
     <val_0>0.000000</val_0>
 </bReverseModel>
+<bOverideLight>
+    <val_0>1.000000</val_0>
+</bOverideLight>

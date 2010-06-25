@@ -1,0 +1,48 @@
+<install>
+	<author>arturo & oshea 2009</author>
+	<version>0.05</version>
+	
+	<add>	
+
+		<!-- 	=====================================================================	-->
+		<!--	========================== add for the "installation" of OF =========	-->
+		<!-- 	=====================================================================	-->
+
+	<addons_h>
+	//-------------------------------------------- ofxMidiIn
+	#ifdef OF_ADDON_USING_OFXMIDIIN
+		#include "ofxMidiIn.h"
+	#endif
+
+	</addons_h>
+	
+	
+	
+	<!-- ========================================================================= 	-->
+	<!--	setting per project 							-->
+	<!-- ========================================================================= 	-->
+	
+	<src>
+		<folder name="addons/ofxMidi/src">
+			<file>../../../addons/ofxMidiIn/src/ofxMidi.h</file>
+			<file>../../../addons/ofxMidiIn/src/ofxMidiConstants.h</file>
+			<file>../../../addons/ofxMidiIn/events/ofxMidiEvents.h</file>
+			<file>../../../addons/ofxMidiIn/src/ofxMidiIn.h</file>
+			<file>../../../addons/ofxMidiIn/src/ofxMidiIn.cpp</file>
+			<file>../../../addons/ofxMidiIn/src/ofxMidiOut.h</file>
+			<file>../../../addons/ofxMidiIn/src/ofxMidiOut.cpp</file>
+		</folder>
+		<folder name="addons/ofxMidi/libs">
+			<file>../../../addons/ofxMidiIn/libs/RtError.h</file>
+			<file>../../../addons/ofxMidiIn/libs/RtMidi.h</file>
+			<file>../../../addons/ofxMidiIn/libs/RtMidi.cpp</file>
+		</folder>
+	</src>
+
+	<include>
+		<path>../../../addons/ofxMidiIn/src</path>
+		<path>../../../addons/ofxMidiIn/libs</path>
+	</include>
+
+	</add>				
+</install>

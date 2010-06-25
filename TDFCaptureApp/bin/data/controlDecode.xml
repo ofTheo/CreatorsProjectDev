@@ -11,14 +11,12 @@
     <val_0>0.000000</val_0>
 </stopMotion>
 <playSequence>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </playSequence>
 <jumpTo>
-<<<<<<< HEAD
-    <val_0>48.598133</val_0>
-=======
-    <val_0>60.000004</val_0>
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
+    <<<<<<< HEAD
+    <val_0>48.598133
+    <val_0>0.000000</val_0>
 </jumpTo>
 <phasePersistence>
     <val_0>0.000000</val_0>
@@ -26,39 +24,29 @@
 <resetView>
     <val_0>0.000000</val_0>
 </resetView>
+<useCameraLut>
+    <val_0>1.000000</val_0>
+</useCameraLut>
 <style>
     <val_0>0.000000</val_0>
 </style>
-<orientation>
-    <val_0>0.000000</val_0>
-</orientation>
 <rangeThreshold>
-    <val_0>4.250000</val_0>
+    <val_0>5.666667</val_0>
 </rangeThreshold>
 <depthScale>
-<<<<<<< HEAD
-    <val_0>122.222229</val_0>
+    <val_0>327.777832</val_0>
 </depthScale>
 <depthSkew>
-    <val_0>-19.777779</val_0>
+    <val_0>-6.444445</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-284.444458</val_0>
-=======
-    <val_0>-422.222229</val_0>
-</depthScale>
-<depthSkew>
-    <val_0>4.000000</val_0>
-</depthSkew>
-<filterMin>
-    <val_0>-614.400024</val_0>
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
+    <val_0>-182.044434</val_0>
 </filterMin>
 <filterMax>
-    <val_0>182.044434</val_0>
+    <val_0>238.933350</val_0>
 </filterMax>
 <exportFormat>
-    <val_0>3.000000</val_0>
+    <val_0>0.000000</val_0>
 </exportFormat>
 <export>
     <val_0>0.000000</val_0>
@@ -72,8 +60,11 @@
 <movieFramerate>
     <val_0>60.000000</val_0>
 </movieFramerate>
-<gamma>
+<orientation>
     <val_0>0.000000</val_0>
+</orientation>
+<gamma>
+    <val_0>1.000000</val_0>
 </gamma>
 <hud>
     <val_0>0.000000</val_0>
@@ -91,24 +82,14 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <smooth_y_dist>
-    <val_0>5.433333</val_0>
+    <val_0>10.394444</val_0>
 </smooth_y_dist>
 <smooth_y_amnt>
-    <val_0>0.488889</val_0>
-</smooth_y_amnt>
-<useCameraLut>
-    <val_0>0.000000</val_0>
-</useCameraLut>
-<smooth_gaussian>
-<<<<<<< HEAD
-    <val_0>0.000000</val_0>
-</smooth_gaussian>
-<dilate_passes>
-    <val_0>2.933333</val_0>
-=======
     <val_0>1.000000</val_0>
+</smooth_y_amnt>
+<smooth_gaussian>
+    <val_0>0.000000</val_0>
 </smooth_gaussian>
 <dilate_passes>
-    <val_0>2.233333</val_0>
->>>>>>> e3c3280c7111adfce8dab3ec0e284dd59ae15f9f
+    <val_0>2.000000</val_0>
 </dilate_passes>

@@ -12,6 +12,7 @@
 #include "ofxTimeStamp.h"
 #include "appConstants.h"
 #include "ofxOsc.h"
+#include "midiLight.h"
 
 typedef enum{
 	CAMERA_CLOSED,
@@ -130,6 +131,7 @@ public:
 	bool bEnableOsc;
 	bool bOscSetup;
 	ofxOscSender oscTx;
+	midiLight light;
 	
 	ofxThreadedVideoGrabber camera;
 	ofxImageSaver imageSaver;

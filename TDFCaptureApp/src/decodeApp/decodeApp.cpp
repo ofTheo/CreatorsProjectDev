@@ -386,7 +386,7 @@ void decodeApp::handleExport(){
 				float filterMin = panel.getValueI("filterMin");
 				float filterMax = panel.getValueI("filterMax");
 				cout << "exporting frames using " << filterMin << " to " << filterMax << endl;
-				threePhase->exportDepthAndTexture(exportPath + name + ".tga", filterMin, filterMax);
+				threePhase->exportDepthAndTexture(exportPath + name + ".png", filterMin, filterMax);
 			} else {
 				int curStyle = panel.getValueI("style");
 				string outputFile = exportPath + name + "-" + styles[curStyle] + curFormat;
