@@ -130,7 +130,7 @@ void endShader(){
 
 		/* house texture */
 		glGenTextures(1, &house_texture);
-		string = [bundle pathForResource: @"House" ofType: @"jpg"];
+		string = [bundle pathForResource: @"hdr" ofType: @"jpg"];
 		bitmapimagerep = LoadImage(string, 1);
 		rect = NSMakeRect(0, 0, [bitmapimagerep pixelsWide], [bitmapimagerep pixelsHigh]);
 		

@@ -13,12 +13,32 @@ ofxControlPanel * panelPtr;
 	
 	int numTotal = srcWidth * srcHeight;
 
+float getIncrAmountForFps(float incrAmnt){
+	float fps = ofGetFrameRate();
+	fps = ofClamp(fps, 10, 100);
+	
+	float ratio = 60.0f/fps;
+	return incrAmnt * ratio;
+}
+
+float getFadeForFps(float fadeAmnt){
+	float fps = ofGetFrameRate();
+	fps = ofClamp(fps, 10, 100);
+	
+	float ratio = 60.0f/fps;
+	return powf(fadeAmnt, ratio);
+}
+
 //---------------------------------------------------------------------------------
 void scanPlayer::setup(){
 	maxNumFrames = 15 * 20; // 15 secs 2
 	imageData.allocate(srcWidth,srcHeight, GL_RGB);
 	currentFrame = 0;
 	totalNumFrames = 0;
+	
+	//THEO
+	extrudePct		= 0.0;
+	perlinFacePct   = 0.0;
 	
 	TSL.setup(maxNumFrames, srcWidth, srcHeight);
 	
@@ -63,15 +83,28 @@ void scanPlayer::setup(){
 	
 	//G H E T T O :) 
 	panelPtr = &((testApp *)ofGetAppPtr())->panel;
+	
+	//THEO
+	pState    = PLAYSTATE_UNLOADED;
+	pctFadeIn = 0.0;
+}
+
+//---------------------------------------------------------------------------------
+void scanPlayer::startFadeOut(){
+	pState = PLAYSTATE_FADEOUT;
 }
 
 //---------------------------------------------------------------------------------
 void scanPlayer::update(){
-	
+		
 	if (TSL.state == TH_STATE_JUST_LOADED) {
 		currentFrame	= 0;
 		totalNumFrames	= TSL.totalNumFrames;
 		TSL.state = TH_STATE_LOADED;			// make sure, but maybe not needed.
+		
+		//THEO 
+		pctFadeIn	= 0.0;
+		pState		= PLAYSTATE_FADEIN;
 	}
 	if (TSL.state != TH_STATE_LOADED){
 		totalNumFrames = 0;
@@ -96,6 +129,30 @@ void scanPlayer::update(){
 		histogram.setPixels(&depthReal[0], srcWidth, srcHeight);
 		histogramAfter.setPixels(&depth[0], srcWidth, srcHeight);
 	}
+	
+	//THEO ADDED 
+	if( pState == PLAYSTATE_FADEIN ){
+		pctFadeIn += getIncrAmountForFps(0.02);
+		pctFadeIn = ofClamp(pctFadeIn, 0, 1);
+		if( pctFadeIn >= 1.0 ){
+			pState = PLAYSTATE_NORMAL;
+		}
+	}
+	
+	if( pState == PLAYSTATE_FADEOUT ){
+		pctFadeIn *= getFadeForFps(0.93);
+		if( pctFadeIn <= 0.01 ){
+			pctFadeIn = 0.0;
+		}
+		pctFadeIn = ofClamp(pctFadeIn, 0, 1);
+		if( pctFadeIn == 0.0 ){
+			pState = PLAYSTATE_UNLOADED;
+		}
+	}	
+	
+	//THEO 
+	perlinFacePct = ofMap( ofNoise(ofGetElapsedTimef() * -0.19, 100.0), 0.1, 0.95, 0.0, 1.0, true );
+	extrudePct	  = perlinFacePct * pctFadeIn; //we have a extrude amount that is a combination of our face fade in and random perlin.
 	
 }
 
@@ -137,8 +194,11 @@ void scanPlayer::draw(){
 
 //---------------------------------------------------------------------------------
 void scanPlayer::loadDirectory(string pathName){
+	if( pState != PLAYSTATE_UNLOADED ){
+		printf("loadDirectory - warning SP is not yet unloaded!\n");
+	}
 	TSL.start(pathName);
-};
+}
 
 //---------------------------------------------------------------------------------
 ofxVec3f normalForTriangle(ofxVec3f a, ofxVec3f b, ofxVec3f c){
@@ -333,6 +393,9 @@ void scanPlayer::drawBall(){
 	ofxVec3f smoothedN;
 	
 	float zFaceScale = panelPtr->getValueF("zPercent") * 0.008;
+
+	//THEO
+	ofxVec3f sphereNormal;
 	
 	for(int i=0; i<sphereResolution; i++){
 		theta = (float)i/(sphereResolution-1) * TWO_PI;
@@ -354,8 +417,9 @@ void scanPlayer::drawBall(){
 			
 				depthAmnt = depth[depthIX + srcWidth*depthIY];
 				smoothedN = normalsSmoothed[depthIX + srcWidth*depthIY];
-				
-				relief =  1.0 + depthAmnt * zFaceScale;
+
+				//THEO
+				relief =  1.0 + depthAmnt * zFaceScale * extrudePct;
 			}else {
 				relief = 1.0;
 			}
@@ -373,11 +437,15 @@ void scanPlayer::drawBall(){
 			//TODO: note - we use the sphere's normal if we are in the mask
 			// if we are in the face we use the face's normal - but it doens't match the angle of the face on the ball
 			//so there is some funky reversing going on - I think its right????
+
+			sphereNormal.set( x + x*noise*0.5, y + y*noise*0.5, z + z*noise*0.5 );
+
 			if( relief == 1.0 ){
-				normal.set(x + x*noise*0.5, y + y*noise*0.5, z + z*noise*0.5);
-				normal.normalize();
+				normal = sphereNormal;
 			}else{
 				normal.set(-smoothedN.z, smoothedN.y, -smoothedN.x);
+				normal *= extrudePct;
+				normal += sphereNormal * (1.0 - extrudePct );
 			}
 
 			x *= relief;
@@ -397,8 +465,8 @@ void scanPlayer::drawBall(){
 				
 				depthAmnt = depth[depthIX + srcWidth*depthIY];
 				smoothedN = normalsSmoothed[depthIX + srcWidth*depthIY];
-
-				relief =  1.0 + depthAmnt * zFaceScale;
+				//THEO
+				relief =  1.0 + depthAmnt * zFaceScale * extrudePct;
 			}else {
 				relief = 1.0;
 			}			
@@ -415,11 +483,16 @@ void scanPlayer::drawBall(){
 			//TODO: note - we use the sphere's normal if we are in the mask
 			// if we are in the face we use the face's normal - but it doens't match the angle of the face on the ball
 			//so there is some funky reversing going on - I think its right????			
+			
+			//THEO
+			sphereNormal.set( x + x*noise*0.5, y + y*noise*0.5, z + z*noise*0.5 );
+			
 			if( relief == 1.0 ){
-				normal.set(x + x*noise*0.5, y + y*noise*0.5, z + z*noise*0.5);
-				normal.normalize();
+				normal = sphereNormal;
 			}else{
 				normal.set(-smoothedN.z, smoothedN.y, -smoothedN.x);
+				normal *= extrudePct;
+				normal += sphereNormal * (1.0 - extrudePct );
 			}		
 			
 			x *= relief;

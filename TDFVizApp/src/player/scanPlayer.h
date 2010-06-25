@@ -19,6 +19,15 @@ public:
 	ofxVec3f nrml;
 };
 
+//THEO
+typedef enum{
+	PLAYSTATE_UNLOADED,
+	PLAYSTATE_NEW_FACE,
+	PLAYSTATE_FADEIN,
+	PLAYSTATE_NORMAL,
+	PLAYSTATE_FADEOUT
+}playState;
+
 class scanPlayer {
 
 public:
@@ -48,6 +57,8 @@ public:
 	void		drawBall();
 	void		calcDepth();
 	
+	void		startFadeOut();
+	
 	float		dx;
 	
 	vector <bool> mask;
@@ -62,6 +73,9 @@ public:
 	int			nFaces;
 	
 
-	
-	
+	//theo - don't mod below here
+	float pctFadeIn;
+	float perlinFacePct;
+	float extrudePct;
+	playState pState;
 };

@@ -30,9 +30,9 @@ void testApp::setup(){
 	panel.addDrawableRect("histogram", &SP.histogram, 200, 60);
 	panel.addDrawableRect("histogram", &SP.histogramAfter, 200, 60);
 	
-	
 	panel.setWhichColumn(1);
 	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
+	panel.addChartPlotter("fade value", guiStatVarPointer("fade", &SP.pctFadeIn, GUI_VAR_FLOAT, true, 2), 300, 40, 300, -0.2, 1.2);
 	
 	panel.setWhichPanel("decode");
 	panel.addToggle("stop motion", "stopMotion", false);
@@ -57,16 +57,16 @@ testApp::~testApp() {
 void testApp::update() {
 
 	if( SN.update() ){
-		
+		if( SN.message == "TxStarted" && SN.folder != ""){
+			SP.startFadeOut();
+		}
 		if( SN.message == "TxEnded" && SN.folder != "" ){
 			printf("opening via OSC - %s\n", string("/Users/theo/Desktop/INCOMING_SCANS/"+SN.folder).c_str());
 			SP.loadDirectory("/Users/theo/Desktop/INCOMING_SCANS/"+SN.folder);
 			SN.clearData();
 		}
 	}
-
 	
-
 	panel.update();
 	if( panel.getValueF("minZ") >= panel.getValueF("maxZ") ){
 		panel.setValueF("minZ", panel.getValueF("minZ") -1.0 );
@@ -95,7 +95,19 @@ void testApp::draw() {
 
 //---------------------------------------------------------------------------------
 void testApp::keyPressed(int key) {
+
+	//THEO
+	if( key == 'e' ){
+		SP.startFadeOut();
+	}
 	
+	//THEO TODO: move this to transfer folder
+	if( key == 'n' ){
+		int num = inputList.listDir("input");
+		if( num > 0 ){
+			SP.loadDirectory(inputList.getPath( (int)ofRandom(0, (float)num * 0.999) ) );
+		}
+	}
 }
 
 float preX;
