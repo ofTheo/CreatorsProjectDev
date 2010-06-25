@@ -4,11 +4,11 @@
     theo
 </remote_user>
 <remote_ip>
-    192.168.2.12
+    192.168.1.4
 </remote_ip>
 <remote_osc_port>
     70007
 </remote_osc_port>
 <command>
-    rsync -avz -e ssh ! !@!:/Users/!/Desktop/test/
+    rsync -av -e ssh ! !@!:/Users/!/Desktop/INCOMING_SCANS/
 </command>

@@ -32,7 +32,7 @@ void ofxIIDCSettings::setupGUI()
 {
     videoGrabber->getAllFeatureValues();
 
-    panel.setup("ofxIIDCSettings", 0, 0, 480, ofGetHeight());
+    panel.setup("ofxIIDCSettings", 0, 0, 480, ofGetHeight()/2);
 //	panel.loadFont("myFont.ttf", 10);
     panel.addPanel("Settings", 2, false);
 	panel.setWhichPanel("Settings");
@@ -173,14 +173,14 @@ void ofxIIDCSettings::setupGUI()
 
     }
 	
-	if(panel.currentXmlFile != ""){
-		panel.loadSettings(panel.currentXmlFile);
-	}
-	
 	panel.setupEvents();
 	panel.enableEvents();
 	ofAddListener(panel.guiEvent, this, &ofxIIDCSettings::eventsIn);
 
+	if(panel.currentXmlFile != ""){
+		panel.loadSettings(panel.currentXmlFile);
+	}
+	
     //Example of how to set up toggles
     /*
     string name = "myToggle";

@@ -37,7 +37,7 @@ void captureApp::frameReceived(ofVideoGrabber& grabber) {
 					camera.getThreadedPixels(recent[curFrame].getPixels());
 					needsUpdate[curFrame] = true;
 				} else {
-					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".tga";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					camera.getThreadedPixels(imageSaver.getPixels());
 					imageSaver.next();
@@ -68,7 +68,7 @@ void captureApp::update1394Cam(){
 					memcpy(recent[curFrame].getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					needsUpdate[curFrame] = true;
 				}else{
-					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".tga";
+					string filename = currentCaptureFolder + ofToString(FRAME_START_INDEX+cameraFrameNum) + ".jpg";
 					imageSaver.setFilename(filename);
 					memcpy(imageSaver.getPixels(), camera1394.getPixels(), camera1394.getWidth() * camera1394.getHeight() * 3);					
 					imageSaver.next();
@@ -129,6 +129,8 @@ void captureApp::setup(){
 	
 	panel.addToggle("camera settings", "cameraSettings", false);
 	
+	panel.addToggle("overide light", "bOverideLight", true);
+
 	panel.addToggle("fullscreen", "fullscreen", false);
 	
 	panel.addToggle("spot light image", "bSpotLight", true);
@@ -215,6 +217,7 @@ void captureApp::setup(){
 	panel.setValueI("frameByFrame", 0);
 	panel.setValueI("largeVideo", 0);
 	panel.setValueI("brightnessSetting",0);
+	panel.setValueI("bOverideLight",0);
 	
 	cameraWidth  = 640;
 	cameraHeight = 480;
@@ -249,6 +252,8 @@ void captureApp::setup(){
 	
 	threePhase.setSize(1024, 768);
 	updateGenerator();
+	
+	light.setup(0);
 }
 
 //-----------------------------------------------
@@ -271,6 +276,14 @@ void captureApp::setupOsc(){
 //-----------------------------------------------
 void captureApp::update(){
 	panel.update();
+	
+	if( panel.hasValueChanged("bOverideLight") ){
+		if( panel.getValueB("bOverideLight") ){
+			light.lightOn();
+		}else{
+			light.lightOff();
+		}
+	}
 	
 	bEnableOsc = panel.getValueB("use_osc");
 	if( panel.hasValueChanged("use_osc") ){
@@ -322,6 +335,8 @@ void captureApp::update(){
 
 //-----------------------------------------------
 void captureApp::startFadeIn(){
+	light.lightOff();
+
 	if( panel.getValueF("fadeInTime") > 0 ){
 		state		= CAP_STATE_FADEIN;
 		fadeInStartTime  = ofGetElapsedTimef();
@@ -543,7 +558,7 @@ void captureApp::threadedFunction(){
 //-----------------------------------------------
 void captureApp::startCapture(){
 	printf("startCapture\n");
-	
+
 	if( camState == CAMERA_CLOSED ){
 		printf("ERROR - OPEN CAMERA STUPID!\n");
 		return;
@@ -582,6 +597,7 @@ void captureApp::endCapture(){
 	printf("endCapture\n");
 	if( state == CAP_STATE_CAPTURE ){
 		ofShowCursor();
+		light.lightOn();		
 		
 		if( panel.getValueB("B_FACE_TRIGGER") ){
 			bNeedsToLeaveFrame = true;
@@ -702,7 +718,7 @@ void captureApp::handleCamera(){
 					settings->setXMLFilename("mySettingsFile.xml");
 					//camera1394.setVerbose(true);
 					if( camera1394.initGrabber( cameraWidth, cameraHeight, VID_FORMAT_Y8, VID_FORMAT_RGB, 60.0, false, sdk, settings ) ){
-						settings->panel.setPosition(318, 136);
+						settings->panel.setPosition(318, 440);
 						camState = CAMERA_OPEN;
 						//settings->panel.reloadSettings();
 					}else{
