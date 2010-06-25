@@ -68,6 +68,6 @@ public:
 	virtual int getStart();
 	float getRemaining();
 
-	static const int offsetBinSize  = 128;
-	static const int offsetBinCount = 256;
+	int offsetBinSize;
+	int offsetBinCount;
 };

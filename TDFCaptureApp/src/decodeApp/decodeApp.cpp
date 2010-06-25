@@ -49,8 +49,8 @@ void decodeApp::setup(){
 	panel.addMultiToggle("style", "style", 0, styles);
 
 	panel.addSlider("range threshold", "rangeThreshold", 40, 0, 255, true);
-	panel.addSlider("depth scale", "depthScale", 130, -500, 500, false);
-	panel.addSlider("depth skew", "depthSkew", 0, -20, 20, false);
+	panel.addSlider("depth scale", "depthScale", 130, -800, 800, false);
+	panel.addSlider("depth skew", "depthSkew", 0, -10, 10, false);
 	panel.addSlider("filter min", "filterMin", -1024, -1024, 1024, false);
 	panel.addSlider("filter max", "filterMax", 1024, -1024, 1024, false);
 
