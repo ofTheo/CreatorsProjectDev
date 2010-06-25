@@ -77,7 +77,7 @@
     <val_0>3.000000</val_0>
 </maxDepth>
 <minZ>
-    <val_0>49.583336</val_0>
+    <val_0>59.500000</val_0>
 </minZ>
 <maxZ>
     <val_0>211.083344</val_0>
@@ -92,8 +92,8 @@
     <val_0>1.000000</val_0>
 </doShader>
 <normalSmooth>
-    <val_0>0.900000</val_0>
+    <val_0>0.833333</val_0>
 </normalSmooth>
 <minZCutoff>
-    <val_0>21.250000</val_0>
+    <val_0>62.333332</val_0>
 </minZCutoff>
