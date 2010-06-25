@@ -11,7 +11,7 @@
     <val_0>0.000000</val_0>
 </stopMotion>
 <playSequence>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </playSequence>
 <jumpTo>
     <<<<<<< HEAD
@@ -40,10 +40,10 @@
     <val_0>-3.888889</val_0>
 </depthSkew>
 <filterMin>
-    <val_0>-1024.000000</val_0>
+    <val_0>-320.000000</val_0>
 </filterMin>
 <filterMax>
-    <val_0>1024.000000</val_0>
+    <val_0>320.000000</val_0>
 </filterMax>
 <exportFormat>
     <val_0>0.000000</val_0>

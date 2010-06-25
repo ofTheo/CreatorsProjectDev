@@ -209,7 +209,7 @@ void PhaseDecoder::makeDepth() {
 	averageOffset *= offsetBinSize;
 
 	// do a second pass where we bin all the points
-	int* offsetBins = new int[offsetBinCount];
+	float* offsetBins = new float[offsetBinCount];
 	float* offsetBinDepths = new float[offsetBinCount];
 	memset(offsetBins, 0, offsetBinCount * sizeof(int));
 	float offsetBinOffset =
@@ -225,6 +225,10 @@ void PhaseDecoder::makeDepth() {
 			}
 		}
 	}
+	
+	// smooth out the bins, at golan's suggestion
+	CvMat data = cvMat(1, offsetBinCount, CV_32F, offsetBins);
+	cvSmooth(&data, &data, CV_GAUSSIAN, 1, 5);
 	
 	// determine which of these bins is the biggest
 	// ignore the furthest l/r bins
@@ -257,6 +261,11 @@ void PhaseDecoder::makeDepth() {
 	
 	delete [] offsetBins;
 	delete [] offsetBinDepths;
+	
+	// if all that isn't enough, this can be revisited with temporal
+	// matching of depth histograms using cvCompareHist, which will
+	// return a single value describing the offset given two depth
+	// histograms
 }
 
 void PhaseDecoder::filterDepth(int yDist, float yAmt, bool useGaussian, int dilatePasses){
