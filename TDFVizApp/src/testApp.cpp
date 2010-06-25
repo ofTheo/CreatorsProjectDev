@@ -4,25 +4,35 @@
 void testApp::setup(){
 		
 	// setup control panel
-	panel.setup("control", 0, 0, 300, 720);
+	panel.setup("control", 0, 0, 1023, 768);
 	panel.loadSettings("control.xml");
-	panel.addPanel("input", 1);
-	panel.addPanel("decode", 1);
-	panel.addPanel("export", 1);
-	panel.addPanel("misc", 1);
+	panel.addPanel("input", 4);
+	panel.addPanel("decode", 4);
+	panel.addPanel("export", 4);
+	panel.addPanel("misc", 4);
 	panel.setWhichPanel("input");
 	inputList.listDir("input");
-	panel.addFileLister("input", &inputList, 240, 150);
+	panel.addFileLister("input", &inputList, 200, 100);
 
+	panel.addToggle("show face on ball", "showFaceOnBall", true);
 	panel.addToggle("do shader", "doShader", 0);
 
 	panel.addSlider("map pix to min z", "minZ", 0, 0, 255, false);
-	panel.addSlider("map pix to max z", "maxZ", 255.0, 0, 255, false);
+	panel.addSlider("map pix to max z", "maxZ", 200.0, 0, 255, false);
 	panel.addSlider("z top amount", "topZ", 100, 0, 400, true);
 
 	panel.addSlider("min z cutoff", "minZCutoff", 0, 0, 255, false);
 
-	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 1, false);
+	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);
+	
+	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 0.988, false);
+	
+	panel.addDrawableRect("histogram", &SP.histogram, 200, 60);
+	panel.addDrawableRect("histogram", &SP.histogramAfter, 200, 60);
+	
+	
+	panel.setWhichColumn(1);
+	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
 	
 	panel.setWhichPanel("decode");
 	panel.addToggle("stop motion", "stopMotion", false);
@@ -90,7 +100,7 @@ void testApp::keyPressed(int key) {
 
 float preX;
 void testApp::mousePressed(int x, int y, int button){
-	if( !panel.mousePressed(x, y, button) ){
+	if( !panel.mousePressed(x, y, button) || x > 300 ){
 		preX = x;
 	}
 }
@@ -98,7 +108,7 @@ void testApp::mousePressed(int x, int y, int button){
 //---------------------------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
 	
-	if( !panel.mouseDragged(x, y, button) ){
+	if( !panel.mouseDragged(x, y, button) || x > 300 ){
 		SP.dx += 1.2 * ( (float)x-preX);
 	}
 	preX = x;
@@ -109,6 +119,9 @@ void testApp::mouseDragged(int x, int y, int button){
 void testApp::mouseReleased(){
 	panel.mouseReleased();
 }
+
+
+
 
 
 
