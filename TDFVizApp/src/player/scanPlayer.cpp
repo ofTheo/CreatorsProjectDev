@@ -22,6 +22,8 @@ void scanPlayer::setup(){
 	
 	TSL.setup(maxNumFrames, srcWidth, srcHeight);
 	
+	FBO.allocate(1024, 768, GL_RGBA, 4);
+	
 	ofSetFrameRate(30);
 	
 	// setup the shader: 
@@ -100,24 +102,28 @@ void scanPlayer::update(){
 //---------------------------------------------------------------------------------
 void scanPlayer::draw(){
 	
-	if (TSL.state == TH_STATE_LOADED){
+
+	//if (TSL.state == TH_STATE_LOADED){
 		if (totalNumFrames > 0){
 			
-			glEnable(GL_DEPTH_TEST);
+			FBO.clear();
+			FBO.begin();
+				ofSetColor(50, 50, 50);
+				ofRect(0, 0, 1024, 768);
+		
+				glEnable(GL_DEPTH_TEST);
+				ofSetColor(255, 255, 255);
+				drawMesh();			
+				glDisable(GL_DEPTH_TEST);
 			
-			drawMesh();
-			
-			glDisable(GL_DEPTH_TEST);
+			FBO.end();
 		}
-	}
-
-			
-			
-			//imageData.loadData(TSL.imageFrames[currentFrame].getPixels(), 640,480, GL_RGB);
-			//ofSetColor(255, 255, 255);
-			//imageData.draw(300,0);
-	//	}
 	//}
+
+	ofSetColor(255, 255, 255);
+	FBO.draw(0, 0, 1024, 768);
+	FBO.draw(1024, 0, 1024, 768);
+		
 }
 
 //---------------------------------------------------------------------------------
@@ -144,7 +150,7 @@ void scanPlayer::drawMesh() {
 
 	glPushMatrix();
 	
-	glTranslated(540, 400, 0);
+	glTranslated(300, 400, 0);
 	glScalef(2.0, 2.0, 2.0);
 	glRotatef(dx,0,1,0);
 		
@@ -297,7 +303,7 @@ void scanPlayer::drawMesh() {
 				
 	glPushMatrix();
 	
-	glTranslated(600+260, 400, 0);
+	glTranslated(400+260, 400, 0);
 	glRotatef(dx, 0,1,0);
 	glScalef(3.5, 3.5, 3.5);
 

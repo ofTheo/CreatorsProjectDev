@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E416CAFD11D43DC400B6836B /* histogramGuiElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E416CAFC11D43DC400B6836B /* histogramGuiElement.cpp */; };
+		E416CB7C11D44ACC00B6836B /* ofxFBOTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E416CB7A11D44ACC00B6836B /* ofxFBOTexture.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -153,6 +154,8 @@
 /* Begin PBXFileReference section */
 		E416CAFB11D43DC400B6836B /* histogramGuiElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = histogramGuiElement.h; sourceTree = "<group>"; };
 		E416CAFC11D43DC400B6836B /* histogramGuiElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = histogramGuiElement.cpp; sourceTree = "<group>"; };
+		E416CB7A11D44ACC00B6836B /* ofxFBOTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxFBOTexture.cpp; path = src/addons/ofxFBOTexture/ofxFBOTexture.cpp; sourceTree = SOURCE_ROOT; };
+		E416CB7B11D44ACC00B6836B /* ofxFBOTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFBOTexture.h; path = src/addons/ofxFBOTexture/ofxFBOTexture.h; sourceTree = SOURCE_ROOT; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -360,6 +363,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E416CB7911D44ACC00B6836B /* ofxFBOTexture */ = {
+			isa = PBXGroup;
+			children = (
+				E416CB7A11D44ACC00B6836B /* ofxFBOTexture.cpp */,
+				E416CB7B11D44ACC00B6836B /* ofxFBOTexture.h */,
+			);
+			name = ofxFBOTexture;
+			path = src/addons/ofxFBOTexture;
+			sourceTree = SOURCE_ROOT;
+		};
 		E45BE0360E8CC5DE009D7055 /* libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -567,6 +580,7 @@
 		E4B9600511D2F6A5001A61C5 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				E416CB7911D44ACC00B6836B /* ofxFBOTexture */,
 				E4B9667211D3E041001A61C5 /* ofxOsc */,
 				E4B9603A11D2F6D6001A61C5 /* ofxControlPanel */,
 				E4B9600611D2F6A5001A61C5 /* ofx3DUtils */,
@@ -1136,6 +1150,7 @@
 				E4B9669711D3E041001A61C5 /* ofxOscReceiver.cpp in Sources */,
 				E4B9669811D3E041001A61C5 /* ofxOscSender.cpp in Sources */,
 				E416CAFD11D43DC400B6836B /* histogramGuiElement.cpp in Sources */,
+				E416CB7C11D44ACC00B6836B /* ofxFBOTexture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

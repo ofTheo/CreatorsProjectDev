@@ -8,6 +8,7 @@
 #include "ofxVectorMath.h"
 #include "ofxControlPanel.h"
 #include "histogramGuiElement.h"
+#include "ofxFBOTexture.h"
 
 class face {
 public: 
@@ -35,6 +36,7 @@ public:
 	int			currentFrame;
 	
 	ofTexture	imageData;
+	ofxFBOTexture FBO;
 	
 	threadedScanLoader TSL;
 	histogramGuiElement histogram;
