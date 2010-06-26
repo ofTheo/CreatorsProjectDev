@@ -60,44 +60,50 @@ void scanMesh::setup(int srcWidth, int srcHeight, float sizeScaling){
 }
 
 
-// this code is outdated
-// and doesn't resemble drawMesh anymore!
 //---------------------------------------------------------------------------------
 void scanMesh::calcDepth(ofImage & currentFrame) {
 	unsigned char * pixelsColorDepth = currentFrame.getPixels();
 	//unsigned char * pixelsDepth = TSL.depthFrames[currentFrame].getPixels();
 	//unsigned char * color = pixelsColor;
 	
-	int x = 0; 
-	int y = 0;
-	int k = 0;
-	int faceOffset= panelPtr->getValueI("faceOffset");
-	float scaling = alphaScaling * sizeScaling;
-	for (int i = 0; i < srcWidth*srcHeight*4; i+=4){
-		
-		depthReal[k] = pixelsColorDepth[i+3];
-		
-		if( x >= srcWidth ){
-			y++;
-			x = 0;
+	// load "real depth"
+	int m = 0;
+	int n = 3;
+	for(int y = 0; y < srcHeight; y++) {
+		for(int x = 0; x < srcWidth; x++) {
+			depthReal[m++] = pixelsColorDepth[n];
+			n += 4;
 		}
-		
-		depth[k] = depthReal[k] * scaling - faceOffset;
-		
-		if( depth[k] > 0 ){
-			mask[k] = false;
-			ofSetColor(pixelsColorDepth[i], pixelsColorDepth[i+1], pixelsColorDepth[i+2], 255);
-			glVertex3f(-srcWidth/2+x, -srcHeight/2+y, depth[k]);
-			
-		} else {
-			mask[k]  = true;
-			depth[k] = 0.0;
-		}
-		
-		x++;
-		k++;
 	}
 	
+	float faceOffset;
+	if(panelPtr->getValueB("adaptiveOffset")) {
+		CvMat depthMat = cvMat(srcHeight, srcWidth, CV_8U, &depthReal[0]);
+		CvScalar smean, sstdDev;
+		cvAvgSdv(&depthMat, &smean, &sstdDev, &depthMat);
+		double depthMean = smean.val[0];
+		double depthStdDev = sstdDev.val[0];
+		faceOffset = depthMean - panelPtr->getValueF("adaptiveScaling") * depthStdDev;
+	} else
+		faceOffset = panelPtr->getValueF("fixedOffset");
+	
+	m = 0;
+	n = 0;
+	float scaling = alphaScaling * sizeScaling;
+	for(int y = 0; y < srcHeight; y++) {
+		for(int x = 0; x < srcWidth; x++) {	
+			if(depthReal[m] > faceOffset){
+				mask[m] = false;
+				depth[m] = (depthReal[m] - faceOffset) * scaling;
+			} else {
+				mask[m]  = true;
+				depth[m] = 0;
+			}
+			m++;
+			n += 4;
+		}
+	}
+	 
 	for(int i = 0; i < nVertices; i++){
 		normals[i].set(0,0,0);
 		vertices[i].x = i%srcWidth * 1;
@@ -113,7 +119,7 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 			ofxVec3f v2 = vertices[faces[i].v1];
 			ofxVec3f v3 = vertices[faces[i].v2];
 			
-			faces[i].nrml = normalForTriangle(v1, v2, v3);
+			faces[i].nrml = normalForTriangle(v3, v2, v1);
 			faces[i].nrml.normalize();
 		}
 	}
@@ -200,7 +206,7 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 	}	
 }
 
-
+// this is used for drawing the face away without the ball
 //---------------------------------------------------------------------------------
 void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	
@@ -273,7 +279,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 			ofxVec3f v2 = vertices[faces[i].v1];
 			ofxVec3f v3 = vertices[faces[i].v2];
 			
-			faces[i].nrml = normalForTriangle(v1, v2, v3);
+			faces[i].nrml = normalForTriangle(v3, v2, v1);
 			faces[i].nrml.normalize();
 		}
 	}
