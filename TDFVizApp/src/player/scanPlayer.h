@@ -9,15 +9,8 @@
 #include "ofxControlPanel.h"
 #include "histogramGuiElement.h"
 #include "ofxFBOTexture.h"
+#include "scanMesh.h"
 
-class face {
-public: 
-	int v0;
-	int v1;
-	int v2;
-	bool bVisible;
-	ofxVec3f nrml;
-};
 
 //THEO
 typedef enum{
@@ -51,31 +44,27 @@ public:
 	histogramGuiElement histogram;
 	histogramGuiElement histogramAfter;
 	
+	void		buildCache();
+	
 	void		update();
 	void		draw();
-	void		drawMesh();
 	void		drawBall();
+	
+	void		sphereVertex(int i, int j, float pctI, float pctJ, float relief, ofxVec3f smoothedN);
+	
+	void		drawMesh();
+	void		startFadeOut();
 	void		calcDepth();
 	
-	void		startFadeOut();
+	float		dx, dy;
+	scanMesh	mesh;
 	
-	float		dx;
-	
-	vector <bool> mask;
-	vector <float> depth;
-	vector <unsigned char> depthReal;
-
-	ofxVec3f	* vertices;
-	face		* faces;
-	ofxVec3f	* normals;
-	ofxVec3f	* normalsSmoothed;
-	int			nVertices;
-	int			nFaces;
-	
+	ofImage mask;
 
 	//theo - don't mod below here
 	float pctFadeIn;
 	float perlinFacePct;
 	float extrudePct;
 	playState pState;
+	float maskX, maskY, maskW, maskH;
 };

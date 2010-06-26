@@ -17,7 +17,7 @@ GLint ofxFBOTexture::maxRenderBufferSize;
 GLint ofxFBOTexture::maxSamples;
 
 ofxFBOTexture::ofxFBOTexture() {
-	screenFov		= 60;
+	screenFov		= 20;
 	oldFramebuffer	= 0;
 	//	oldRenderbuffer = 0;
 	pixels			= NULL;

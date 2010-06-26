@@ -7,9 +7,8 @@ void testApp::setup(){
 	panel.setup("control", 0, 0, 1023, 768);
 	panel.loadSettings("control.xml");
 	panel.addPanel("input", 4);
-	panel.addPanel("decode", 4);
-	panel.addPanel("export", 4);
 	panel.addPanel("misc", 4);
+
 	panel.setWhichPanel("input");
 	inputList.listDir("input");
 	panel.addFileLister("input", &inputList, 200, 100);
@@ -26,6 +25,8 @@ void testApp::setup(){
 	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);
 	
 	panel.addSlider("normal smooth amnt", "normalSmooth", 0, 0, 0.988, false);
+
+	panel.addSlider("ball scale", "ballScale", 200.0, 90, 400, false);
 	
 	panel.addDrawableRect("histogram", &SP.histogram, 200, 60);
 	panel.addDrawableRect("histogram", &SP.histogramAfter, 200, 60);
@@ -34,11 +35,17 @@ void testApp::setup(){
 	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
 	panel.addChartPlotter("fade value", guiStatVarPointer("fade", &SP.pctFadeIn, GUI_VAR_FLOAT, true, 2), 300, 40, 300, -0.2, 1.2);
 	
-	panel.setWhichPanel("decode");
-	panel.addToggle("stop motion", "stopMotion", false);
-	panel.addToggle("play sequence", "playSequence", false);
-	panel.addSlider("jump to", "jumpTo", 0, 0, 100, false);
-	
+	panel.setWhichPanel("misc");
+	panel.addSlider("rotate x", "rotateX", 90, 0, 360, false);
+	panel.addSlider("rotate y", "rotateY", 90, 0, 360, false);	
+	panel.addSlider("mask x", "maskX", 0, -200, 200, false);
+	panel.addSlider("mask y", "maskY", 0, -200, 200, false);
+	panel.addSlider("mask w", "maskW", 1024, 800, 1900, false);
+	panel.addSlider("mask h", "maskH", 768,  600, 1600, false);
+	panel.setWhichColumn(1);
+	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
+
+
 	panel.loadSettings("control.xml");
 	
 	SP.setup();
@@ -96,6 +103,13 @@ void testApp::draw() {
 //---------------------------------------------------------------------------------
 void testApp::keyPressed(int key) {
 
+	if( key == 'f'){
+		ofToggleFullscreen();
+		ofSetWindowPosition(0, 0);
+		
+	}
+	
+
 	//THEO
 	if( key == 'e' ){
 		SP.startFadeOut();
@@ -108,6 +122,12 @@ void testApp::keyPressed(int key) {
 			SP.loadDirectory(inputList.getPath( (int)ofRandom(0, (float)num * 0.999) ) );
 		}
 	}
+	if( key == 'i' ){
+		int num = inputList.listDir("/Users/theo/Desktop/INCOMING_SCANS/");
+		if( num > 0 ){
+			SP.loadDirectory(inputList.getPath( (int)ofRandom(0, (float)num * 0.999) ) );
+		}
+	}	
 }
 
 float preX;
@@ -121,7 +141,7 @@ void testApp::mousePressed(int x, int y, int button){
 void testApp::mouseDragged(int x, int y, int button){
 	
 	if( !panel.mouseDragged(x, y, button) || x > 300 ){
-		SP.dx += 1.2 * ( (float)x-preX);
+		//SP.dx += 1.2 * ( (float)x-preX);
 	}
 	preX = x;
 	

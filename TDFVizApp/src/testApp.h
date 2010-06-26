@@ -28,6 +28,6 @@ public:
 	void mouseReleased();
 	
 	scanNotifier SN;
-	scanPlayer  SP;
+	scanPlayer   SP;
 	
 };

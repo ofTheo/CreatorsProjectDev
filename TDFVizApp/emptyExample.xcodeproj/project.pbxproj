@@ -20,6 +20,7 @@
 		E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9770E8CC7DD009D7055 /* CoreServices.framework */; };
 		E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9790E8CC7DD009D7055 /* OpenGL.framework */; };
 		E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */; };
+		E498BB9211D52E700099A63E /* scanMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E498BB9011D52E700099A63E /* scanMesh.cpp */; };
 		E4B9602811D2F6A5001A61C5 /* ofx3DGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B9600A11D2F6A5001A61C5 /* ofx3DGraphics.cpp */; };
 		E4B9602911D2F6A5001A61C5 /* ofxCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B9600D11D2F6A5001A61C5 /* ofxCamera.cpp */; };
 		E4B9602A11D2F6A5001A61C5 /* ofxLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B9601011D2F6A5001A61C5 /* ofxLight.cpp */; };
@@ -179,6 +180,8 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		E498BB9011D52E700099A63E /* scanMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scanMesh.cpp; path = src/player/scanMesh.cpp; sourceTree = SOURCE_ROOT; };
+		E498BB9111D52E700099A63E /* scanMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scanMesh.h; path = src/player/scanMesh.h; sourceTree = SOURCE_ROOT; };
 		E4B69B5B0A3A1756003C02F2 /* emptyExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4B9600A11D2F6A5001A61C5 /* ofx3DGraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofx3DGraphics.cpp; path = src/addons/ofx3DUtils/src/ofx3DGraphics.cpp; sourceTree = SOURCE_ROOT; };
@@ -644,6 +647,8 @@
 		E4B9602111D2F6A5001A61C5 /* player */ = {
 			isa = PBXGroup;
 			children = (
+				E498BB9011D52E700099A63E /* scanMesh.cpp */,
+				E498BB9111D52E700099A63E /* scanMesh.h */,
 				E4B9664D11D3E01D001A61C5 /* scanNotifier.cpp */,
 				E4B9664C11D3E01D001A61C5 /* scanNotifier.h */,
 				E4B9602211D2F6A5001A61C5 /* scanPlayer.cpp */,
@@ -1155,6 +1160,7 @@
 				E4B9669811D3E041001A61C5 /* ofxOscSender.cpp in Sources */,
 				E416CAFD11D43DC400B6836B /* histogramGuiElement.cpp in Sources */,
 				E416CB7C11D44ACC00B6836B /* ofxFBOTexture.cpp in Sources */,
+				E498BB9211D52E700099A63E /* scanMesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

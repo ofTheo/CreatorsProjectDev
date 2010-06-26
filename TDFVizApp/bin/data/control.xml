@@ -92,14 +92,35 @@
     <val_0>1.000000</val_0>
 </doShader>
 <normalSmooth>
-    <val_0>0.790400</val_0>
+    <val_0>0.922133</val_0>
 </normalSmooth>
 <minZCutoff>
-    <val_0>72.250000</val_0>
+    <val_0>62.333332</val_0>
 </minZCutoff>
 <showFaceOnBall>
     <val_0>1.000000</val_0>
 </showFaceOnBall>
 <zPercent>
-    <val_0>0.722222</val_0>
+    <val_0>0.638889</val_0>
 </zPercent>
+<ballScale>
+    <val_0>350.055542</val_0>
+</ballScale>
+<maskX>
+    <val_0>0.000000</val_0>
+</maskX>
+<maskY>
+    <val_0>0.000000</val_0>
+</maskY>
+<maskW>
+    <val_0>1380.555542</val_0>
+</maskW>
+<maskH>
+    <val_0>1033.333374</val_0>
+</maskH>
+<rotateX>
+    <val_0>98.000000</val_0>
+</rotateX>
+<rotateY>
+    <val_0>0.000000</val_0>
+</rotateY>
