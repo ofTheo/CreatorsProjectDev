@@ -18,7 +18,9 @@ PhaseDecoder::PhaseDecoder() :
 		phasePersistence(false),
 		lastPhase(false),
 		range(NULL),
-		unwrapOrder(NULL) {
+		unwrapOrder(NULL),
+		offsetBinSize(32),
+		offsetBinCount(64) {
 }
 
 // This code should migrate to DepthDecoder, as it will
@@ -164,6 +166,7 @@ void PhaseDecoder::clearLastPhase() {
 
 void PhaseDecoder::makeDepth() {
 	int n = width * height;
+	// this is where the "raw" depth is made
 	if (orientation == PHASE_VERTICAL) {
 		float planeZero = (float) (startInd % width) / width;
 		for (int i = 0; i < n; i++) {
@@ -176,45 +179,93 @@ void PhaseDecoder::makeDepth() {
 			}
 		}
 	} else if (orientation == PHASE_HORIZONTAL) {
-		float planeZero = 0;//(float) (startInd / width) / (float) height;
-		for (int i = 0; i < n; i++) {
-			if (!mask[i]) {
-				float y = (float) (i / width);
-				float planephase = ((y / height) - planeZero) * depthSkew;
-				depth[i] = (phase[i] - planephase) * depthScale;
-			} else {
-				depth[i] = 0;
+		// this should be a bit faster
+		int i = 0;
+		for(int y = 0; y < height; y++) {
+			float planephase = (y * depthSkew) / height;
+			for(int x = 0; x < width; x++) {
+				if(!mask[i])
+					depth[i] = (phase[i] - planephase) * depthScale;
+				else
+					depth[i] = 0;
+				i++;
 			}
 		}
 	}
+	
+	// do an initial pass to take the mean of everything
+	float depthSum = 0;
+	int depthCount = 0;
+	for(int i = 0; i < n; i++)
+		if(!mask[i]) {
+			depthSum += depth[i]; 
+			depthCount++;
+		}
 
-	int offsetBins[offsetBinCount];
+	// use that mean as an offset for the binning
+	// and quantize it to bin counts
+	float averageOffset = depthSum / depthCount;
+	averageOffset = (int) (averageOffset / offsetBinSize);
+	averageOffset *= offsetBinSize;
+
+	// do a second pass where we bin all the points
+	float* offsetBins = new float[offsetBinCount];
+	float* offsetBinDepths = new float[offsetBinCount];
 	memset(offsetBins, 0, offsetBinCount * sizeof(int));
-	float offsetBinOffset = (offsetBinCount * offsetBinSize) / 2;
+	float offsetBinOffset =
+		(offsetBinCount * offsetBinSize) / 2 +
+		(offsetBinSize / 2) +
+		-averageOffset;
 	for(int i = 0; i < n; i++) {
 		if(!mask[i]) {
 			int cur = (int) ((depth[i] + offsetBinOffset) / offsetBinSize);
-			if(cur < 0)
-				cur = 0;
-			else if(cur >= offsetBinCount)
-				cur = offsetBinCount - 1;
-			offsetBins[cur]++;
+			if(cur > 0 && cur < offsetBinCount) {
+				offsetBins[cur]++;
+				offsetBinDepths[cur] += depth[i];
+			}
 		}
 	}
-
-	int biggestBin = 0;
-	int biggestBinSize = 0;
-	for(int i = 0; i < offsetBinCount; i++) {
-		if(offsetBins[i] > biggestBinSize) {
-			biggestBinSize = offsetBins[i];
+	
+	// smooth out the bins, at golan's suggestion
+	CvMat data = cvMat(1, offsetBinCount, CV_32F, offsetBins);
+	cvSmooth(&data, &data, CV_GAUSSIAN, 1, 5);
+	
+	// determine which of these bins is the biggest
+	// ignore the furthest l/r bins
+	int biggestBin = 1;
+	for(int i = 1; i < offsetBinCount - 1; i++)
+		if(offsetBins[i] > offsetBins[biggestBin])
 			biggestBin = i;
-		}
+
+	// use the average of the depths in that bin as an offset
+	// float offset = (biggestBin * offsetBinSize) - offsetBinOffset;
+	
+	// do a weighted average of the three bins around the center
+	float weight = .3;
+	float offset =
+		(biggestBin - 1) * offsetBins[biggestBin - 1] * weight +
+		biggestBin * offsetBins[biggestBin] +
+		(biggestBin + 1) * offsetBins[biggestBin + 1] * weight;
+	offset /=
+		offsetBins[biggestBin - 1] * weight + 
+		offsetBins[biggestBin] +
+		offsetBins[biggestBin + 1] * weight;
+	offset = (offset * offsetBinSize) - offsetBinOffset;
+	
+	for(int i = 0; i < n; i++) {
+		if(mask[i])
+			depth[i] = 0;
+		else
+			depth[i] -= offset;
 	}
-
-	float offset = (biggestBin * offsetBinSize) - offsetBinOffset;
-
-	for(int i = 0; i < n; i++)
-		depth[i] -= offset;
+	
+	delete [] offsetBins;
+	delete [] offsetBinDepths;
+	
+	// if all that isn't enough, this can be revisited with temporal
+	// matching of depth histograms using cvCompareHist, which will
+	// return a single value describing the offset given two depth
+	// histograms
 }
 
 void PhaseDecoder::filterDepth(int yDist, float yAmt, bool useGaussian, int dilatePasses){

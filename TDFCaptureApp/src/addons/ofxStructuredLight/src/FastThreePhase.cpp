@@ -73,8 +73,8 @@ void FastThreePhase::fillHoles() {
 			} else {
 				if(integrating) {
 					if(i - start < maxHoleSize) {
-						unsigned char startValue = depth[start];
-						int outputRange = depth[i] - startValue;
+						float startValue = depth[start];
+						float outputRange = depth[i] - startValue;
 						int inputRange = i - start;
 						for(int j = start + 1; j < i; j++) {
 							depth[j] = ((j - start) * outputRange) / inputRange + startValue;
@@ -103,8 +103,8 @@ void FastThreePhase::fillHoles() {
 			} else {
 				if(integrating) {
 					if(i - start < yMaxHoleSize) {
-						unsigned char startValue = depth[start];
-						int outputRange = depth[i] - startValue;
+						float startValue = depth[start];
+						float outputRange = depth[i] - startValue;
 						int inputRange = i - start;
 						for(int j = start + width; j < i; j += width) {
 							depth[j] = ((j - start) * outputRange) / inputRange + startValue;

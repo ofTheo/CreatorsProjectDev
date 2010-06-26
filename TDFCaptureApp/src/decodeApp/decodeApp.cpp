@@ -48,11 +48,11 @@ void decodeApp::setup(){
 	styles.push_back("none");
 	panel.addMultiToggle("style", "style", 0, styles);
 
-	panel.addSlider("range threshold", "rangeThreshold", 40, 0, 255, true);
-	panel.addSlider("depth scale", "depthScale", 130, -500, 500, false);
-	panel.addSlider("depth skew", "depthSkew", 0, -20, 20, false);
-	panel.addSlider("filter min", "filterMin", -1024, -1024, 1024, false);
-	panel.addSlider("filter max", "filterMax", 1024, -1024, 1024, false);
+	panel.addSlider("range threshold", "rangeThreshold", 4, 0, 32, true);
+	panel.addSlider("depth scale", "depthScale", 130, -800, 800, false);
+	panel.addSlider("depth skew", "depthSkew", 0, -10, 10, false);
+	panel.addSlider("filter min", "filterMin", -320, -480, 480, false);
+	panel.addSlider("filter max", "filterMax", 320, -480, 480, false);
 
 	panel.setWhichPanel("export");
 
@@ -419,10 +419,14 @@ void decodeApp::draw() {
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 
 	if (threePhase != NULL) {
-		if (!hidden)
+		if (!hidden) {
 			drawAxes(256); // major axes
+		}
 
-		ofTranslate(-threePhase->getWidth() / 2, -threePhase->getHeight() / 2);
+		int w = threePhase->getWidth();
+		int h = threePhase->getHeight();
+		
+		ofTranslate(-w / 2, -h / 2);
 
 		if (!hidden) {
 			ofxPoint3f min, max;
@@ -443,6 +447,18 @@ void decodeApp::draw() {
 			drawCloud();
 		} else if (useCloud == 1) {
 			drawMesh();
+		}
+		
+		if(!hidden) {
+			ofEnableAlphaBlending();
+			ofSetColor(255, 255, 255, 32);
+			glBegin(GL_QUADS);
+			glVertex2f(0, 0);
+			glVertex2f(w, 0);
+			glVertex2f(w, h);
+			glVertex2f(0, h);
+			glEnd();
+			ofDisableAlphaBlending();
 		}
 
 	}
