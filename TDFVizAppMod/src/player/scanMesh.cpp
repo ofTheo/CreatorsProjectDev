@@ -60,10 +60,10 @@ void scanMesh::setup(int srcWidth, int srcHeight, float sizeScaling){
 }
 
 
-//ghetto ripped from drawMesh - we use this in draw ball to do the normal calc and smoothing
+// this code is outdated
+// and doesn't resemble drawMesh anymore!
 //---------------------------------------------------------------------------------
 void scanMesh::calcDepth(ofImage & currentFrame) {
-	
 	unsigned char * pixelsColorDepth = currentFrame.getPixels();
 	//unsigned char * pixelsDepth = TSL.depthFrames[currentFrame].getPixels();
 	//unsigned char * color = pixelsColor;
@@ -210,19 +210,38 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	
 	glPushMatrix();
 	
+	// load "real depth"
+	int m = 0;
+	int n = 3;
+	for(int y = 0; y < srcHeight; y++) {
+		for(int x = 0; x < srcWidth; x++) {
+			depthReal[m++] = pixelsColorDepth[n];
+			n += 4;
+		}
+	}
+	
+	float faceOffset;
+	if(panelPtr->getValueB("adaptiveOffset")) {
+		CvMat depthMat = cvMat(srcHeight, srcWidth, CV_8U, &depthReal[0]);
+		CvScalar smean, sstdDev;
+		cvAvgSdv(&depthMat, &smean, &sstdDev, &depthMat);
+		double depthMean = smean.val[0];
+		double depthStdDev = sstdDev.val[0];
+		faceOffset = depthMean - panelPtr->getValueF("adaptiveScaling") * depthStdDev;
+	} else
+		faceOffset = panelPtr->getValueF("fixedOffset");
+	
 	glTranslated(300, 400, 0);
 	glScalef(2.0, 2.0, 2.0);
 	glRotatef(dx, 0, 1, 0);
 	glTranslatef(-srcWidth / 2, -srcHeight / 2, 0);
 	glPointSize(2);
-	glBegin(GL_POINTS);
-	int m = 0;
-	int n = 0;
-	int faceOffset= panelPtr->getValueI("faceOffset");
+	glBegin(GL_POINTS);	
+	m = 0;
+	n = 0;
 	float scaling = alphaScaling * sizeScaling;
 	for(int y = 0; y < srcHeight; y++) {
-		for(int x = 0; x < srcWidth; x++) {
-			depthReal[m] = pixelsColorDepth[n + 3];			
+		for(int x = 0; x < srcWidth; x++) {	
 			if(depthReal[m] > faceOffset){
 				mask[m] = false;
 				depth[m] = depthReal[m] * scaling - faceOffset;

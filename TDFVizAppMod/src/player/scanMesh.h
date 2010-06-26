@@ -3,8 +3,8 @@
 #include "ofMain.h"
 #include "ofx3DUtils.h"
 #include "ofxVectorMath.h"
-#include "ofxControlPanel.h";
-
+#include "ofxControlPanel.h"
+#include "ofxOpenCv.h"
 
 class face {
 public: 

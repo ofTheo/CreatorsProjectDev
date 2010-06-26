@@ -15,8 +15,10 @@ void testApp::setup(){
 
 	panel.addToggle("show face on ball", "showFaceOnBall", true);
 	panel.addToggle("do shader", "doShader", 0);
-
-	panel.addSlider("face offset", "faceOffset", 0, 0, 255, false);
+	panel.addToggle("adaptive offset", "adaptiveOffset", true);
+	
+	panel.addSlider("adaptive scaling", "adaptiveScaling", 2, 0, 3, false);
+	panel.addSlider("fixed offset", "fixedOffset", 0, 0, 255, false);
 
 	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);
 	
@@ -24,8 +26,8 @@ void testApp::setup(){
 
 	panel.addSlider("ball scale", "ballScale", 200.0, 90, 400, false);
 	
-	panel.addDrawableRect("histogram", &SP.histogram, 200, 60);
-	panel.addDrawableRect("histogram", &SP.histogramAfter, 200, 60);
+	panel.addDrawableRect("alpha histogram", &SP.histogram, 200, 60);
+	panel.addDrawableRect("depth histogram", &SP.histogramAfter, 200, 60);
 	
 	panel.setWhichColumn(1);
 	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
