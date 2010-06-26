@@ -65,7 +65,7 @@ Abstract: EnvMap Exhibit
 - (NSString *) name;
 - (NSString *) descriptionFilename;
 - (void) renderFrame;
-- (void) start;
+- (void) start : (float) red : (float) green : (float) blue : (float) mixRatio : (float) lightX : (float) lightY : (float) lightZ;
 - (void) end;
 
 @end
@@ -92,9 +92,9 @@ void doSomthingElse(){
 }
 
 
-void startShader(){
+void startShader(float red, float green, float blue, float mixRatio, float lightX, float lightY, float lightZ){
 	if (myMap){
-		[myMap start];
+		[myMap start: red : green : blue : mixRatio : lightX : lightY : lightZ];
 	}
 }
 void endShader(){	
@@ -154,7 +154,7 @@ void endShader(){
 		/* Setup uniforms */
 		glUseProgramObjectARB(program_object);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "LightPos"), 0.0, 314.0, -400.0);
-		glUniform3fARB(glGetUniformLocationARB(program_object, "BaseColor"), 1.0,1.0, 1.0);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "BaseColor"), 1, 1, 1);
 		glUniform1fARB(glGetUniformLocationARB(program_object, "MixRatio"), 0.2);
 		glUniform1iARB(glGetUniformLocationARB(program_object, "EnvMap"), 0);
 
@@ -216,10 +216,9 @@ void endShader(){
 
 
 static float temp = 0;
-- (void) start
+- (void) start : (float) red : (float) green : (float) blue : (float) mixRatio : (float) lightX : (float) lightY : (float) lightZ
 {
 	[super renderFrame];
-	
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -229,7 +228,12 @@ static float temp = 0;
 	
 	// glEnable( GL_CULL_FACE );
 	
+	
 	glUseProgramObjectARB(program_object);
+	
+	glUniform3fARB(glGetUniformLocationARB(program_object, "BaseColor"), red, green, blue);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "MixRatio"), mixRatio);
+	glUniform3fARB(glGetUniformLocationARB(program_object, "LightPos"), lightX, lightY, lightZ);
 	
 	glBindTexture(GL_TEXTURE_2D, house_texture);
 	

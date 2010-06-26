@@ -366,7 +366,14 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	//THIS CODE IS WHERE THE ACTUAL DRAWING HAPPENS!
 	
 	if( panelPtr->getValueB("doShader") ){
-		startShader();
+		float red = panelPtr->getValueF("baseColorR");
+		float green = panelPtr->getValueF("baseColorG");
+		float blue = panelPtr->getValueF("baseColorB");
+		float mixRatio = panelPtr->getValueF("mixRatio");
+		float lightX = panelPtr->getValueF("lightX");
+		float lightY = panelPtr->getValueF("lightY");
+		float lightZ = panelPtr->getValueF("lightZ");
+		startShader(red, green, blue, mixRatio, lightX, lightY, lightZ);
 	}
 	
 	glPushMatrix();

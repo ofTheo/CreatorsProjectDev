@@ -40,10 +40,19 @@ void testApp::setup(){
 	panel.addSlider("mask y", "maskY", 0, -200, 200, false);
 	panel.addSlider("mask w", "maskW", 1024, 800, 1900, false);
 	panel.addSlider("mask h", "maskH", 768,  600, 1600, false);
+	
+	panel.addSlider("base color r", "baseColorR", .4, 0, 1, false);
+	panel.addSlider("base color g", "baseColorG", .4, 0, 1, false);
+	panel.addSlider("base color b", "baseColorB", .6, 0, 1, false);
+	panel.addSlider("mix ratio", "mixRatio", .8, 0, 1, false);		
+	panel.addSlider("light x", "lightX", 0, -400, 400, false);		
+	panel.addSlider("light y", "lightY", 200, -400, 400, false);		
+	panel.addSlider("light z", "lightZ", 200, -400, 400, false);		
+	
 	panel.setWhichColumn(1);
 	panel.addDrawableRect("fbo", &SP.FBO, 720, 540);
 
-
+	
 	panel.loadSettings("control.xml");
 	
 	SP.setup();
