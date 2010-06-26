@@ -25,6 +25,7 @@ public:
 	vector <bool> mask;
 	vector <float> depth;
 	vector <unsigned char> depthReal;
+	float lastFaceOffset;
 
 	ofxVec3f	* vertices;
 	face		* faces;

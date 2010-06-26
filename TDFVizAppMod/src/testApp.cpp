@@ -18,6 +18,7 @@ void testApp::setup(){
 	panel.addToggle("adaptive offset", "adaptiveOffset", true);
 	
 	panel.addSlider("adaptive scaling", "adaptiveScaling", 2, 0, 3, false);
+	panel.addSlider("offset smoothing", "offsetSmoothing", 0, 0, 1, false);
 	panel.addSlider("fixed offset", "fixedOffset", 0, 0, 255, false);
 
 	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);

@@ -54,9 +54,8 @@ void scanMesh::setup(int srcWidth, int srcHeight, float sizeScaling){
 			
 		}
 	}
-	
+	lastFaceOffset = 0;	
 	panelPtr = &((testApp *)ofGetAppPtr())->panel;
-	
 }
 
 
@@ -84,6 +83,8 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 		double depthMean = smean.val[0];
 		double depthStdDev = sstdDev.val[0];
 		faceOffset = depthMean - panelPtr->getValueF("adaptiveScaling") * depthStdDev;
+		faceOffset = ofLerp(faceOffset, lastFaceOffset, panelPtr->getValueF("offsetSmoothing"));
+		lastFaceOffset = faceOffset;
 	} else
 		faceOffset = panelPtr->getValueF("fixedOffset");
 	
@@ -226,6 +227,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		}
 	}
 	
+	// need to add a parameter for temporal smoothing of offset
 	float faceOffset;
 	if(panelPtr->getValueB("adaptiveOffset")) {
 		CvMat depthMat = cvMat(srcHeight, srcWidth, CV_8U, &depthReal[0]);
@@ -234,6 +236,8 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		double depthMean = smean.val[0];
 		double depthStdDev = sstdDev.val[0];
 		faceOffset = depthMean - panelPtr->getValueF("adaptiveScaling") * depthStdDev;
+		faceOffset = ofLerp(faceOffset, lastFaceOffset, panelPtr->getValueF("offsetSmoothing"));
+		lastFaceOffset = faceOffset;
 	} else
 		faceOffset = panelPtr->getValueF("fixedOffset");
 	
@@ -389,6 +393,8 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	glRotatef(dx, 0,1,0);
 	glScalef(3.5, 3.5, 3.5);
 	
+	glTranslatef(-srcWidth / 2, -srcHeight / 2, 0);
+	
 	glBegin(GL_TRIANGLES);
 	
 	for(int i = 0; i < nFaces; i++){
@@ -397,26 +403,28 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 			continue;
 		}
 		
+		startColor = faces[i].v0*4;
 		nrm = normalsSmoothed[faces[i].v0];
 		pos = vertices[faces[i].v0];
+		glColor3ub(pixelsColorDepth[startColor], pixelsColorDepth[startColor+1], pixelsColorDepth[startColor+2]);
 		glNormal3f(nrm.x, nrm.y, nrm.z);
-		startColor = faces[i].v0*4;
-		glColor3f(pixelsColorDepth[startColor]/255.0f, pixelsColorDepth[startColor+1]/255.0f, pixelsColorDepth[startColor+2]/255.0f);
-		glVertex3f(pos.x-srcWidth/2, pos.y-srcHeight/2, pos.z);
+		glVertex3f(pos.x, pos.y, pos.z);
 		
+		startColor = faces[i].v1*4;
 		nrm = normalsSmoothed[faces[i].v1];
 		pos = vertices[faces[i].v1];
 		startColor = faces[i].v1*4;
-		glColor3f(pixelsColorDepth[startColor]/255.0f, pixelsColorDepth[startColor+1]/255.0f, pixelsColorDepth[startColor+2]/255.0f);
+		glColor3ub(pixelsColorDepth[startColor], pixelsColorDepth[startColor+1], pixelsColorDepth[startColor+2]);
 		glNormal3f(nrm.x, nrm.y, nrm.z);
-		glVertex3f(pos.x-srcWidth/2, pos.y-srcHeight/2, pos.z);
+		glVertex3f(pos.x, pos.y, pos.z);
 		
+		startColor = faces[i].v2*4;
 		nrm = normalsSmoothed[faces[i].v2];
 		pos = vertices[faces[i].v2];
 		startColor = faces[i].v2*4;
-		glColor3f(pixelsColorDepth[startColor]/255.0f, pixelsColorDepth[startColor+1]/255.0f, pixelsColorDepth[startColor+2]/255.0f);
+		glColor3ub(pixelsColorDepth[startColor], pixelsColorDepth[startColor+1], pixelsColorDepth[startColor+2]);
 		glNormal3f(nrm.x, nrm.y, nrm.z);
-		glVertex3f(pos.x-srcWidth/2, pos.y-srcHeight/2, pos.z);
+		glVertex3f(pos.x, pos.y, pos.z);
 		
 	}
 	
