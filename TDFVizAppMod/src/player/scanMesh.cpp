@@ -244,7 +244,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		for(int x = 0; x < srcWidth; x++) {	
 			if(depthReal[m] > faceOffset){
 				mask[m] = false;
-				depth[m] = depthReal[m] * scaling - faceOffset;
+				depth[m] = (depthReal[m] - faceOffset) * scaling;
 				ofSetColor(pixelsColorDepth[n], pixelsColorDepth[n + 1], pixelsColorDepth[n + 2], 255);
 				glVertex3f(x, y, depth[m]);
 			} else {
