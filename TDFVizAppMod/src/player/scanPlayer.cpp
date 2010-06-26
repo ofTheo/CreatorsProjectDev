@@ -15,10 +15,13 @@ ofxVec3f cachedPoints[sphereRes][sphereRes];
 ofxVec3f cachedNormals[sphereRes][sphereRes];
 
 ofxControlPanel * panelPtr;
-	int srcWidth  = 160;
-	int srcHeight = 120;
-	int numTotal = srcWidth * srcHeight;
 
+scanPlayer::scanPlayer() {
+	srcWidth  = 160;
+	srcHeight = 120;
+	numTotal = srcWidth * srcHeight;
+}
+	
 //---------------------------------------------------------------------------------
 float getIncrAmountForFps(float incrAmnt){
 	float fps = ofGetFrameRate();
@@ -57,7 +60,7 @@ void scanPlayer::setup(){
 	doSomething();
 	endShader();
 	
-	mesh.setup();
+	mesh.setup(srcWidth, srcHeight, (float) srcWidth / inputWidth);
 	
 	//G H E T T O :) 
 	panelPtr = &((testApp *)ofGetAppPtr())->panel;

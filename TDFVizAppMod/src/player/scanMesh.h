@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "ofMain.h"
@@ -17,13 +16,11 @@ public:
 };
 
 class scanMesh {
-
 public:
-	
-	
-	void setup();
+	void setup(int srcWidth, int srcHeight, float sizeScaling);
 	void calcDepth(ofImage & currentFrame);
 	void drawMesh(ofImage & currentFrame, float dx = 0);
+	// add an extra function for loading an ofImage, storing values internally
 	
 	vector <bool> mask;
 	vector <float> depth;
@@ -38,7 +35,15 @@ public:
 	
 	ofxControlPanel * panelPtr;
 	
-	int numTotal; //= srcWidth * srcHeight;
-	int srcWidth; // = 160;
-	int srcHeight; // = 120;
+	int numTotal;
+	int srcWidth;
+	int srcHeight;
+	
+	// +/-320 means a range of 640
+	// PNG alpha is range of 256
+	// so 640 divided by 256 is 2.5
+	static const float alphaScaling = 2.5;
+	
+	// e.g., 640x480 -> 160x120 means 1/4 = .25
+	float sizeScaling;
 };

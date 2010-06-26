@@ -1,6 +1,3 @@
-
-#pragma once
-
 extern "C" {
 #include "EnvMap.h"
 }
@@ -22,11 +19,10 @@ ofxVec3f normalForTriangle(ofxVec3f a, ofxVec3f b, ofxVec3f c){
 }
 
 
-void scanMesh::setup(){
-	
-	
-	srcWidth  = 160;
-	srcHeight = 120;
+void scanMesh::setup(int srcWidth, int srcHeight, float sizeScaling){	
+	this->srcWidth  = srcWidth;
+	this->srcHeight = srcHeight;
+	this->sizeScaling = sizeScaling;
 	numTotal = srcWidth * srcHeight;
 	nVertices		= srcWidth*srcHeight;
 	nFaces			= (srcWidth-1)*(srcHeight-1)*2;
@@ -38,7 +34,7 @@ void scanMesh::setup(){
 	mask.assign(srcWidth*srcHeight, 0);
 	depth.assign(srcWidth*srcHeight, 0.0);
 	depthReal.assign(srcWidth*srcHeight, 0.0);
-
+	
 	int k = 0;
 	for (int i = 0; i < srcWidth-1; i++){
 		for (int j = 0; j < srcHeight-1; j++){
@@ -60,9 +56,9 @@ void scanMesh::setup(){
 	}
 	
 	panelPtr = &((testApp *)ofGetAppPtr())->panel;
-
-}
 	
+}
+
 
 //ghetto ripped from drawMesh - we use this in draw ball to do the normal calc and smoothing
 //---------------------------------------------------------------------------------
@@ -75,6 +71,8 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 	int x = 0; 
 	int y = 0;
 	int k = 0;
+	int faceOffset= panelPtr->getValueI("faceOffset");
+	float scaling = alphaScaling * sizeScaling;
 	for (int i = 0; i < srcWidth*srcHeight*4; i+=4){
 		
 		depthReal[k] = pixelsColorDepth[i+3];
@@ -84,8 +82,7 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 			x = 0;
 		}
 		
-		depth[k] = ofMap(pixelsColorDepth[i+3], panelPtr->getValueF("minZ"),  panelPtr->getValueF("maxZ"), 1.0, 255.0, true);
-		depth[k] -= panelPtr->getValueI("minZCutoff");
+		depth[k] = depthReal[k] * scaling - faceOffset;
 		
 		if( depth[k] > 0 ){
 			mask[k] = false;
@@ -101,13 +98,11 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 		k++;
 	}
 	
-	float scaleZAmnt = (1.0/255.0) * panelPtr->getValueI("topZ");
-	
 	for(int i = 0; i < nVertices; i++){
 		normals[i].set(0,0,0);
 		vertices[i].x = i%srcWidth * 1;
 		vertices[i].y = (int)(i/(float)srcWidth) * 1;
-		vertices[i].z = depth[i]*scaleZAmnt;
+		vertices[i].z = depth[i];
 	}
 	
 	for(int i = 0; i < nFaces; i++){
@@ -202,12 +197,7 @@ void scanMesh::calcDepth(ofImage & currentFrame) {
 		}
 		
 		xx++;
-	}
-	
-	ofxVec3f nrm;
-	ofxVec3f pos;
-	int startColor;
-	
+	}	
 }
 
 
@@ -217,56 +207,43 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	unsigned char * pixelsColorDepth = currentFrame.getPixels();
 	
 	glEnable(GL_NORMALIZE);
-
+	
 	glPushMatrix();
 	
 	glTranslated(300, 400, 0);
 	glScalef(2.0, 2.0, 2.0);
-	glRotatef(dx,0,1,0);
-		
-		glPointSize(2);
-		glBegin(GL_POINTS);
-		
-			int x = 0; 
-			int y = 0;
-			int k = 0;
-			for (int i = 0; i < srcWidth*srcHeight*4; i+=4){
-				
-				depthReal[k] = pixelsColorDepth[i+3];
-				
-				if( x >= srcWidth ){
-					y++;
-					x = 0;
-				}
-
-				depth[k] = ofMap(pixelsColorDepth[i+3], panelPtr->getValueF("minZ"),  panelPtr->getValueF("maxZ"), 1.0, 255.0, true);
-				depth[k] -= panelPtr->getValueI("minZCutoff");
-				
-				if( depth[k] > 0 ){
-					mask[k] = false;
-					ofSetColor(pixelsColorDepth[i], pixelsColorDepth[i+1], pixelsColorDepth[i+2], 255);
-					glVertex3f(-srcWidth/2+x, -srcHeight/2+y, depth[k]);
-				
-				} else {
-					mask[k]  = true;
-					depth[k] = 0.0;
-				}
-
-				x++;
-				k++;
+	glRotatef(dx, 0, 1, 0);
+	glTranslatef(-srcWidth / 2, -srcHeight / 2, 0);
+	glPointSize(2);
+	glBegin(GL_POINTS);
+	int m = 0;
+	int n = 0;
+	int faceOffset= panelPtr->getValueI("faceOffset");
+	float scaling = alphaScaling * sizeScaling;
+	for(int y = 0; y < srcHeight; y++) {
+		for(int x = 0; x < srcWidth; x++) {
+			depthReal[m] = pixelsColorDepth[n + 3];			
+			if(depthReal[m] > faceOffset){
+				mask[m] = false;
+				depth[m] = depthReal[m] * scaling - faceOffset;
+				ofSetColor(pixelsColorDepth[n], pixelsColorDepth[n + 1], pixelsColorDepth[n + 2], 255);
+				glVertex3f(x, y, depth[m]);
+			} else {
+				mask[m]  = true;
+				depth[m] = 0;
 			}
-
-		glEnd();
-	
+			m++;
+			n += 4;
+		}
+	}
+	glEnd();
 	glPopMatrix();
-		
-	float scaleZAmnt = (1.0/255.0) * panelPtr->getValueI("topZ");
 	
 	for(int i = 0; i < nVertices; i++){
 		normals[i].set(0,0,0);
 		vertices[i].x = i%srcWidth * 1;
 		vertices[i].y = (int)(i/(float)srcWidth) * 1;
-		vertices[i].z = depth[i]*scaleZAmnt;
+		vertices[i].z = depth[i];
 	}
 	
 	for(int i = 0; i < nFaces; i++){
@@ -276,7 +253,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 			ofxVec3f v1 = vertices[faces[i].v0];
 			ofxVec3f v2 = vertices[faces[i].v1];
 			ofxVec3f v3 = vertices[faces[i].v2];
-		
+			
 			faces[i].nrml = normalForTriangle(v1, v2, v3);
 			faces[i].nrml.normalize();
 		}
@@ -307,7 +284,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 			xx = 0;
 			yy++;
 		}
-				
+		
 		if (mask[i]){
 			normals[i].set(0,0,0);
 		}else{
@@ -366,19 +343,19 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 	ofxVec3f nrm;
 	ofxVec3f pos;
 	int startColor;
-
+	
 	//THIS CODE IS WHERE THE ACTUAL DRAWING HAPPENS!
 	
 	if( panelPtr->getValueB("doShader") ){
 		startShader();
 	}
-				
+	
 	glPushMatrix();
 	
 	glTranslated(400+260, 400, 0);
 	glRotatef(dx, 0,1,0);
 	glScalef(3.5, 3.5, 3.5);
-
+	
 	glBegin(GL_TRIANGLES);
 	
 	for(int i = 0; i < nFaces; i++){
@@ -386,7 +363,7 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		if (mask[faces[i].v0] || mask[faces[i].v1] || mask[faces[i].v2]){
 			continue;
 		}
-
+		
 		nrm = normalsSmoothed[faces[i].v0];
 		pos = vertices[faces[i].v0];
 		glNormal3f(nrm.x, nrm.y, nrm.z);
@@ -407,16 +384,16 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		glColor3f(pixelsColorDepth[startColor]/255.0f, pixelsColorDepth[startColor+1]/255.0f, pixelsColorDepth[startColor+2]/255.0f);
 		glNormal3f(nrm.x, nrm.y, nrm.z);
 		glVertex3f(pos.x-srcWidth/2, pos.y-srcHeight/2, pos.z);
-				
+		
 	}
-
+	
 	glEnd();
 	
 	glPopMatrix();
-
+	
 	if( panelPtr->getValueB("doShader") ){
 		endShader();
 	}		
 	
-
+	
 }

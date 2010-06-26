@@ -15,7 +15,7 @@ class histogramGuiElement : public ofBaseDraws{
 	
 	histogramGuiElement(){
 		histogram.assign(256, 0.0);
-		width = 255;
+		width = 256;
 		height = 100;
 	}
 	
@@ -80,7 +80,7 @@ class histogramGuiElement : public ofBaseDraws{
 	}
 
 	void draw(float x, float y){
-		draw(x, y, 255, 100);
+		draw(x, y, 256, 100);
 	}
 	
 	void draw(float x, float y, float w, float h){

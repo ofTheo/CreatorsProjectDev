@@ -16,11 +16,7 @@ void testApp::setup(){
 	panel.addToggle("show face on ball", "showFaceOnBall", true);
 	panel.addToggle("do shader", "doShader", 0);
 
-	panel.addSlider("map pix to min z", "minZ", 0, 0, 255, false);
-	panel.addSlider("map pix to max z", "maxZ", 200.0, 0, 255, false);
-	panel.addSlider("z top amount", "topZ", 100, 0, 400, true);
-
-	panel.addSlider("min z cutoff", "minZCutoff", 0, 0, 255, false);
+	panel.addSlider("face offset", "faceOffset", 0, 0, 255, false);
 
 	panel.addSlider("face on ball z scale", "zPercent", 0.6, 0.0, 1.0, false);
 	
@@ -49,7 +45,7 @@ void testApp::setup(){
 	panel.loadSettings("control.xml");
 	
 	SP.setup();
-	SP.loadDirectory("input/kyle");
+	SP.loadDirectory("input/export-capture-NYCDev-1277310206");
 	
 	SN.setup("network.xml");
 	SN.enable();
@@ -75,10 +71,6 @@ void testApp::update() {
 	}
 	
 	panel.update();
-	if( panel.getValueF("minZ") >= panel.getValueF("maxZ") ){
-		panel.setValueF("minZ", panel.getValueF("minZ") -1.0 );
-		panel.setValueF("maxZ", panel.getValueF("maxZ") +1.0 );
-	}
 	
 	ofBackground(50,50,50);
 

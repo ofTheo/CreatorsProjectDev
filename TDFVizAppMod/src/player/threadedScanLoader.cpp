@@ -10,11 +10,11 @@
 #include "threadedScanLoader.h"
 
 //--------------------------------------------------------------
-threadedScanLoader::threadedScanLoader() {
-	folderName = "";
-	state = TH_STATE_UNLOADED;
-	resizeW = 320;
-	resizeH = 240;
+threadedScanLoader::threadedScanLoader() :
+		folderName(""),
+		state(TH_STATE_UNLOADED),
+		resizeW(0),
+		resizeH(0) {
 }
 
 //--------------------------------------------------------------

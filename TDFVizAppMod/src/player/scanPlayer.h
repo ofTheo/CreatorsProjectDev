@@ -24,7 +24,7 @@ typedef enum{
 class scanPlayer {
 
 public:
-	
+	scanPlayer();
 	//~scanPlayer();
 	void setup();
 	void loadDirectory(string pathName);
@@ -60,6 +60,11 @@ public:
 	scanMesh	mesh;
 	
 	ofImage mask;
+	
+	static const int
+		inputWidth = 640,
+		inputHeight = 480;
+	int srcWidth, srcHeight, numTotal;
 
 	//theo - don't mod below here
 	float pctFadeIn;
