@@ -397,8 +397,8 @@ void captureApp::handleDecode(){
 			ofLog(OF_LOG_ERROR, "handleDecode - decode folder not found - can't save files!\n");
 		}
 		
-		float filterMin =  dAppPtr->panel.getValueF("filterMin");
-		float filterMax =  dAppPtr->panel.getValueF("filterMax");
+		float filterMin =  dAppPtr->filterMin;
+		float filterMax =  dAppPtr->filterMax;
 		float smoothAmnt=  dAppPtr->panel.getValueF("smooth_y_amnt");
 		int   smoothDist=  dAppPtr->panel.getValueI("smooth_y_dist");
 		bool smoothGaussian = dAppPtr->panel.getValueB("smooth_gaussian");

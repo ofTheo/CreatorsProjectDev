@@ -101,4 +101,7 @@ public:
 
 	/// expects a 0-1.0 float
 	ofColor makeColor(float f);
+	
+	static const int filterMin = -320;
+	static const int filterMax = 320;
 };

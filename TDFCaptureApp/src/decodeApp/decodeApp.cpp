@@ -51,8 +51,8 @@ void decodeApp::setup(){
 	panel.addSlider("range threshold", "rangeThreshold", 4, 0, 32, true);
 	panel.addSlider("depth scale", "depthScale", 130, -800, 800, false);
 	panel.addSlider("depth skew", "depthSkew", 0, -10, 10, false);
-	panel.addSlider("filter min", "filterMin", -320, -480, 480, false);
-	panel.addSlider("filter max", "filterMax", 320, -480, 480, false);
+	//panel.addSlider("filter min", "filterMin", -320, -480, 480, false);
+	//panel.addSlider("filter max", "filterMax", 320, -480, 480, false);
 
 	panel.setWhichPanel("export");
 
@@ -160,12 +160,7 @@ void decodeApp::processFrame(){
 
 	threePhase->decode();
 
-	float curFilterMin = panel.getValueF("filterMin");
-	float curFilterMax = panel.getValueF("filterMax");
-		
-	if (curFilterMin != -1024 || curFilterMax != 1024){
-		threePhase->filterRange(curFilterMin, curFilterMax);
-	}
+	threePhase->filterRange(filterMin, filterMax);
 	
 	//TODO: optimize
 	if( panel.getValueF("smooth_y_amnt") > 0.0 || panel.getValueB("smooth_gaussian") ){
@@ -312,8 +307,6 @@ void decodeApp::handlePlayback(){
 	int curPlayRate				= panel.getValueF("playRate");
 	int curCameraRate			= panel.getValueI("cameraRate");
 	int curCameraOffset			= panel.getValueI("cameraOffset");
-	float curFilterMin			= panel.getValueF("filterMin");
-	float curFilterMax			= panel.getValueF("filterMax");	
 
 	bool curResetView = panel.getValueB("resetView");
 	if(curResetView) {
@@ -345,8 +338,7 @@ void decodeApp::handlePlayback(){
 		}
 
 		if(reload || panel.hasValueChanged("gamma") || panel.hasValueChanged("rangeThreshold") 
-			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("filterMin") 
-			|| panel.hasValueChanged("filterMax") || panel.hasValueChanged("depthScale") 
+			|| panel.hasValueChanged("orientation") || panel.hasValueChanged("depthScale") 
 			|| panel.hasValueChanged("depthSkew")  || panel.hasValueChanged("smooth_y_amnt") || panel.hasValueChanged("smooth_y_dist")
 			|| panel.hasValueChanged("smooth_gaussian") || panel.hasValueChanged("dilate_passes")
 			|| panel.hasValueChanged("max_hole_size")) {
@@ -357,7 +349,7 @@ void decodeApp::handlePlayback(){
 
 		if( redraw ){
 			//theo added - for debugging		
-			rgbaTex.loadData(threePhase->getColorAndDepth(curFilterMin, curFilterMax), 640, 480, GL_RGBA);
+			rgbaTex.loadData(threePhase->getColorAndDepth(filterMin, filterMax), 640, 480, GL_RGBA);
 			wrappedPhaseTex.loadData(threePhase->phasePixels, 640, 480, GL_LUMINANCE);
 		}
 
@@ -384,11 +376,9 @@ void decodeApp::handleExport(){
 			if (curRecord)
 				name += "-" + ofToString(FRAME_START_INDEX+sequenceFrame);
 			if (curFormat == ".png") {
-				threePhase->exportDepth(exportPath + name + "-depth.png", panel.getValueI("filterMin"), panel.getValueI("filterMax"));
+				threePhase->exportDepth(exportPath + name + "-depth.png", filterMin, filterMax);
 				threePhase->exportTexture(exportPath + name + "-texture.png");
 			} else if(curFormat == "RGBA") {
-				float filterMin = panel.getValueI("filterMin");
-				float filterMax = panel.getValueI("filterMax");
 				cout << "exporting frames using " << filterMin << " to " << filterMax << endl;
 				threePhase->exportDepthAndTexture(exportPath + name + ".png", filterMin, filterMax);
 			} else {
@@ -433,8 +423,8 @@ void decodeApp::draw() {
 			getBounds(min, max);
 			ofSetColor(255, 255, 255);
 			boxOutline(min, max);
-			min.z = panel.getValueF("filterMin");
-			max.z = panel.getValueF("filterMax");
+			min.z = filterMin;
+			max.z = filterMax;
 			min -= 4;
 			max += 4;
 			ofSetColor(0, 0, 255);
@@ -579,8 +569,8 @@ void decodeApp::getBounds(ofxPoint3f& min, ofxPoint3f& max) {
 	int srcWidth = threePhase->getWidth();
 	int srcHeight = threePhase->getHeight();
 
-	min.set(srcWidth, srcHeight, panel.getValueF("filterMax"));
-	max.set(0, 0, panel.getValueF("filterMin"));
+	min.set(srcWidth, srcHeight, filterMax);
+	max.set(0, 0, filterMin);
 
 	int i = 0;
 	for (int y = 0; y < srcHeight; y++) {
