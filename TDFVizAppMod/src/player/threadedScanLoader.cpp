@@ -26,24 +26,33 @@ void threadedScanLoader::setup(int maxNumFramesIn, int resizeToW, int resizeToH)
 	resizeH		 = resizeToH;
 	
 	depthImageFrames.assign(maxNumFrames, ofImage());
-//	for (int i = 0; i < maxNumFrames; i++){
-//		imageFrames[i].setUseTexture(false);
-//	}
-	
-//	depthImageFrames = new ofImage[maxNumFrames];
-//	//imageFrames = new ofImage[maxNumFrames];
-//	bLoaded		= new bool	 [maxNumFrames];
-//	for (int i = 0; i < maxNumFrames; i++){
-//		depthImageFrames[i].allocate(640, 480, OF_IMAGE_COLOR_ALPHA);
-//		depthImageFrames[i].setUseTexture(false);
-//		//imageFrames[i].setUseTexture(false);
-//		bLoaded[i] = false;
-//	}
-//	totalNumFrames = 0;
 }
 
 //--------------------------------------------------------------
 threadedScanLoader::~threadedScanLoader() {
+}
+
+// this could also be done with OpenCV, cvResize + CV_INTER_NN
+// or even faster by precomputing a remap function
+void threadedScanLoader::resize(ofImage& from, ofImage& to, int toWidth, int toHeight) {
+	to.allocate(toWidth, toHeight, OF_IMAGE_COLOR_ALPHA);
+	unsigned char* fromPixels = from.getPixels();
+	unsigned char* toPixels = to.getPixels();
+	int toPosition = 0;
+	int fromWidth = from.getWidth();
+	int fromHeight = from.getHeight();
+	for(int toy = 0; toy < toHeight; toy++) {
+		int fromy = (toy * fromHeight) / toHeight;
+		int fromPosition = fromy * fromWidth;
+		for(int tox = 0; tox < toWidth; tox++) {
+			int fromx = (tox * fromWidth) / toWidth;
+			int cur = (fromPosition + fromx) * 4;
+			toPixels[toPosition++] = fromPixels[cur + 0];
+			toPixels[toPosition++] = fromPixels[cur + 1];
+			toPixels[toPosition++] = fromPixels[cur + 2];
+			toPixels[toPosition++] = fromPixels[cur + 3];
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -55,7 +64,6 @@ void threadedScanLoader::loadScans(string pathName) {
 	directory.allowExt("png");
 	directory.allowExt("tga");
 	directory.allowExt("jpg");
-
 		
 	int howMany = directory.listDir(pathName); 
 	//howMany		= ofClamp(howMany, 0, maxNumFrames);
@@ -63,22 +71,16 @@ void threadedScanLoader::loadScans(string pathName) {
 	if( howMany <= 0 ){
 		printf("no images found!\n");
 	}else{
-				
+		ofImage loader;
+		loader.setUseTexture(false);
+		
 		for (int i = 0; i <  howMany; i++){
-			
 			string fileName = directory.getName(i);		
 			cout << "file name " << fileName << endl;
-			
+			loader.loadImage(directory.getPath(i));
 			depthImageFrames[i].setUseTexture(false);
-			depthImageFrames[i].loadImage(directory.getPath(i));
-			
-			if( depthImageFrames[i].width != resizeW || depthImageFrames[i].height != resizeH ){
-				printf("%i %i\n", resizeW, resizeH);
-				depthImageFrames[i].resize(resizeW,resizeH);
-			}
+			resize(loader, depthImageFrames[i], resizeW, resizeH);
 		}
-		
-
 		totalNumFrames = howMany;
 	}
 
@@ -91,7 +93,6 @@ void threadedScanLoader::loadScans(string pathName) {
 	}
 
 	stop();
-
 }
 
 //--------------------------------------------------------------

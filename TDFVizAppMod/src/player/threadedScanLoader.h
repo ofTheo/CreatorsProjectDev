@@ -32,6 +32,7 @@ class threadedScanLoader : public ofxThread {
 		void    threadedFunction();
 		void    loadScans(string pathName);
 		void	unload ();
+	void resize(ofImage& from, ofImage& to, int toWidth, int toHeight);
 
 		int				nFrames;
 		int				state;
@@ -42,7 +43,7 @@ class threadedScanLoader : public ofxThread {
 	
 //		ofImage *	depthImageFrames;
 				
-		vector <ofImage> depthImageFrames;
+	vector <ofImage> depthImageFrames;
 		
 //		vector <ofImage> * currentFrame
 		

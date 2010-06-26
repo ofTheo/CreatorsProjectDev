@@ -41,7 +41,7 @@ float getFadeForFps(float fadeAmnt){
 //---------------------------------------------------------------------------------
 void scanPlayer::setup(){
 	maxNumFrames = 15 * 20; // 15 secs 2
-	imageData.allocate(srcWidth,srcHeight, GL_RGB);
+	imageData.allocate(srcWidth, srcHeight, GL_RGB);
 	currentFrame = 0;
 	totalNumFrames = 0;
 		
