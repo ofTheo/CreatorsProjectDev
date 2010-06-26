@@ -44,7 +44,8 @@ void testApp::setup(){
 	panel.addSlider("base color r", "baseColorR", .4, 0, 1, false);
 	panel.addSlider("base color g", "baseColorG", .4, 0, 1, false);
 	panel.addSlider("base color b", "baseColorB", .6, 0, 1, false);
-	panel.addSlider("mix ratio", "mixRatio", .8, 0, 1, false);		
+	panel.addSlider("env ratio", "envRatio", .8, 0, 1, false);		
+	panel.addSlider("solid ratio", "solidRatio", .8, 0, 1, false);		
 	panel.addSlider("light x", "lightX", 0, -400, 400, false);		
 	panel.addSlider("light y", "lightY", 200, -400, 400, false);		
 	panel.addSlider("light z", "lightZ", 200, -400, 400, false);		

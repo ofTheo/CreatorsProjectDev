@@ -375,11 +375,12 @@ void scanMesh::drawMesh(ofImage & currentFrame, float dx) {
 		float red = panelPtr->getValueF("baseColorR");
 		float green = panelPtr->getValueF("baseColorG");
 		float blue = panelPtr->getValueF("baseColorB");
-		float mixRatio = panelPtr->getValueF("mixRatio");
+		float envRatio = panelPtr->getValueF("envRatio");
+		float solidRatio = panelPtr->getValueF("solidRatio");
 		float lightX = panelPtr->getValueF("lightX");
 		float lightY = panelPtr->getValueF("lightY");
 		float lightZ = panelPtr->getValueF("lightZ");
-		startShader(red, green, blue, mixRatio, lightX, lightY, lightZ);
+		startShader(red, green, blue, envRatio, solidRatio, lightX, lightY, lightZ);
 	}
 	
 	glPushMatrix();

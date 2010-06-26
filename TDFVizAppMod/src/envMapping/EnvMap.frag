@@ -13,13 +13,15 @@ const vec3 Xunitvec = vec3 (1.0, 0.0, 0.0);
 const vec3 Yunitvec = vec3 (0.0, 1.0, 0.0);
 
 uniform vec3  BaseColor;
-uniform float MixRatio;
+uniform float envRatio;
+uniform float solidRatio;
 
 uniform sampler2D EnvMap;
 
 varying vec3  Normal;
 varying vec3  EyeDir;
 varying float LightIntensity;
+varying vec3 reflectivity;
 
 void main (void)
 {
@@ -56,7 +58,12 @@ void main (void)
     // Add lighting to base color and mix
 
     vec3 base = LightIntensity * BaseColor;
-    envColor = mix(envColor, base, MixRatio);
+		base = mix(base, reflectivity, solidRatio);
+		//base = solidRatio * base;
+		//float curReflectivity = reflectivity;
+		//curReflectivity *= 1 - solidRatio;
+		//base += (1 - solidRatio) * reflectivity;
+    envColor = mix(envColor, base, envRatio);
 
     gl_FragColor = vec4 (envColor, 1.0);
 }

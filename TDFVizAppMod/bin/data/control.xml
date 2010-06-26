@@ -98,7 +98,7 @@
     <val_0>62.333332</val_0>
 </minZCutoff>
 <showFaceOnBall>
-    <val_0>1.000000</val_0>
+    <val_0>0.000000</val_0>
 </showFaceOnBall>
 <zPercent>
     <val_0>0.638889</val_0>
@@ -119,7 +119,7 @@
     <val_0>1033.333374</val_0>
 </maskH>
 <rotateX>
-    <val_0>100.000008</val_0>
+    <val_0>16.000000</val_0>
 </rotateX>
 <rotateY>
     <val_0>0.000000</val_0>

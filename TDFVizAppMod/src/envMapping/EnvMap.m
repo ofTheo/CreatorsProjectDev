@@ -65,7 +65,7 @@ Abstract: EnvMap Exhibit
 - (NSString *) name;
 - (NSString *) descriptionFilename;
 - (void) renderFrame;
-- (void) start : (float) red : (float) green : (float) blue : (float) mixRatio : (float) lightX : (float) lightY : (float) lightZ;
+- (void) start : (float) red : (float) green : (float) blue : (float) envRatio : (float) solidRatio : (float) lightX : (float) lightY : (float) lightZ;
 - (void) end;
 
 @end
@@ -92,9 +92,11 @@ void doSomthingElse(){
 }
 
 
-void startShader(float red, float green, float blue, float mixRatio, float lightX, float lightY, float lightZ){
+void startShader(float red, float green, float blue,
+								 float envRatio, float solidRatio,
+								 float lightX, float lightY, float lightZ){
 	if (myMap){
-		[myMap start: red : green : blue : mixRatio : lightX : lightY : lightZ];
+		[myMap start: red : green : blue : envRatio : solidRatio : lightX : lightY : lightZ];
 	}
 }
 void endShader(){	
@@ -155,7 +157,8 @@ void endShader(){
 		glUseProgramObjectARB(program_object);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "LightPos"), 0.0, 314.0, -400.0);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "BaseColor"), 1, 1, 1);
-		glUniform1fARB(glGetUniformLocationARB(program_object, "MixRatio"), 0.2);
+		 glUniform1fARB(glGetUniformLocationARB(program_object, "envRatio"), 0.2);
+		 glUniform1fARB(glGetUniformLocationARB(program_object, "solidRatio"), 0.2);
 		glUniform1iARB(glGetUniformLocationARB(program_object, "EnvMap"), 0);
 
 	}
@@ -216,7 +219,7 @@ void endShader(){
 
 
 static float temp = 0;
-- (void) start : (float) red : (float) green : (float) blue : (float) mixRatio : (float) lightX : (float) lightY : (float) lightZ
+- (void) start : (float) red : (float) green : (float) blue : (float) envRatio : (float) solidRatio : (float) lightX : (float) lightY : (float) lightZ
 {
 	[super renderFrame];
 	
@@ -232,7 +235,8 @@ static float temp = 0;
 	glUseProgramObjectARB(program_object);
 	
 	glUniform3fARB(glGetUniformLocationARB(program_object, "BaseColor"), red, green, blue);
-	glUniform1fARB(glGetUniformLocationARB(program_object, "MixRatio"), mixRatio);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "envRatio"), envRatio);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "solidRatio"), solidRatio);
 	glUniform3fARB(glGetUniformLocationARB(program_object, "LightPos"), lightX, lightY, lightZ);
 	
 	glBindTexture(GL_TEXTURE_2D, house_texture);

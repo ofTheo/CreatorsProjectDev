@@ -50,7 +50,10 @@ Abstract: EnvMap Exhibit
 
 extern void doSomething();
 extern void doSomthingElse();
-extern void startShader(float red, float green, float blue, float mixRatio, float lightX, float lightY, float lightZ);
+extern void startShader(
+	float red, float green, float blue,
+	float envRatio, float solidRatio,
+	float lightX, float lightY, float lightZ);
 extern void endShader();
 
 

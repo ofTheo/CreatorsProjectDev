@@ -12,6 +12,7 @@
 varying vec3  Normal;
 varying vec3  EyeDir;
 varying float LightIntensity;
+varying vec3 reflectivity;
 
 uniform vec3  LightPos;
 
@@ -23,5 +24,6 @@ void main(void)
     Normal         = normalize(gl_NormalMatrix * gl_Normal);
     vec4 pos       = gl_ModelViewMatrix * gl_Vertex;
     EyeDir         = pos.xyz;
+		reflectivity = gl_Color.rgb;
     LightIntensity = max(dot(normalize(LightPos - EyeDir), Normal), 0.0);
 }
