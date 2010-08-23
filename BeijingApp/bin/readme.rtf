@@ -1,0 +1,117 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10540\viewh18640\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b\fs30 \cf0 Instructions for Beijing Render Application
+\fs24 \
+\
+
+\b0 When you start the application you will see a screen with two menus and a XYZ axes.\
+\
+The menu on the left (the "main menu") represents the settings controlling the current state of the system. The menu on the right (the "meta menu") saves these states to XML files that are played back in order, interpolating the values in the last three tabs of the left menu.\
+\
+
+\b\fs28 Main Menu
+\i\b0\fs24 \
+\
+
+\i0\b\fs26 Display
+\i\b0\fs24 \
+
+\b \
+
+\i0\b0 use cubemap: Toggles rendering into a cubemap or from a standard camera. The standard camera renders using depth testing, so there may appear to be artifacts from the intersection between faces. The cubemap renders without depth testing, so when there is an intersection between two faces one of the faces will always be drawn on top of the other.\
+\
+fps limit: Limits the fps to 30, for approximating the feel of the final rendered output.\
+\
+show axes: Toggles the display of the RGB/XYZ axes.\
+\
+show circles: Displays the circles representing each face bounding area. Each circle also has a line to denote the up vector.\
+\
+show collisions: When the circles are being drawn, this will render circles as red that are intersecting with other circles. Otherwise, circles are drawn white.\
+\
+show faces: Toggles the loading and display of face images. This is helpful to have disabled when prototyping motion without having the slowdown induced by massive disk reads and memory thrashing.\
+\
+use mouse cam: Attaches the camera to the mouse position. Wonderfully surreal when the cubemap is enabled.\
+\
+reset camera: Resets the camera to the default position, looking head-on down the y-axis with the z-axis pointing up and x-axis to the right.\
+\
+rotate x/y/z: Manually control the camera orientation by rotating in each of these axes.\
+\
+
+\b\fs26 Animation\
+\
+
+\b0\fs24 animate faces: Toggles between loading new faces over time and using a single face from the sequence.\
+\
+mirror animation: When enabled, the animation will be played forward and then backward repeatedly. When disabled, the animation will loop, starting over at the beginning each time.\
+\
+animation speed: Determines the rate at which new faces are read from the animation sequence. If animation speed is 1, then there will be a new image for every rendered frame. If it is 4, then every 4th frame will have a new image. Each face manages its age independently, so even if this is a large value there will be frame-to-frame loading of images due to the fact that the faces are born at different times.\
+\
+
+\b\fs26 Movement\
+\
+
+\b0\fs24 velocity damping: Exerts a force on the particle in the opposite direction of its current velocity, proportional to its current velocity.\
+\
+velocity max: Determines a cutoff for how fast particles are allowed to move. This solves some situations with earlier versions where certain combinations of parameters lead to a chain reaction that caused faces to fly around absurdly fast.\
+\
+force scale: Scales the repulsion force between faces. Faces are only repelled from each other when they intersect so that the behavior is more collision-like.\
+\
+hardness: Determines the force profile for the repulsion between faces. The equation for scaling the force is: forceScale / (normalized distance)^hardness. Therefore, when hardness is small, faces are more likely to intersect with each other. When hardness is large, it is difficult for the faces to intersect.\
+\
+meander force: The internally-generated force each face has in the direction it is meandering. This must be balanced with the force scale parameter to ensure faces don't simply push their way through each other.\
+\
+meander jitter: Determines the indecision behind the direction every face is traveling. When this is low, a face will travel in a single direction for a long period of time before rambling off in another direction. When this is high, a face will continually be changing directions.\
+\
+meander range: Determines the maximum deviation the meandering can take from a pre-determined direction every face innately tends towards. If set to 0, every face will continually push in a single direction.\
+\
+angle jitter: Determines the irregularity of the up vector. The up vector for each face is independent of its meander direction.\
+\
+angle range: Describes the allowed deviation from pointing up (towards the z-axis). When this value is 0, angle jitter has no effect and every face points up. When 1, faces may rotate up to 90 degrees away from the z-axis.\
+\
+
+\b\fs26 Size\
+\
+
+\b0\fs24 sphere coverage: If all the faces are still and sphere coverage is 1, they should settle into as regular a pattern as possible that allows the circles to touch without intersecting. It accounts for the fact that faces that are being born or dying should be smaller. It uses the surface area of a sphere, the area of a circle in spherical space, and the circle packing density from plane geometry, so it can only approximately solve for the correct radii in cases with fewer faces. When sphere coverage is greater than 1, it is guaranteed that circles will intersect.\
+\
+face scale: Determines the scale at which the faces are drawn relative to their bounding radius. This term is not used in force calculations.\
+\
+birth time: The number of frames between a face being added and it maturing to its full size.\
+\
+death time: The number of frames between a face being killed and it shrinking until it is removed.\
+\
+
+\b\fs26 Cities\
+\
+
+\b0\fs24 New York, London, Sao Paolo, Seoul, Beijing Count: The number of faces from each of these cities. This is not a percentage, but an actual count.\
+\
+keyframe length: When automated with the meta menu, this slider determines how long these settings should last for (how long it takes to interpolate from these settings to the next).\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+
+\b\fs28 Meta Menu
+\i\b0\fs24 \
+\
+
+\i0\b\fs26 Keyframes\
+\
+
+\b0\fs24 keyframes file selector: Double clicking on one of the xml files (keyframes) in this box will load those settings into the main menu.\
+\
+keyframe number: When saving a keyframe, this number is used as the file name.\
+\
+save keyframe: this will save the current settings in the main menu to the file specified by the keyframe number, regardless of whether the current settings were initially loaded from the keyframes file selector or whether a file is currently selected in the file selector.\
+\
+
+\b\fs26 Render\
+\
+
+\b0\fs24 save images: This button will start a batch render of all the keyframed settings in the order they appear in the file selector. If you have three keyframes, each with keyframe length of 10, then 20 files will be output. The last keyframe acts only as a reference for the stopping point of the animation to be interpolated to from the penultimate keyframe. When save images is selected, all the proper settings from the main menu (cubemap, no fps limit, no axes, no circles, etc) will automatically be selected.\
+\
+current position: This slider displays the current progress through rendering all the images.}
