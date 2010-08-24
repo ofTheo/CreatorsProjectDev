@@ -48,6 +48,7 @@
 		27ADF97512213C1800E3B430 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27ADF96C12213C1800E3B430 /* ofxXmlSettings.cpp */; };
 		27ADF98712213CEB00E3B430 /* ofxFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27ADF98512213CEB00E3B430 /* ofxFbo.cpp */; };
 		27ADFA011221D56100E3B430 /* openFrameworks-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */; };
+		27C7AF361223A00400E13475 /* City.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27C7AF351223A00400E13475 /* City.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -195,6 +196,7 @@
 		27ADF96D12213C1800E3B430 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
 		27ADF98512213CEB00E3B430 /* ofxFbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxFbo.cpp; path = src/addons/ofxFbo/src/ofxFbo.cpp; sourceTree = SOURCE_ROOT; };
 		27ADF98612213CEB00E3B430 /* ofxFbo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFbo.h; path = src/addons/ofxFbo/src/ofxFbo.h; sourceTree = SOURCE_ROOT; };
+		27C7AF351223A00400E13475 /* City.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = City.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -672,6 +674,7 @@
 			isa = PBXGroup;
 			children = (
 				27ADF91C12213BBD00E3B430 /* City.h */,
+				27C7AF351223A00400E13475 /* City.cpp */,
 				27ADF91D12213BBD00E3B430 /* Face.cpp */,
 				27ADF91E12213BBD00E3B430 /* Face.h */,
 				27ADF91F12213BBD00E3B430 /* main.cpp */,
@@ -898,6 +901,7 @@
 				27ADF97412213C1800E3B430 /* tinyxmlparser.cpp in Sources */,
 				27ADF97512213C1800E3B430 /* ofxXmlSettings.cpp in Sources */,
 				27ADF98712213CEB00E3B430 /* ofxFbo.cpp in Sources */,
+				27C7AF361223A00400E13475 /* City.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

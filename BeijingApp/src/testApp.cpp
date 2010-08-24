@@ -72,6 +72,7 @@ void testApp::setupGui() {
 	gui.setWhichPanel("Size");
 	gui.addSlider("sphere coverage", "sphereCoverage", 1, .5, 1.5, false);
 	gui.addSlider("face scale", "faceScale", 2, .5, 4, false);
+	gui.addSlider("birth radius", "birthRadius", 15, 5, 90, false);
 	gui.addSlider("birth time", "birthTime", 10, 0, 40, true);
 	gui.addSlider("death time", "deathTime", 10, 0, 40, true);
 
@@ -83,6 +84,19 @@ void testApp::setupGui() {
 	gui.addSlider("Seoul Count", "seoulCount", 0, 0, 100, true);
 	gui.addSlider("Beijing Count", "beijingCount", 0, 0, 100, true);
 	gui.addSlider("keyframe length", "keyframeLength", 1, 1, 1800, true);
+	
+	gui.addPanel("City Locations", 1, false);
+	gui.setWhichPanel("City Locations");
+	gui.addSlider("New York Latitude", "newYorkLatitude", 40.7, -90, 90, false);
+	gui.addSlider("New York Longitude", "newYorkLongitude", -74, -180, 180, false);
+	gui.addSlider("London Latitude", "londonLatitude", 51.5, -90, 90, false);
+	gui.addSlider("London Longitude", "londonLongitude", -.1, -180, 180, false);
+	gui.addSlider("Sao Paolo Latitude", "saoPaoloLatitude", -23.5, -90, 90, false);
+	gui.addSlider("Sao Paolo Longitude", "saoPaoloLongitude", -46.6, -180, 180, false);
+	gui.addSlider("Seoul Latitude", "seoulLatitude", 37.5, -90, 90, false);
+	gui.addSlider("Seoul Longitude", "seoulLongitude", 127, -180, 180, false);
+	gui.addSlider("Beijing Latitude", "beijingLatitude", 39.9, -90, 90, false);
+	gui.addSlider("Beijing Longitude", "beijingLongitude", 116.4, -180, 180, false);
 }
 
 void testApp::setupCubemap() {
@@ -225,6 +239,14 @@ void testApp::update() {
 	particleSystem.saoPaolo.moveTowards(gui.getValueI("saoPaoloCount"));
 	particleSystem.seoul.moveTowards(gui.getValueI("seoulCount"));
 	particleSystem.beijing.moveTowards(gui.getValueI("beijingCount"));
+	
+	particleSystem.newYork.setPosition(gui.getValueF("newYorkLatitude"), gui.getValueF("newYorkLongitude"));
+	particleSystem.london.setPosition(gui.getValueF("londonLatitude"), gui.getValueF("londonLongitude"));
+	particleSystem.saoPaolo.setPosition(gui.getValueF("saoPaoloLatitude"), gui.getValueF("saoPaoloLongitude"));
+	particleSystem.seoul.setPosition(gui.getValueF("seoulLatitude"), gui.getValueF("seoulLongitude"));
+	particleSystem.beijing.setPosition(gui.getValueF("beijingLatitude"), gui.getValueF("beijingLongitude"));
+
+	City::birthRadius = gui.getValueF("birthRadius");
 
 	ParticleSystem::sphereCoverage = gui.getValueF("sphereCoverage");
 	ParticleSystem::showAxes = gui.getValueB("showAxes");
