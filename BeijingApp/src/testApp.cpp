@@ -72,8 +72,8 @@ void testApp::setupGui() {
 	gui.setWhichPanel("Size");
 	gui.addSlider("sphere coverage", "sphereCoverage", 1, .5, 1.5, false);
 	gui.addSlider("face scale", "faceScale", 2, .5, 4, false);
-	gui.addSlider("birth time", "birthTime", 30, 0, 120, true);
-	gui.addSlider("death time", "deathTime", 30, 0, 120, true);
+	gui.addSlider("birth time", "birthTime", 10, 0, 40, true);
+	gui.addSlider("death time", "deathTime", 10, 0, 40, true);
 
 	gui.addPanel("Cities", 1, false);
 	gui.setWhichPanel("Cities");

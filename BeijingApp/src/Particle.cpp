@@ -105,6 +105,11 @@ void Particle::update() {
 
 	if(animateFaces) {
 		face.next();
+		
+		
+		// kill faces before they loop
+		if(face.curImage > (face.dirSize - deathTime))
+			kill();
 	}
 
 	age++;
