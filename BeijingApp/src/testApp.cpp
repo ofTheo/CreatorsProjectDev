@@ -30,6 +30,7 @@ void testApp::setupMeta() {
 	meta.setWhichColumn(1);
 	meta.addSlider("keyframe number", "keyframeNumber", 0, 0, 20, true);
 	meta.addToggle("save keyframe", "saveKeyframe", false);
+	meta.addToggle("refresh list", "refreshList", false);
 
 	meta.addPanel("Render", 2, false);
 	meta.setWhichPanel("Render");
@@ -44,6 +45,7 @@ void testApp::setupGui() {
 	gui.setWhichPanel("Display");
 	gui.addToggle("use cubemap", "useCubemap", false);
 	gui.addToggle("fps limit", "fpsLimit", lastFps);
+	gui.addToggle("animate faces", "animateFaces", false);
 	gui.addToggle("show axes", "showAxes", true);
 	gui.addToggle("show circles", "showCircles", true);
 	gui.addToggle("show collisions", "showCollisions", true);
@@ -53,12 +55,6 @@ void testApp::setupGui() {
 	gui.addSlider("rotate x", "rotateX", 0.5, -1, 1, false);
 	gui.addSlider("rotate y", "rotateY", 0, -1, 1, false);
 	gui.addSlider("rotate z", "rotateZ", 0, -1, 1, false);
-
-	gui.addPanel("Animation", 1, false);
-	gui.setWhichPanel("Animation");
-	gui.addToggle("animate faces", "animateFaces", false);
-	gui.addToggle("mirror animation", "mirrorAnimation", true);
-	gui.addSlider("animation speed", "animationSpeed", 1, 1, 8, true);
 
 	gui.addPanel("Movement", 1, false);
 	gui.setWhichPanel("Movement");
@@ -151,9 +147,10 @@ void testApp::interpolateValues() {
 }
 
 void testApp::update() {
-	if(ofGetFrameNum() % directoryRefreshRate == 0)
-		keyframeCount = keyframeLister.refreshDir();
-
+	if(meta.getValueB("refreshList")) {
+		meta.setValueB("refreshList", false);
+	}
+	
 	if(meta.getValueB("saveKeyframe")) {
 		int keyframeNumber = meta.getValueI("keyframeNumber");
 		stringstream ss;
@@ -236,7 +233,6 @@ void testApp::update() {
 	Particle::showFaces = gui.getValueF("showFaces");
 	Particle::showCollisions = gui.getValueB("showCollisions");
 	Particle::animateFaces = gui.getValueB("animateFaces");
-	Particle::animationSpeed = gui.getValueI("animationSpeed");
 	Particle::velocityDamping = gui.getValueF("velocityDamping");
 	Particle::velocityMax = gui.getValueF("velocityMax");
 	Particle::forceScale = gui.getValueF("forceScale");
@@ -250,7 +246,6 @@ void testApp::update() {
 	Particle::deathTime = gui.getValueI("deathTime");
 
 	Face::faceScale = gui.getValueF("faceScale");
-	Face::mirrorAnimation = gui.getValueB("mirrorAnimation");
 
 	particleSystem.update();
 }

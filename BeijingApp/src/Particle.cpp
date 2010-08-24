@@ -4,7 +4,7 @@ float Particle::velocityDamping, Particle::velocityMax, Particle::forceScale, Pa
 float Particle::meanderForce, Particle::meanderJitter, Particle::meanderRange;
 float Particle::angleJitter, Particle::angleRange;
 bool Particle::showCollisions, Particle::showFaces, Particle::showCircles, Particle::animateFaces;
-int Particle::birthTime, Particle::deathTime, Particle::animationSpeed;
+int Particle::birthTime, Particle::deathTime;
 
 Particle::Particle(float lat, float lon, float age) :
 		age(age),
@@ -103,8 +103,9 @@ void Particle::update() {
 	orientation *= velocity;
 	orientation /= orientation.length(); // keep orientation stable
 
-	if(animateFaces && age % animationSpeed == 0)
+	if(animateFaces) {
 		face.next();
+	}
 
 	age++;
 }

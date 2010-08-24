@@ -23,7 +23,6 @@ public:
 
 	ParticleSystem particleSystem;
 
-	static const int directoryRefreshRate = 30;
 	simpleFileLister keyframeLister;
 	int keyframeCount;
 	ofxAutoControlPanel gui, meta;

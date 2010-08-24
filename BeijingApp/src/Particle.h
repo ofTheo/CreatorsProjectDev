@@ -23,7 +23,7 @@ public:
 	static float meanderForce, meanderJitter, meanderRange;
 	static float angleJitter, angleRange;
 	static bool showCollisions, showCircles, showFaces, animateFaces;
-	static int birthTime, deathTime, animationSpeed;
+	static int birthTime, deathTime;
 
 	static const float baseJitter = 1. / 60.;
 

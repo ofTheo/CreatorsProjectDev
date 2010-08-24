@@ -1,6 +1,5 @@
 #include "Face.h"
 
-bool Face::mirrorAnimation = true;
 float Face::faceScale = 1;
 
 Face::Face() :
@@ -26,24 +25,9 @@ void Face::update() {
 }
 
 void Face::next() {
-	if(mirrorAnimation) {
-		if(countingUp)
-			curImage++;
-		else
-			curImage--;
-		if(curImage == dirSize) {
-			curImage = dirSize - 2;
-			countingUp = false;
-		}
-		if(curImage == -1) {
-			curImage = 1;
-			countingUp = true;
-		}
-	} else {
-		curImage++;
-		if(curImage == dirSize)
-			curImage = 0;
-	}
+	curImage++;
+	if(curImage == dirSize)
+		curImage = 0;
 
 	needsUpdating = true;
 }

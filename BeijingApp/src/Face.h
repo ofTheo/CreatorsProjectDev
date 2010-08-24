@@ -5,7 +5,6 @@
 
 class Face {
 public:
-	static bool mirrorAnimation;
 	static float faceScale;
 
 	ofxDirList dirList;
