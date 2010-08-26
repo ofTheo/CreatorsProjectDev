@@ -39,7 +39,8 @@ public:
 	float nextVelocityDamping, nextVelocityMax, nextForceScale, nextHardness;
 	float nextMeanderForce, nextMeanderJitter, nextMeanderRange, nextAngleJitter, nextAngleRange;
 	float nextSphereCoverage, nextFaceScale, nextBirthTime, nextDeathTime;
-	float nextNewYorkCount, nextLondonCount, nextSaoPaoloCount, nextSeoulCount, nextBeijingCount;
+	int nextTotalCount;
+	float nextNewYorkRadius, nextLondonRadius, nextSaoPaoloRadius, nextSeoulRadius, nextBeijingRadius;
 
 	void grabInterpolatedValues();
 	void interpolateValues();

@@ -11,6 +11,7 @@ public:
 
 	vector<Particle*> particles;
 	float latitude, longitude;
+	float radius;
 
 	City();
 	~City();
@@ -24,5 +25,4 @@ public:
 	float sumRadii();
 	void updateAbsoluteRadius(float radiusScale);
 	void draw();
-	void moveTowards(int target);
 };

@@ -3,7 +3,7 @@
 /*
  make an attempt at better packing with ellipses?
  
- instead of faces being born near their city center, they will go back to being born in random places (or replacing faces that just died). accordingly, the birth radius parameter will be removed.
+ instead of faces being born near their city center, they will go back to being born in random places (or replacing faces that just died).
 
  instead of 5 sliders describing the number of faces from each city, there will be 6 sliders: 1 describing the total number of faces on the sphere and 5 describing the city-circle of each city.
 */
@@ -81,11 +81,12 @@ void testApp::setupGui() {
 
 	gui.addPanel("Cities", 1, false);
 	gui.setWhichPanel("Cities");
-	gui.addSlider("New York Count", "newYorkCount", 0, 0, 100, true);
-	gui.addSlider("London Count", "londonCount", 0, 0, 100, true);
-	gui.addSlider("Sao Paolo Count", "saoPaoloCount", 0, 0, 100, true);
-	gui.addSlider("Seoul Count", "seoulCount", 0, 0, 100, true);
-	gui.addSlider("Beijing Count", "beijingCount", 0, 0, 100, true);
+	gui.addSlider("Total Count", "totalCount", 0, 0, 200, true);
+	gui.addSlider("New York Radius", "newYorkRadius", 0, 0, 100, true);
+	gui.addSlider("London Radius", "londonRadius", 0, 0, 100, true);
+	gui.addSlider("Sao Paolo Radius", "saoPaoloRadius", 0, 0, 100, true);
+	gui.addSlider("Seoul Radius", "seoulRadius", 0, 0, 100, true);
+	gui.addSlider("Beijing Radius", "beijingRadius", 0, 0, 100, true);
 	gui.addSlider("keyframe length", "keyframeLength", 1, 1, 1800, true);
 	
 	gui.addPanel("City Locations", 1, false);
@@ -126,11 +127,12 @@ void testApp::grabInterpolatedValues() {
 	nextFaceScale = gui.getValueF("faceScale");
 	nextBirthTime = gui.getValueF("birthTime");
 	nextDeathTime = gui.getValueF("deathTime");
-	nextNewYorkCount = gui.getValueI("newYorkCount");
-	nextLondonCount = gui.getValueI("londonCount");
-	nextSaoPaoloCount = gui.getValueI("saoPaoloCount");
-	nextSeoulCount = gui.getValueI("seoulCount");
-	nextBeijingCount = gui.getValueI("beijingCount");
+	nextTotalCount = gui.getValueI("totalCount");
+	nextNewYorkRadius = gui.getValueF("newYorkRadius");
+	nextLondonRadius = gui.getValueF("londonRadius");
+	nextSaoPaoloRadius = gui.getValueF("saoPaoloRadius");
+	nextSeoulRadius = gui.getValueF("seoulRadius");
+	nextBeijingRadius = gui.getValueF("beijingRadius");
 }
 
 void testApp::interpolateValueF(string name, float target, float amt) {
@@ -156,11 +158,12 @@ void testApp::interpolateValues() {
 	interpolateValueF("faceScale", nextFaceScale, i);
 	interpolateValueF("birthTime", nextBirthTime, i);
 	interpolateValueF("deathTime", nextDeathTime, i);
-	interpolateValueI("newYorkCount", nextNewYorkCount, i);
-	interpolateValueI("londonCount", nextLondonCount, i);
-	interpolateValueI("saoPaoloCount", nextSaoPaoloCount, i);
-	interpolateValueI("seoulCount", nextSeoulCount, i);
-	interpolateValueI("beijingCount", nextBeijingCount, i);
+	interpolateValueI("totalCount", nextTotalCount, i);
+	interpolateValueF("newYorkRadius", nextNewYorkRadius, i);
+	interpolateValueF("londonRadius", nextLondonRadius, i);
+	interpolateValueF("saoPaoloRadius", nextSaoPaoloRadius, i);
+	interpolateValueF("seoulRadius", nextSeoulRadius, i);
+	interpolateValueF("beijingRadius", nextBeijingRadius, i);
 }
 
 void testApp::update() {
@@ -237,11 +240,13 @@ void testApp::update() {
 		gui.setValueB("resetCamera", false);
 	}
 
-	particleSystem.newYork.moveTowards(gui.getValueI("newYorkCount"));
-	particleSystem.london.moveTowards(gui.getValueI("londonCount"));
-	particleSystem.saoPaolo.moveTowards(gui.getValueI("saoPaoloCount"));
-	particleSystem.seoul.moveTowards(gui.getValueI("seoulCount"));
-	particleSystem.beijing.moveTowards(gui.getValueI("beijingCount"));
+	particleSystem.moveTowards(gui.getValueI("totalCount"));
+	
+	particleSystem.newYork.radius = (gui.getValueF("newYorkRadius"));
+	particleSystem.london.radius = (gui.getValueF("londonRadius"));
+	particleSystem.saoPaolo.radius = (gui.getValueF("saoPaoloRadius"));
+	particleSystem.seoul.radius = (gui.getValueF("seoulRadius"));
+	particleSystem.beijing.radius = (gui.getValueF("beijingRadius"));
 	
 	particleSystem.newYork.setPosition(gui.getValueF("newYorkLatitude"), gui.getValueF("newYorkLongitude"));
 	particleSystem.london.setPosition(gui.getValueF("londonLatitude"), gui.getValueF("londonLongitude"));

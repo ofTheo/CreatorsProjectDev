@@ -79,13 +79,3 @@ void City::draw() {
 	for(int i = 0; i < size(); i++)
 		particles[i]->draw();
 }
-
-void City::moveTowards(int target) {
-	while(livingSize() != target) {
-		// take one step towards the target number
-		if(livingSize() < target)
-			birth();
-		else if(livingSize() > target)
-			kill();
-	}
-}

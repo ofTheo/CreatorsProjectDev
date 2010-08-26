@@ -18,4 +18,5 @@ public:
 	void drawAxes() const;
 	void update();
 	void draw();
+	void moveTowards(int target);
 };

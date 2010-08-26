@@ -103,3 +103,14 @@ void ParticleSystem::draw() {
 	ofPopStyle();
 	ofPopMatrix();
 }
+
+void ParticleSystem::moveTowards(int target) {
+	/*
+	while(livingSize() != target) {
+		// take one step towards the target number
+		if(livingSize() < target)
+			birth();
+		else if(livingSize() > target)
+			kill();
+	}*/
+}
