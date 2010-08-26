@@ -4,9 +4,7 @@
 #include "ofxDirList.h"
 
 class City {
-public:
-	static float birthRadius;
-	
+public:	
 	unsigned char id;
 	ofxDirList dirList;
 	int dirSize;

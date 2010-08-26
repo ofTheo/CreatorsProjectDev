@@ -1,7 +1,5 @@
 #include "City.h"
 
-float City::birthRadius;
-
 City::City() {
 }
 
@@ -23,8 +21,8 @@ void City::setPosition(float latitude, float longitude) {
 void City::birth() {
 	// add a new particle at a random position
 	particles.push_back(new Particle(
-		ofDegToRad(latitude + ofRandom(-birthRadius, birthRadius)),
-		ofDegToRad(longitude + ofRandom(-birthRadius, birthRadius))));
+		ofDegToRad(ofRandom(-90, 90)),
+		ofDegToRad(ofRandom(-180, 180))));
 	
 	// associate it with a random directory
 	// (you have to pick random elements like this or you lose the last item)

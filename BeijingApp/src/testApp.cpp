@@ -1,7 +1,11 @@
 #include "testApp.h"
 
 /*
-	make an attempt at better packing with ellipses?
+ make an attempt at better packing with ellipses?
+ 
+ instead of faces being born near their city center, they will go back to being born in random places (or replacing faces that just died). accordingly, the birth radius parameter will be removed.
+
+ instead of 5 sliders describing the number of faces from each city, there will be 6 sliders: 1 describing the total number of faces on the sphere and 5 describing the city-circle of each city.
 */
 
 void testApp::setup() {
@@ -72,7 +76,6 @@ void testApp::setupGui() {
 	gui.setWhichPanel("Size");
 	gui.addSlider("sphere coverage", "sphereCoverage", 1, .5, 1.5, false);
 	gui.addSlider("face scale", "faceScale", 2, .5, 4, false);
-	gui.addSlider("birth radius", "birthRadius", 15, 5, 90, false);
 	gui.addSlider("birth time", "birthTime", 10, 0, 40, true);
 	gui.addSlider("death time", "deathTime", 10, 0, 40, true);
 
@@ -245,8 +248,6 @@ void testApp::update() {
 	particleSystem.saoPaolo.setPosition(gui.getValueF("saoPaoloLatitude"), gui.getValueF("saoPaoloLongitude"));
 	particleSystem.seoul.setPosition(gui.getValueF("seoulLatitude"), gui.getValueF("seoulLongitude"));
 	particleSystem.beijing.setPosition(gui.getValueF("beijingLatitude"), gui.getValueF("beijingLongitude"));
-
-	City::birthRadius = gui.getValueF("birthRadius");
 
 	ParticleSystem::sphereCoverage = gui.getValueF("sphereCoverage");
 	ParticleSystem::showAxes = gui.getValueB("showAxes");
