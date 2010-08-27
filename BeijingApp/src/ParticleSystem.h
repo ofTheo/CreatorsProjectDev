@@ -11,6 +11,7 @@ public:
 
 	City newYork, london, saoPaolo, seoul, beijing;
 	vector<City*> cities;
+	vector<Particle*> particles;
 
 	ParticleSystem();
 	void setup(int radius);
@@ -18,5 +19,9 @@ public:
 	void drawAxes() const;
 	void update();
 	void draw();
+	int size() const;
+	int livingSize() const;
 	void moveTowards(int target);
+	void birth();
+	void kill();
 };

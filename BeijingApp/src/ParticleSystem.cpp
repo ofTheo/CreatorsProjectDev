@@ -25,6 +25,8 @@ void ParticleSystem::setup(int radius) {
 }
 
 ParticleSystem::~ParticleSystem() {
+	for(int i = 0; i < particles.size(); i++)
+		delete particles[i];
 }
 
 void ParticleSystem::drawAxes() const {
@@ -54,11 +56,19 @@ void ParticleSystem::drawAxes() const {
 }
 
 void ParticleSystem::update() {
-	// remove dead particles and sum relative radii
+	// remove dead particles	
+	for(int i = size() - 1; i >= 0; i--) {
+		if(particles[i]->isDead()) {
+			delete particles[i];
+			particles.erase(particles.begin() + i);
+		}
+	}
+	
+	// and sum relative radii
 	float radiiSum = 0;
-	for(int i = 0; i < cities.size(); i++) {
-		cities[i]->removeDead();
-		radiiSum += cities[i]->sumRadii();
+	for(int i = 0; i < size(); i++) {
+		particles[i]->updateRelativeRadius();
+		radiiSum += particles[i]->relativeRadius;
 	}
 
 	// determine radius scale factor based on coverage and packing
@@ -66,22 +76,14 @@ void ParticleSystem::update() {
 	float radiusScale = maxRadius * sphereCoverage;
 
 	// update all absolute radii using scale
-	for(int i = 0; i < cities.size(); i++)
-		cities[i]->updateAbsoluteRadius(radiusScale);
-
-	// make a single vector of all the particles
-	vector<Particle*> particles;
-	for(int i = 0; i < cities.size(); i++) {
-		vector<Particle*>& cur = cities[i]->particles;
-		for(int j = 0; j < cur.size(); j++)
-			particles.push_back(cur[j]);
-	}
+	for(int i = 0; i < size(); i++)
+		particles[i]->updateAbsoluteRadius(radiusScale);
 
 	// compute forces between all particles
-	for(int i = 0; i < particles.size(); i++) {
+	for(int i = 0; i < size(); i++) {
 		Particle* cur = particles[i];
 		cur->clearForces();
-		for(int j = 0; j < particles.size(); j++)
+		for(int j = 0; j < size(); j++)
 			if(i != j)
 				cur->addForce(*(particles[j]));
 	}
@@ -98,19 +100,48 @@ void ParticleSystem::draw() {
 	ofNoFill();
 	if(showAxes)
 		drawAxes();
-	for(int i = 0; i < cities.size(); i++)
-		cities[i]->draw();
+	for(int i = 0; i < size(); i++)
+		particles[i]->draw();
 	ofPopStyle();
 	ofPopMatrix();
 }
 
+int ParticleSystem::size() const {
+	return particles.size();
+}
+
+int ParticleSystem::livingSize() const {
+	int n = 0;
+	for(int i = 0; i < size(); i++)
+		if(!particles[i]->dying)
+			n++;
+	return n;
+}
+
 void ParticleSystem::moveTowards(int target) {
-	/*
 	while(livingSize() != target) {
 		// take one step towards the target number
 		if(livingSize() < target)
 			birth();
 		else if(livingSize() > target)
 			kill();
-	}*/
+	}
+}
+
+void ParticleSystem::birth() {
+	// add a new particle at a random position
+	// make this informed by particles that have recently died
+	particles.push_back(new Particle(ofRandom(-HALF_PI, HALF_PI), ofRandom(-PI, PI)));
+	// associate with new york.
+	// make this informed by the current city radius
+	newYork.setupParticle(particles.back());
+}
+
+void ParticleSystem::kill() {
+	// kill a particle that isn't already dying, starting at the end
+	for(int i = size() - 1; i >= 0; i--)
+		if(!particles[i]->dying) {
+			particles[i]->kill();
+			break;
+		}
 }
