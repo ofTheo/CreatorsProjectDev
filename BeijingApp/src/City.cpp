@@ -37,7 +37,7 @@ void City::setupParticle(Particle* particle) {
 
 void City::setRadius(float radius) {
 	bool curExpanding = radius > this->radius;
-	if(curExpanding != expanding)
+	if(curExpanding && !expanding)
 		age = 0;
 	else
 		age++;
