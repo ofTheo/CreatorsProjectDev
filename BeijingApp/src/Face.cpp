@@ -9,8 +9,8 @@ Face::Face() :
 		needsUpdating(true) {
 }
 
-void Face::setup(unsigned char id, string path) {
-	this->id = id;
+void Face::setup(unsigned char color, string path) {
+	this->color = color;
 	dirSize = dirList.listDir(path);
 }
 
@@ -18,7 +18,7 @@ void Face::update() {
 	img.loadImage(dirList.getPath(curImage));
 	w = img.getWidth();
 	h = img.getHeight();
-	fillId();
+	fillCityColor();
 	analyzeImage();
 
 	needsUpdating = false;
@@ -32,7 +32,7 @@ void Face::next() {
 	needsUpdating = true;
 }
 
-void Face::fillId() {
+void Face::fillCityColor() {
 	unsigned char* pixels = img.getPixels();
 	const int channels = 4;
 	const int alphaOffset = 3;
@@ -44,7 +44,7 @@ void Face::fillId() {
 		else
 			pixels[i] = 0;
 		*/
-		pixels[i] = id;
+		pixels[i] = color;
 	}
 	img.update();
 }

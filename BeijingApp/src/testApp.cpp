@@ -51,6 +51,7 @@ void testApp::setupGui() {
 	gui.addToggle("fps limit", "fpsLimit", lastFps);
 	gui.addToggle("animate faces", "animateFaces", false);
 	gui.addToggle("show axes", "showAxes", true);
+	gui.addToggle("show cities", "showCities", true);
 	gui.addToggle("show circles", "showCircles", true);
 	gui.addToggle("show collisions", "showCollisions", true);
 	gui.addToggle("show faces", "showFaces", true);
@@ -82,11 +83,11 @@ void testApp::setupGui() {
 	gui.addPanel("Cities", 1, false);
 	gui.setWhichPanel("Cities");
 	gui.addSlider("Total Count", "totalCount", 0, 0, 200, true);
-	gui.addSlider("New York Radius", "newYorkRadius", 0, 0, 100, true);
-	gui.addSlider("London Radius", "londonRadius", 0, 0, 100, true);
-	gui.addSlider("Sao Paolo Radius", "saoPaoloRadius", 0, 0, 100, true);
-	gui.addSlider("Seoul Radius", "seoulRadius", 0, 0, 100, true);
-	gui.addSlider("Beijing Radius", "beijingRadius", 0, 0, 100, true);
+	gui.addSlider("New York Radius", "newYorkRadius", 0, 0, PI, false);
+	gui.addSlider("London Radius", "londonRadius", 0, 0, PI, false);
+	gui.addSlider("Sao Paolo Radius", "saoPaoloRadius", 0, 0, PI, false);
+	gui.addSlider("Seoul Radius", "seoulRadius", 0, 0, PI, false);
+	gui.addSlider("Beijing Radius", "beijingRadius", 0, 0, PI, false);
 	gui.addSlider("keyframe length", "keyframeLength", 1, 1, 1800, true);
 	
 	gui.addPanel("City Locations", 1, false);
@@ -242,17 +243,22 @@ void testApp::update() {
 
 	particleSystem.moveTowards(gui.getValueI("totalCount"));
 	
-	particleSystem.newYork.radius = (gui.getValueF("newYorkRadius"));
-	particleSystem.london.radius = (gui.getValueF("londonRadius"));
-	particleSystem.saoPaolo.radius = (gui.getValueF("saoPaoloRadius"));
-	particleSystem.seoul.radius = (gui.getValueF("seoulRadius"));
-	particleSystem.beijing.radius = (gui.getValueF("beijingRadius"));
+	particleSystem.newYork.setRadius(gui.getValueF("newYorkRadius"));
+	particleSystem.london.setRadius(gui.getValueF("londonRadius"));
+	particleSystem.saoPaolo.setRadius(gui.getValueF("saoPaoloRadius"));
+	particleSystem.seoul.setRadius(gui.getValueF("seoulRadius"));
+	particleSystem.beijing.setRadius(gui.getValueF("beijingRadius"));
 	
-	particleSystem.newYork.setPosition(gui.getValueF("newYorkLatitude"), gui.getValueF("newYorkLongitude"));
-	particleSystem.london.setPosition(gui.getValueF("londonLatitude"), gui.getValueF("londonLongitude"));
-	particleSystem.saoPaolo.setPosition(gui.getValueF("saoPaoloLatitude"), gui.getValueF("saoPaoloLongitude"));
-	particleSystem.seoul.setPosition(gui.getValueF("seoulLatitude"), gui.getValueF("seoulLongitude"));
-	particleSystem.beijing.setPosition(gui.getValueF("beijingLatitude"), gui.getValueF("beijingLongitude"));
+	particleSystem.newYork.setPosition(ofDegToRad(gui.getValueF("newYorkLatitude")),
+																		 ofDegToRad(gui.getValueF("newYorkLongitude")));
+	particleSystem.london.setPosition(ofDegToRad(gui.getValueF("londonLatitude")),
+																		ofDegToRad(gui.getValueF("londonLongitude")));
+	particleSystem.saoPaolo.setPosition(ofDegToRad(gui.getValueF("saoPaoloLatitude")),
+																			ofDegToRad(gui.getValueF("saoPaoloLongitude")));
+	particleSystem.seoul.setPosition(ofDegToRad(gui.getValueF("seoulLatitude")),
+																	 ofDegToRad(gui.getValueF("seoulLongitude")));
+	particleSystem.beijing.setPosition(ofDegToRad(gui.getValueF("beijingLatitude")),
+																		 ofDegToRad(gui.getValueF("beijingLongitude")));
 
 	ParticleSystem::sphereCoverage = gui.getValueF("sphereCoverage");
 	ParticleSystem::showAxes = gui.getValueB("showAxes");
@@ -274,6 +280,8 @@ void testApp::update() {
 	Particle::deathTime = gui.getValueI("deathTime");
 
 	Face::faceScale = gui.getValueF("faceScale");
+	
+	City::showCities = gui.getValueB("showCities");
 
 	particleSystem.update();
 }

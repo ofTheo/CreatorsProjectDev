@@ -32,12 +32,16 @@ void ofxCubeMapRenderer::render() {
 }
 
 void ofxCubeMapRenderer::draw() {
+	glPushMatrix();
+	glTranslatef(0, cubeSize * 3, 0);
+	glScalef(1, -1, 1);
 	leftView.draw(cubeSize * 0, cubeSize * 1);
 	frontView.draw(cubeSize * 1, cubeSize * 1);
 	rightView.draw(cubeSize * 2, cubeSize * 1);
 	backView.draw(cubeSize * 3, cubeSize * 1);
 	upView.draw(cubeSize * 1, cubeSize * 2);
 	downView.draw(cubeSize * 1, cubeSize * 0);
+	glPopMatrix();
 }
 
 void ofxCubeMapRenderer::renderDirection(ofTexture& target,

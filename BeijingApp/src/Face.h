@@ -17,15 +17,15 @@ public:
 	float xMean, yMean;
 	//float xStdDev, yStdDev;
 
-	unsigned char id;
+	unsigned char color;
 
 	bool needsUpdating;
 
 	Face();
-	void setup(unsigned char id, string path);
+	void setup(unsigned char color, string path);
 	void update();
 	void next();
-	void fillId();
+	void fillCityColor();
 	void analyzeImage();
 	void draw();
 };

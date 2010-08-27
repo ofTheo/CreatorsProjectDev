@@ -24,4 +24,4 @@ public:
 	void moveTowards(int target);
 	void birth();
 	void kill();
-};
+};	

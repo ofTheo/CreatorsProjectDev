@@ -11,11 +11,11 @@ void ParticleSystem::setup(int radius) {
 	
 	int step = 255 / 5;
 	int center = step / 2;
-	newYork.setup(center + step * 0, "faces/01_New_York");
-	london.setup(center + step * 1, "faces/02_London");
-	saoPaolo.setup(center + step * 2, "faces/03_Sao_Paolo");
-	seoul.setup(center + step * 3, "faces/04_Seoul");
-	beijing.setup(center + step * 4, "faces/05_Beijing");
+	newYork.setup(center + step * 0, "faces/01_New_York", "New York");
+	london.setup(center + step * 1, "faces/02_London", "London");
+	saoPaolo.setup(center + step * 2, "faces/03_Sao_Paolo", "Sao Paolo");
+	seoul.setup(center + step * 3, "faces/04_Seoul", "Seoul");
+	beijing.setup(center + step * 4, "faces/05_Beijing", "Beijing");
 
 	cities.push_back(&newYork);
 	cities.push_back(&london);
@@ -102,6 +102,8 @@ void ParticleSystem::draw() {
 		drawAxes();
 	for(int i = 0; i < size(); i++)
 		particles[i]->draw();
+	for(int i = 0; i < cities.size(); i++)
+		cities[i]->draw();
 	ofPopStyle();
 	ofPopMatrix();
 }
