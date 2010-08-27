@@ -34,9 +34,12 @@ public:
 	ofxVec3f getVectorPosition() const {
 		return position * xunit;
 	}
-	float getDistance(const SphereCircle& sphereCircle) const {
+	float getDistance(const SphereCircle* sphereCircle) const {
 		ofxVec3f na = getVectorPosition();
-		ofxVec3f nb = sphereCircle.getVectorPosition();
+		ofxVec3f nb = sphereCircle->getVectorPosition();
 		return acosf(na.dot(nb));
+	}
+	bool contains(const SphereCircle* sphereCircle) const {
+		return getDistance(sphereCircle) < radius;
 	}
 };

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ofMain.h"
-#include "Face.h"
 #include "SphereCircle.h"
+#include "Face.h"
+#include "ofMain.h"
 
 class Particle : public SphereCircle {
 public:
@@ -39,7 +39,7 @@ public:
 	void updateRelativeRadius();
 	void updateAbsoluteRadius(float radiusScale);
 	void clearForces();
-	void addForce(const Particle& particle);
+	void addForce(const Particle* particle);
 	void update();
 
 	void draw();

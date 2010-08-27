@@ -85,7 +85,7 @@ void ParticleSystem::update() {
 		cur->clearForces();
 		for(int j = 0; j < size(); j++)
 			if(i != j)
-				cur->addForce(*(particles[j]));
+				cur->addForce(particles[j]);
 	}
 
 	// apply forces to all particles
@@ -133,10 +133,27 @@ void ParticleSystem::moveTowards(int target) {
 void ParticleSystem::birth() {
 	// add a new particle at a random position
 	// make this informed by particles that have recently died
-	particles.push_back(new Particle(ofRandom(-HALF_PI, HALF_PI), ofRandom(-PI, PI)));
-	// associate with new york.
-	// make this informed by the current city radius
-	newYork.setupParticle(particles.back());
+	particles.push_back(new Particle(acosf(ofRandom(-1, 1)) - HALF_PI,
+																	 ofRandom(-PI, PI)));
+	Particle* cur = particles.back();
+	
+	// build list of intersecting cities, note if any are expanding
+	vector<City*> intersections;
+	for(int i = 0; i < cities.size(); i++)
+		if(cities[i]->contains(cur))
+			intersections.push_back(cities[i]);
+	
+	// choose from among the intersections (if there are any), otherwise the cities
+	vector<City*>& choices = intersections.size() > 0 ? intersections : cities;
+	
+	// from the choices, choose the youngest parent city
+	City* parent = choices[0]; // assume the first one
+	for(int i = 0; i < choices.size(); i++) // but look for younger
+		if(choices[i]->age < parent->age)
+			parent = choices[i];
+	
+	// finally, set up that particle using that parent city
+	parent->setupParticle(cur);
 }
 
 void ParticleSystem::kill() {

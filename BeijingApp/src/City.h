@@ -16,6 +16,7 @@ public:
 	string cityName;
 
 	float latitude, longitude;
+	int age;
 
 	City();
 	~City();
@@ -23,6 +24,5 @@ public:
 	void setPosition(float latitude, float longitude);
 	void setRadius(float radius);
 	void setupParticle(Particle* particle);
-	bool getExpanding();
 	void draw();
 };

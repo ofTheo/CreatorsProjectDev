@@ -53,14 +53,14 @@ void Particle::updateAbsoluteRadius(float radiusScale) {
 	radius = relativeRadius * radiusScale;
 }
 
-void Particle::addForce(const Particle& particle) {
+void Particle::addForce(const Particle* particle) {
 	float distance = getDistance(particle);
-	float minDistance = radius + particle.radius;
+	float minDistance = radius + particle->radius;
 	if(distance < minDistance) {
 		float w = 1 / powf(distance / minDistance, hardness);
 		w *= -forceScale;
 		ofxVec3f target = (xunit * (1 - w)) * position;
-		target += (xunit * w) * particle.position;
+		target += (xunit * w) * particle->position;
 		target.normalize();
 		forceCentroid += target;
 		forceCount++;
@@ -102,7 +102,6 @@ void Particle::update() {
 
 	if(animateFaces) {
 		face.next();
-		
 		
 		// kill faces before they loop
 		if(face.curImage > (face.dirSize - deathTime))
