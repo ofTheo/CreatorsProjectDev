@@ -139,6 +139,10 @@ void Particle::draw() {
 	glRotatef(-90, 0, 1, 0); // make circles lay flat on surface
 
 	if(showCircles) {
+		if(City::showCities) {
+			float* rgb = city->rgb;
+			glColor4f(rgb[0], rgb[1], rgb[2], 1);
+		}
 		// cartesian radius is different than spherical radius
 		ofCircle(0, 0, getCartesianRadius());
 		// draw line from center of circle to (0, -1) i.e., up
@@ -154,12 +158,12 @@ void Particle::draw() {
 	}
 
 	glPopMatrix();
-
+	
+	ofxVec3f nvector = getVectorPosition();
 	if(showCircles && forceCount > 0) {
-		ofxVec3f from = position * xunit;
 		glColor3f(0, 0, 1);
 		glBegin(GL_LINES);
-		glVertex3f(from.x, from.y, from.z);
+		glVertex3f(nvector.x, nvector.y, nvector.z);
 		glVertex3f(forceCentroid.x, forceCentroid.y, forceCentroid.z);
 		glEnd();
 	}

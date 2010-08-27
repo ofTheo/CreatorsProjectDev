@@ -2,7 +2,10 @@
 
 #include "SphereCircle.h"
 #include "Face.h"
+#include "City.h"
 #include "ofMain.h"
+
+class City;
 
 class Particle : public SphereCircle {
 public:
@@ -28,6 +31,7 @@ public:
 	int startedDying;
 
 	Face face;
+	City* city;
 
 	Particle(float lat = 0, float lon = 0, float age = 0);
 	void setFace(unsigned char id, string path);

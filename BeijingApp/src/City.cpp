@@ -15,6 +15,8 @@ City::~City() {
 
 void City::setup(unsigned char color, string path, string cityName) {
 	this->color = color;
+	const float hsv[] = {color / 255., 1., 1.};
+	convertHsvToRgb(hsv, rgb);
 	dirSize = dirList.listDir(path);
 	this->cityName = cityName;
 }
@@ -30,6 +32,7 @@ void City::setupParticle(Particle* particle) {
 	int randomPosition = (int) ofRandom(0, dirSize);
 	string randomPath = dirList.getPath(randomPosition);
 	particle->setFace(color, randomPath);
+	particle->city = this;
 }
 
 void City::setRadius(float radius) {
@@ -57,7 +60,7 @@ void City::draw() {
 	
 	if(showCities) {
 		ofPushMatrix();
-		glColor4f(1, 1, 1, 1);
+		glColor4f(rgb[0], rgb[1], rgb[2], 1);
 		glTranslatef(1, 0, 0);
 		ofDrawBitmapString(cityName, 0, 0);
 		ofPopMatrix();
