@@ -3,7 +3,6 @@
 bool City::showCities;
 
 City::City() :
-	radius(0),
 	latitude(0),
 	longitude(0),
 	color(0),
@@ -22,6 +21,7 @@ void City::setup(unsigned char color, string path, string cityName) {
 void City::setPosition(float latitude, float longitude) {
 	this->latitude = latitude;
 	this->longitude = longitude;
+	SphereCircle::setPosition(latitude, longitude);
 }
 
 void City::setupParticle(Particle* particle) {
@@ -72,12 +72,4 @@ void City::draw() {
 	}
 	
 	glPopMatrix();
-}
-
-float City::getDistanceFromCenter() {
-	return cosf(radius);
-}
-
-float City::getCartesianRadius() {
-	return sinf(radius);
 }

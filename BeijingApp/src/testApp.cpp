@@ -169,6 +169,7 @@ void testApp::interpolateValues() {
 
 void testApp::update() {
 	if(meta.getValueB("refreshList")) {
+		keyframeLister.refreshDir();
 		meta.setValueB("refreshList", false);
 	}
 	

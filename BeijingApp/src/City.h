@@ -1,12 +1,12 @@
 #pragma once
 
+#include "SphereCircle.h"
 #include "Particle.h"
 #include "ofxDirList.h"
 
-class City {
-private:
+class City : public SphereCircle {
+protected:
 	bool expanding;
-	float radius;
 public:	
 	static bool showCities;
 	
@@ -25,7 +25,4 @@ public:
 	void setupParticle(Particle* particle);
 	bool getExpanding();
 	void draw();
-	
-	float getDistanceFromCenter();
-	float getCartesianRadius();
 };

@@ -11,10 +11,7 @@ Particle::Particle(float lat, float lon, float age) :
 		forceCount(0),
 		dying(false),
 		startedDying(0) {
-	orientation.makeRotate(
-		0, xunit,
-		lat, yunit,
-		lon, zunit);
+	setPosition(lat, lon);
 	noiseOffset = ofRandom(0, 1024);
 	meanderDirection = ofRandom(-PI, PI);
 }
@@ -53,17 +50,17 @@ void Particle::updateRelativeRadius() {
 }
 
 void Particle::updateAbsoluteRadius(float radiusScale) {
-	absoluteRadius = relativeRadius * radiusScale;
+	radius = relativeRadius * radiusScale;
 }
 
 void Particle::addForce(const Particle& particle) {
 	float distance = getDistance(particle);
-	float minDistance = absoluteRadius + particle.absoluteRadius;
+	float minDistance = radius + particle.radius;
 	if(distance < minDistance) {
 		float w = 1 / powf(distance / minDistance, hardness);
 		w *= -forceScale;
-		ofxVec3f target = (xunit * (1 - w)) * orientation;
-		target += (xunit * w) * particle.orientation;
+		ofxVec3f target = (xunit * (1 - w)) * position;
+		target += (xunit * w) * particle.position;
 		target.normalize();
 		forceCentroid += target;
 		forceCount++;
@@ -75,7 +72,7 @@ void Particle::update() {
 
 	// normalization is just for visualization
 	forceCentroid /= forceCount; // find the spherical centroid
-	bforce.makeRotate(getPosition(), forceCentroid);
+	bforce.makeRotate(getVectorPosition(), forceCentroid);
 	bforce.slerp(relativeRadius, ofxQuaternion(), bforce); // reduces add-glitches
 	force *= bforce;
 
@@ -99,9 +96,9 @@ void Particle::update() {
 	float faceAngle = ofSignedNoise(noiseOffset + angleJitter * baseJitter * age) * PI * angleRange;
 	setAngle(faceAngle);
 
-	// apply velocity to orientation
-	orientation *= velocity;
-	orientation /= orientation.length(); // keep orientation stable
+	// apply velocity to position
+	position *= velocity;
+	position /= position.length(); // keep position stable
 
 	if(animateFaces) {
 		face.next();
@@ -115,17 +112,9 @@ void Particle::update() {
 	age++;
 }
 
-float Particle::getDistanceFromCenter() const {
-	return cosf(absoluteRadius);
-}
-
-float Particle::getCartesianRadius() const {
-	return sinf(absoluteRadius);
-}
-
 void Particle::setAngle(float angle) {
-	ofxVec2f latlon = convertToLatitutdeLongitude(orientation);
-	orientation.makeRotate(
+	ofxVec2f latlon = convertToLatitutdeLongitude(position);
+	position.makeRotate(
 		angle, xunit,
 		latlon.x, yunit,
 		latlon.y, zunit);
@@ -139,9 +128,9 @@ void Particle::draw() {
 	else
 		glColor4f(1, 1, 1, 1);
 
-	// use orientation to place circle
+	// use position to place circle
 	float a, x, y, z;
-	orientation.getRotate(a, x, y, z);
+	position.getRotate(a, x, y, z);
 	glRotatef(ofRadToDeg(a), x, y, z);
 
 	// place circles on edge of sphere
@@ -168,7 +157,7 @@ void Particle::draw() {
 	glPopMatrix();
 
 	if(showCircles && forceCount > 0) {
-		ofxVec3f from = orientation * xunit;
+		ofxVec3f from = position * xunit;
 		glColor3f(0, 0, 1);
 		glBegin(GL_LINES);
 		glVertex3f(from.x, from.y, from.z);
@@ -177,12 +166,3 @@ void Particle::draw() {
 	}
 }
 
-ofxVec3f Particle::getPosition() const {
-	return orientation * xunit;
-}
-
-float Particle::getDistance(const Particle& particle) const {
-	ofxVec3f na = getPosition();
-	ofxVec3f nb = particle.getPosition();
-	return acosf(na.dot(nb));
-}

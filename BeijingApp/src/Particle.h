@@ -1,23 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxVectorMath.h"
 #include "Face.h"
+#include "SphereCircle.h"
 
-const ofxVec3f
-	xunit(1, 0, 0),
-	yunit(0, 1, 0),
-	zunit(0, 0, 1);
-
-inline ofxVec2f convertToLatitutdeLongitude(ofxQuaternion quaternion) {
-	ofxVec3f nvec = xunit * quaternion;
-	ofxVec2f latlon;
-	latlon.x = -atan2(nvec.z, sqrtf(nvec.x * nvec.x + nvec.y * nvec.y));
-	latlon.y = atan2(nvec.y, nvec.x);
-	return latlon;
-}
-
-class Particle {
+class Particle : public SphereCircle {
 public:
 	static float velocityDamping, velocityMax, forceScale, hardness;
 	static float meanderForce, meanderJitter, meanderRange;
@@ -27,9 +14,9 @@ public:
 
 	static const float baseJitter = 1. / 60.;
 
-	float relativeRadius, absoluteRadius;
+	float relativeRadius;
 
-	ofxQuaternion orientation, velocity;
+	ofxQuaternion velocity;
 	ofxVec3f forceCentroid;
 	int forceCount;
 
@@ -57,9 +44,5 @@ public:
 
 	void draw();
 
-	float getDistanceFromCenter() const;
-	float getCartesianRadius() const;
 	void setAngle(float angle);
-	ofxVec3f getPosition() const;
-	float getDistance(const Particle& particle) const;
 };
