@@ -2,10 +2,6 @@
 
 /*
  make an attempt at better packing with ellipses?
- 
- instead of faces being born near their city center, they will go back to being born in random places (or replacing faces that just died).
-
- instead of 5 sliders describing the number of faces from each city, there will be 6 sliders: 1 describing the total number of faces on the sphere and 5 describing the city-circle of each city.
 */
 
 void testApp::setup() {
@@ -17,9 +13,18 @@ void testApp::setup() {
 	ofBackground(128, 128, 128);
 
 	particleSystem.setup(100);
+	setupOutput();
 	setupMeta();
 	setupGui();
 	setupCubemap();
+}
+
+void testApp::setupOutput() {
+	ofxXmlSettings xml;
+	xml.loadFile("outputSettings.xml");
+	outputPrefix = xml.getValue("outputPrefix", "map");
+	outputExtension = xml.getValue("outputExtension", "tif");
+	cout << "Using output settings '" << outputPrefix << "###." << outputExtension << "'" << endl;
 }
 
 void testApp::setupMeta() {
@@ -114,7 +119,29 @@ void testApp::setupCubemap() {
 	cubemapFbo.attach(cubemapImage.getTextureReference());
 }
 
-void testApp::grabInterpolatedValues() {
+void testApp::grabCurValues() {
+	curVelocityDamping = gui.getValueF("velocityDamping");
+	curVelocityMax = gui.getValueF("velocityMax");
+	curForceScale = gui.getValueF("forceScale");
+	curHardness = gui.getValueF("hardness");
+	curMeanderForce = gui.getValueF("meanderForce");
+	curMeanderJitter = gui.getValueF("meanderJitter");
+	curMeanderRange = gui.getValueF("meanderRange");
+	curAngleJitter = gui.getValueF("angleJitter");
+	curAngleRange = gui.getValueF("angleRange");
+	curSphereCoverage = gui.getValueF("sphereCoverage");
+	curFaceScale = gui.getValueF("faceScale");
+	curBirthTime = gui.getValueF("birthTime");
+	curDeathTime = gui.getValueF("deathTime");
+	curTotalCount = gui.getValueI("totalCount");
+	curNewYorkRadius = gui.getValueF("newYorkRadius");
+	curLondonRadius = gui.getValueF("londonRadius");
+	curSaoPaoloRadius = gui.getValueF("saoPaoloRadius");
+	curSeoulRadius = gui.getValueF("seoulRadius");
+	curBeijingRadius = gui.getValueF("beijingRadius");
+}
+
+void testApp::grabNextValues() {
 	nextVelocityDamping = gui.getValueF("velocityDamping");
 	nextVelocityMax = gui.getValueF("velocityMax");
 	nextForceScale = gui.getValueF("forceScale");
@@ -136,40 +163,32 @@ void testApp::grabInterpolatedValues() {
 	nextBeijingRadius = gui.getValueF("beijingRadius");
 }
 
-void testApp::interpolateValueF(string name, float target, float amt) {
-	gui.setValueF(name, ofLerp(gui.getValueF(name), target, amt));
-}
-
-void testApp::interpolateValueI(string name, int target, float amt) {
-	gui.setValueI(name, ofLerp(gui.getValueI(name), target, amt));
-}
-
 void testApp::interpolateValues() {
 	float i = (float) (curFrame - startFrame) / (endFrame - startFrame);
-	interpolateValueF("velocityDamping", nextVelocityDamping, i);
-	interpolateValueF("velocityMax", nextVelocityMax, i);
-	interpolateValueF("forceScale", nextForceScale, i);
-	interpolateValueF("hardness", nextHardness, i);
-	interpolateValueF("meanderForce", nextMeanderForce, i);
-	interpolateValueF("meanderJitter", nextMeanderJitter, i);
-	interpolateValueF("meanderRange", nextMeanderRange, i);
-	interpolateValueF("angleJitter", nextAngleJitter, i);
-	interpolateValueF("angleRange", nextAngleRange, i);
-	interpolateValueF("sphereCoverage", nextSphereCoverage, i);
-	interpolateValueF("faceScale", nextFaceScale, i);
-	interpolateValueF("birthTime", nextBirthTime, i);
-	interpolateValueF("deathTime", nextDeathTime, i);
-	interpolateValueI("totalCount", nextTotalCount, i);
-	interpolateValueF("newYorkRadius", nextNewYorkRadius, i);
-	interpolateValueF("londonRadius", nextLondonRadius, i);
-	interpolateValueF("saoPaoloRadius", nextSaoPaoloRadius, i);
-	interpolateValueF("seoulRadius", nextSeoulRadius, i);
-	interpolateValueF("beijingRadius", nextBeijingRadius, i);
+	gui.setValueF("velocityDamping", ofLerp(curVelocityDamping, nextVelocityDamping, i));
+	gui.setValueF("velocityMax", ofLerp(curVelocityMax, nextVelocityMax, i));
+	gui.setValueF("forceScale", ofLerp(curForceScale, nextForceScale, i));
+	gui.setValueF("hardness", ofLerp(curHardness, nextHardness, i));
+	gui.setValueF("meanderForce", ofLerp(curMeanderForce, nextMeanderForce, i));
+	gui.setValueF("meanderJitter", ofLerp(curMeanderJitter, nextMeanderJitter, i));
+	gui.setValueF("meanderRange", ofLerp(curMeanderRange, nextMeanderRange, i));
+	gui.setValueF("angleJitter", ofLerp(curAngleJitter, nextAngleJitter, i));
+	gui.setValueF("angleRange", ofLerp(curAngleRange, nextAngleRange, i));
+	gui.setValueF("sphereCoverage", ofLerp(curSphereCoverage, nextSphereCoverage, i));
+	gui.setValueF("faceScale", ofLerp(curFaceScale, nextFaceScale, i));
+	gui.setValueF("birthTime", ofLerp(curBirthTime, nextBirthTime, i));
+	gui.setValueF("deathTime", ofLerp(curDeathTime, nextDeathTime, i));
+	gui.setValueI("totalCount", ofLerp(curTotalCount, nextTotalCount, i));
+	gui.setValueF("newYorkRadius", ofLerp(curNewYorkRadius, nextNewYorkRadius, i));
+	gui.setValueF("londonRadius", ofLerp(curLondonRadius, nextLondonRadius, i));
+	gui.setValueF("saoPaoloRadius", ofLerp(curSaoPaoloRadius, nextSaoPaoloRadius, i));
+	gui.setValueF("seoulRadius", ofLerp(curSeoulRadius, nextSeoulRadius, i));
+	gui.setValueF("beijingRadius", ofLerp(curBeijingRadius, nextBeijingRadius, i));
 }
 
 void testApp::update() {
 	if(meta.getValueB("refreshList")) {
-		keyframeLister.refreshDir();
+		keyframeCount = keyframeLister.refreshDir();
 		meta.setValueB("refreshList", false);
 	}
 	
@@ -209,8 +228,9 @@ void testApp::update() {
 		} else {
 			if(curFrame == endFrame) { // need to load next keyframe
 				gui.loadSettings(keyframeLister.getPath(curKeyframe + 1));
-				grabInterpolatedValues();
+				grabNextValues();
 				gui.loadSettings(keyframeLister.getPath(curKeyframe++));
+				grabCurValues();
 				startFrame = curFrame;
 				endFrame += gui.getValueI("keyframeLength");
 			} else {
@@ -312,7 +332,7 @@ void testApp::draw() {
 				data.pixelType,
 				cubemapImage.getPixels());
 
-			cubemapImage.saveImage("render/" + ofToString(curFrame) + ".tif");
+			cubemapImage.saveImage("render/" + outputPrefix + ofToString(curFrame) + "." + outputExtension);
 
 			curFrame++;
 		}
