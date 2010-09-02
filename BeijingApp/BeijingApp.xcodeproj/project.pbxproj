@@ -196,6 +196,7 @@
 		27ADF96D12213C1800E3B430 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
 		27ADF98512213CEB00E3B430 /* ofxFbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxFbo.cpp; path = src/addons/ofxFbo/src/ofxFbo.cpp; sourceTree = SOURCE_ROOT; };
 		27ADF98612213CEB00E3B430 /* ofxFbo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFbo.h; path = src/addons/ofxFbo/src/ofxFbo.h; sourceTree = SOURCE_ROOT; };
+		27AFDA371227A61E000DAC41 /* SphereCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereCircle.h; sourceTree = "<group>"; };
 		27C7AF351223A00400E13475 /* City.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = City.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
@@ -685,6 +686,7 @@
 				27ADF92412213BBD00E3B430 /* ParticleSystem.h */,
 				27ADF92512213BBD00E3B430 /* testApp.cpp */,
 				27ADF92612213BBD00E3B430 /* testApp.h */,
+				27AFDA371227A61E000DAC41 /* SphereCircle.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

@@ -20,7 +20,10 @@ public:
 
 	void drawScene();
 	
-	string outputPrefix, outputExtension;
+	float rotationDistance(ofxQuaternion& from, ofxQuaternion& to);
+	
+	string outputPrefix, outputPostfix;
+	int outputPadding;
 
 	bool lastFps;
 

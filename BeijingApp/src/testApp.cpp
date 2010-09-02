@@ -19,12 +19,20 @@ void testApp::setup() {
 	setupCubemap();
 }
 
+float testApp::rotationDistance(ofxQuaternion& from, ofxQuaternion& to) {
+	ofxVec3f xunit3f(1, 0, 0);
+	ofxVec3f fromVec = from * xunit3f;
+	ofxVec3f toVec = to * xunit3f;
+	return acosf(fromVec.dot(toVec));
+}
+
 void testApp::setupOutput() {
 	ofxXmlSettings xml;
 	xml.loadFile("outputSettings.xml");
 	outputPrefix = xml.getValue("outputPrefix", "map");
-	outputExtension = xml.getValue("outputExtension", "tif");
-	cout << "Using output settings '" << outputPrefix << "###." << outputExtension << "'" << endl;
+	outputPostfix = xml.getValue("outputPostfix", ".tif");
+	outputPadding = xml.getValue("outputPadding", 4);
+	cout << "Using output settings '" << outputPrefix << "#" << outputPostfix << "'" << endl;
 }
 
 void testApp::setupMeta() {
@@ -332,7 +340,9 @@ void testApp::draw() {
 				data.pixelType,
 				cubemapImage.getPixels());
 
-			cubemapImage.saveImage("render/" + outputPrefix + ofToString(curFrame) + "." + outputExtension);
+			stringstream paddedNumber;
+			paddedNumber << setw(outputPadding) << setfill('0') << curFrame;
+			cubemapImage.saveImage("render/" + outputPrefix + paddedNumber.str() + outputPostfix);
 
 			curFrame++;
 		}

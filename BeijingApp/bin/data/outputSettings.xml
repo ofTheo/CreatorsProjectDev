@@ -1,2 +1,3 @@
 <outputPrefix>map.</outputPrefix>
-<outputExtension>tif</outputExtension>
+<outputPostfix>a.tif</outputPostfix>
+<outputPadding>4</outputPadding>
